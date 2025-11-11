@@ -30,3 +30,6 @@ __pycache__/
 # System Files
 .DS_Store
 Thumbs.db
+
+# Firebase Credential File
+mind-arena.json
