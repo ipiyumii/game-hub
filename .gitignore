@@ -32,4 +32,4 @@ __pycache__/
 Thumbs.db
 
 # Firebase Credential File
-mind-arena.json
+shared/mind-arena.json
