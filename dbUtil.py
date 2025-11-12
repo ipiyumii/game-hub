@@ -15,3 +15,26 @@ def get_all_games(db):
         data["id"] = doc.id
         all_games.append(data)
     return all_games
+
+def fetch_games_from_database():
+    """Fetch games from database and return them"""
+    try:
+        from dbUtil import initialize_firebase, get_all_games
+        print("Connecting to database...")
+        
+        db = initialize_firebase("shared/mind-arena.json")
+        games = get_all_games(db)
+        
+        print("Games found in database:")
+        for game in games:
+            game_name = game.get('gameName', game.get('name', 'Unknown Game'))
+            print(f"  - {game_name}")
+        
+        return games
+    except ImportError:
+        print("Database utilities not found. Using fallback games.")
+        return None
+    except Exception as e:
+        print(f"Database error: {e}")
+        print("Using fallback games.")
+        return None

@@ -11,8 +11,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
 
 print(f"Current directory: {current_dir}")
-print(f"Python path: {sys.path[:3]}")  # Show first 3 entries
-
+print(f"Python path: {sys.path[:3]}")  
 try:
     print("Attempting to import main module...")
     from main import main
