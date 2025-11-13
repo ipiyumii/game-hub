@@ -1,31 +1,27 @@
 import pygame
 import sys
 import math
+import subprocess
+import os
 from typing import Optional
 
 try:
-    from ui.name_input_popup import NameInputPopup, Colors
+    from Dashboard.name_input_popup import NameInputPopup, Colors
+
 except ImportError as e:
     print(f"Import error: {e}")
-    print("Please make sure you're running the script from the correct directory.")
-    sys.exit(1)
 
-class GameHub:
-    """Mind Arena application"""
-    
+class GameHub: 
     def __init__(self, games=None):
         print("Initializing Pygame...")
         # Initialize Pygame
         pygame.init()
-        print("Pygame initialized successfully!")
         
         # Screen settings
-        self.SCREEN_WIDTH = 800
-        self.SCREEN_HEIGHT = 600
-        print(f"Creating screen with dimensions {self.SCREEN_WIDTH}x{self.SCREEN_HEIGHT}...")
+        self.SCREEN_WIDTH = 1100
+        self.SCREEN_HEIGHT = 750
         self.screen = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         pygame.display.set_caption("Mind Arena - Welcome!")
-        print("Screen created successfully!")
         
         # Clock for FPS control
         self.clock = pygame.time.Clock()
@@ -38,27 +34,25 @@ class GameHub:
         
         # Games from database
         self.games = games if games is not None else []
+                
         print(f"Loaded {len(self.games)} games")
         
         # UI Components
-        print("Creating name input popup...")
         self.name_popup = NameInputPopup(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
-        print("Name input popup created successfully!")
         
         # Fonts
-        print("Loading fonts...")
         self.title_font = pygame.font.Font(None, 64)
         self.subtitle_font = pygame.font.Font(None, 32)
         self.text_font = pygame.font.Font(None, 24)
-        print("Fonts loaded successfully!")
         
         # Background animation
         self.bg_offset = 0
         self.bg_speed = 0.5
-        print("Mind Arena initialization complete!")
+
+        self.game_buttons = []
     
     def draw_animated_background(self):
-        """Draw an animated gradient background"""
+        """Draw an  gradient background"""
         # Create animated colors
         time_factor = pygame.time.get_ticks() * 0.001
         
@@ -87,7 +81,6 @@ class GameHub:
         self.draw_particles()
     
     def draw_particles(self):
-        """Draw floating particle effects"""
         time_factor = pygame.time.get_ticks() * 0.001
         
         for i in range(20):
@@ -103,8 +96,9 @@ class GameHub:
             self.screen.blit(particle_surface, (x - size, y - size))
     
     def draw_welcome_screen(self):
-        """Draw the main welcome screen after name input"""
         self.draw_animated_background()
+
+        self.game_buttons = []
         
         # Welcome title
         title_text = f"Welcome, {self.player_name}!"
@@ -131,22 +125,45 @@ class GameHub:
             for i in range(max_games_to_show):
                 game = self.games[i]
                 game_name = game.get('gameName', game.get('name', f'Game {i+1}'))
-                
+                game_id = game.get('gameId', f'game_{i}')
+
                 if len(game_name) > 30:
-                    game_name = game_name[:27] + "..."
+                    display_name = game_name[:27] + "..."
+                else:
+                    display_name = game_name
                 
-                game_surface = self.text_font.render(game_name, True, Colors.WHITE)
+                game_surface = self.text_font.render(display_name, True, Colors.WHITE)
                 game_rect = game_surface.get_rect(center=(self.SCREEN_WIDTH // 2, start_y + i * 45))
                 
                 button_rect = pygame.Rect(game_rect.x - 30, game_rect.y - 12, 
                                         game_rect.width + 60, game_rect.height + 24)
+
+
+                 
+                # Store button info for click detection
+                self.game_buttons.append({
+                    'rect': button_rect,
+                    'game_id': game_id,
+                    'game_name': game_name
+                })
+                
+                # Check if mouse is hovering
+                mouse_pos = pygame.mouse.get_pos()
+                is_hovering = button_rect.collidepoint(mouse_pos)                        
                 
                 color_offset = i * 20
-                button_color = (
-                    min(255, Colors.BUTTON_COLOR[0] + color_offset),
-                    min(255, Colors.BUTTON_COLOR[1] + color_offset // 2),
-                    min(255, Colors.BUTTON_COLOR[2] + color_offset // 3)
-                )
+                if is_hovering:
+                    button_color = (
+                        min(255, Colors.BUTTON_COLOR[0] + color_offset + 30),
+                        min(255, Colors.BUTTON_COLOR[1] + color_offset // 2 + 30),
+                        min(255, Colors.BUTTON_COLOR[2] + color_offset // 3 + 30)
+                    )
+                else:
+                    button_color = (
+                        min(255, Colors.BUTTON_COLOR[0] + color_offset),
+                        min(255, Colors.BUTTON_COLOR[1] + color_offset // 2),
+                        min(255, Colors.BUTTON_COLOR[2] + color_offset // 3)
+                    )
                 
                 pygame.draw.rect(self.screen, button_color, button_rect, border_radius=12)
                 pygame.draw.rect(self.screen, Colors.WHITE, button_rect, width=2, border_radius=12)
@@ -169,7 +186,7 @@ class GameHub:
                 self.screen.blit(more_surface, more_rect)
             
             # Instructions
-            instruction_text = f"Games loaded from database! ({len(self.games)} total) Press ESC to exit."
+            instruction_text = f"Have fuuunnnnnnn......!!!!!!"
         else:
             # No games available
             no_games_text = "No games available in the database."
@@ -190,6 +207,7 @@ class GameHub:
     
     def handle_events(self):
         """Handle all pygame events"""
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -197,6 +215,15 @@ class GameHub:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
+            
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1 and not self.show_name_popup:  # Left click
+                    mouse_pos = pygame.mouse.get_pos()
+                    # Check if any game button was clicked
+                    for button_info in self.game_buttons:
+                        if button_info['rect'].collidepoint(mouse_pos):
+                            self.launch_game(button_info['game_id'], button_info['game_name'])
+                            break
             
             # Handle name popup events
             if self.show_name_popup:
@@ -226,10 +253,6 @@ class GameHub:
         pygame.display.flip()
     
     def run(self):
-        """Main game loop"""
-        print("Starting Game Hub...")
-        print("Close the game by clicking the X button or pressing ESC")
-        
         while self.running:
             self.handle_events()
             self.update()
@@ -237,5 +260,85 @@ class GameHub:
             self.clock.tick(self.FPS)
         
         pygame.quit()
-        print(f"Thanks for playing, {self.player_name or 'Player'}!")
+
+    def launch_game(self, game_id, game_name):       
+        # Handle Eight Queens game with various possible IDs
+        if (game_id == "eight_queens" or 
+            "eight queens" in game_name.lower() or 
+            "queens" in game_name.lower()):
+            self.launch_eight_queens()
+        elif "Coming Soon" in game_name:
+            print(f"{game_name} is not yet implemented.")
+            # You could show a message on screen here
+        else:
+            print(f"Game {game_name} is not implemented yet.")
+    
+    def launch_eight_queens(self):
+        try:
+            # Hide the pygame window temporarily
+            pygame.display.iconify()
+            
+            # Path to the Eight Queens game directory
+            game_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "EightQueensPuzzle")
+            game_file = os.path.join(game_dir, "eightqeensUi.py")
+            
+            if os.path.exists(game_file):
+                # Create a simple launcher script that passes the player name
+                launcher_code = f'''
+import tkinter as tk
+import sys
+import os
+
+# Add the Eight Queens directory to Python path
+eight_queens_dir = r"{game_dir}"
+sys.path.insert(0, eight_queens_dir)
+
+from eightqeensUi import EightQueensUI
+
+root = tk.Tk()
+game = EightQueensUI(root, "{self.player_name}", tk)
+
+# Add return to hub button at bottom right
+return_btn = tk.Button(
+    root,
+    text="Return to Game Hub",
+    command=root.quit,
+    bg="#2d3748",
+    fg="white",
+    font=("Arial", 12, "bold"),
+    relief=tk.FLAT,
+    bd=0,
+    activebackground="#4a5568",
+    activeforeground="white",
+    cursor="hand2",
+    padx=15,
+    pady=5
+)
+return_btn.place(x=780, y=570, width=180, height=50)
+
+root.mainloop()
+'''
+                # Write launcher to temp file
+                temp_launcher = os.path.join(os.path.dirname(__file__), "temp_eight_queens_launcher.py")
+                with open(temp_launcher, 'w') as f:
+                    f.write(launcher_code)
+                
+                # Launch the game
+                result = subprocess.run([sys.executable, temp_launcher], 
+                                     cwd=game_dir)
+                
+                # Clean up temp file
+                if os.path.exists(temp_launcher):
+                    os.remove(temp_launcher)
+                
+                # Restore the pygame window
+                pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+                pygame.display.set_caption(f"Mind Arena - Welcome {self.player_name}!")
+                
+            else:
+                print(f"Eight Queens game not found at: {game_file}")
+                
+        except Exception as e:
+            print(f"Error launching Eight Queens: {e}")
+            pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
 
