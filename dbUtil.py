@@ -17,9 +17,7 @@ def get_all_games(db):
     return all_games
 
 def fetch_games_from_database():
-    """Fetch games from database and return them"""
     try:
-        from dbUtil import initialize_firebase, get_all_games
         print("Connecting to database...")
         
         db = initialize_firebase("shared/mind-arena.json")
