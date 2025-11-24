@@ -1,6 +1,6 @@
 import threading
 
-def solve_n_queens_threaded(N=8):
+def solve_eight_queens_threaded(N=8):
 
     final_solutions = []
     lock = threading.Lock()
@@ -72,3 +72,11 @@ def solve_n_queens_threaded(N=8):
         i = i + 1
 
     return final_solutions
+
+def findMaxSolutionsThreaded():
+    all_solutions = solve_eight_queens_threaded()
+
+    i = 0
+    while i < 5 and i < len(all_solutions):
+        print("Solution", i + 1, ":", all_solutions[i])
+        i = i + 1 

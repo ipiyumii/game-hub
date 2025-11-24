@@ -6,6 +6,7 @@ import os
 from typing import Optional
 
 from EightQueensPuzzle.Solutions.sequential import findMaxSolutionsSequantial
+from EightQueensPuzzle.Solutions.threaded import findMaxSolutionsThreaded
 
 try:
     from Dashboard.name_input_popup import NameInputPopup, Colors
@@ -277,6 +278,8 @@ class GameHub:
     
     def launch_eight_queens(self):
         findMaxSolutionsSequantial()
+        findMaxSolutionsThreaded()
+
         try:
             # Hide the pygame window temporarily
             pygame.display.iconify()
