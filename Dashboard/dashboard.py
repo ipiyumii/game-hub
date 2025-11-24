@@ -5,6 +5,8 @@ import subprocess
 import os
 from typing import Optional
 
+from EightQueensPuzzle.Solutions.sequential import findMaxSolutionsSequantial
+
 try:
     from Dashboard.name_input_popup import NameInputPopup, Colors
 
@@ -32,7 +34,7 @@ class GameHub:
         self.player_name = None
         self.show_name_popup = True
         
-        # Games from database
+        # Games from db
         self.games = games if games is not None else []
                 
         print(f"Loaded {len(self.games)} games")
@@ -56,7 +58,7 @@ class GameHub:
         # Create animated colors
         time_factor = pygame.time.get_ticks() * 0.001
         
-        # Animated gradient colors
+        # animated gradient colors
         r1 = int(135 + 30 * math.cos(time_factor))
         g1 = int(206 + 20 * math.sin(time_factor * 1.2))
         b1 = int(250 + 5 * math.cos(time_factor * 0.8))
@@ -68,7 +70,7 @@ class GameHub:
         start_color = (r1, g1, b1)
         end_color = (r2, g2, b2)
         
-        # Draw gradient
+        #Draw gradient
         for y in range(self.SCREEN_HEIGHT):
             ratio = y / self.SCREEN_HEIGHT
             r = int(start_color[0] * (1 - ratio) + end_color[0] * ratio)
@@ -274,6 +276,7 @@ class GameHub:
             print(f"Game {game_name} is not implemented yet.")
     
     def launch_eight_queens(self):
+        findMaxSolutionsSequantial()
         try:
             # Hide the pygame window temporarily
             pygame.display.iconify()
