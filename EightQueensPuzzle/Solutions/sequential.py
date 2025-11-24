@@ -1,4 +1,4 @@
-def solve_n_queens_pure(N=8):
+def solve_eight_queens_sequential(N=8):
     solutions = []
 
     def is_safe(current_solution, row, col):
@@ -46,10 +46,11 @@ def solve_n_queens_pure(N=8):
 
 def findMaxSolutionsSequantial():
 
-    all_solutions = solve_n_queens_pure()
+    all_solutions = solve_eight_queens_sequential()
     print("Total number of solutions:", len(all_solutions))
 
     i = 0
     while i < 92 and i < len(all_solutions):
         print("Solution", i+1, ":", all_solutions[i])
         i = i + 1
+
