@@ -36,3 +36,8 @@ def fetch_games_from_database():
         print(f"Database error: {e}")
         print("Using fallback games.")
         return None
+
+def delete_collection(coll_ref):
+    docs = coll_ref.stream()
+    for doc in docs:
+        doc.reference.delete()

@@ -1,3 +1,5 @@
+from EightQueensPuzzle.eightqueen_dbUtil import save_sequencial_solutions_eigh_queens
+
 def solve_eight_queens_sequential(N=8):
     solutions = []
 
@@ -19,18 +21,16 @@ def solve_eight_queens_sequential(N=8):
     # recursive function
     def checkQueenPosition(current_solution, row):
         if row == N:
-            # found a solution
-            solutions = [current_solution]  # store as list
-            return [current_solution]  # return solution 
+
+            solutions = [current_solution]  
+            return [current_solution]  
 
         all_solutions = []
-        # try each column
+     
         col_list = [0,1,2,3,4,5,6,7]
         for col in col_list:
             if is_safe(current_solution, row, col):
-                # Use list concatenation instead of append
                 new_solution = current_solution + [col]
-                # recurse for next row
                 result = checkQueenPosition(new_solution, row + 1)
                 # add results to allsolution
                 temp_index = 0
@@ -47,6 +47,9 @@ def solve_eight_queens_sequential(N=8):
 def findMaxSolutionsSequantial():
 
     all_solutions = solve_eight_queens_sequential()
+
+    save_sequencial_solutions_eigh_queens(all_solutions, N=8)
+    
     print("Total number of solutions:", len(all_solutions))
 
     i = 0
