@@ -1,4 +1,5 @@
 import threading
+from EightQueensPuzzle.eightqueen_dbUtil import save_threaded_solutions_eight_queens
 
 def solve_eight_queens_threaded(N=8):
 
@@ -75,6 +76,7 @@ def solve_eight_queens_threaded(N=8):
 
 def findMaxSolutionsThreaded():
     all_solutions = solve_eight_queens_threaded()
+    save_threaded_solutions_eight_queens(all_solutions, N=8)
 
     i = 0
     while i < 5 and i < len(all_solutions):
