@@ -1,3 +1,5 @@
+import time
+
 from EightQueensPuzzle.eightqueen_dbUtil import save_sequencial_solutions_eigh_queens
 
 def solve_eight_queens_sequential(N=8):
@@ -45,10 +47,12 @@ def solve_eight_queens_sequential(N=8):
 
 
 def findMaxSolutionsSequantial():
-
+    start_time = time.time()
     all_solutions = solve_eight_queens_sequential()
+    end_time = time.time()
+    timeTaken = end_time - start_time
 
-    save_sequencial_solutions_eigh_queens(all_solutions, N=8)
+    save_sequencial_solutions_eigh_queens(all_solutions, N=8, timeTaken=timeTaken)
     
     print("Total number of solutions:", len(all_solutions))
 
