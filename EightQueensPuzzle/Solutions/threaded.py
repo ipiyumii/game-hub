@@ -74,7 +74,7 @@ def solve_eight_queens_threaded(N=8):
 
     return final_solutions
 
-def findMaxSolutionsThreaded():
+def find_max_solutions_threaded():
     all_solutions = solve_eight_queens_threaded()
     save_threaded_solutions_eight_queens(all_solutions, N=8)
 
