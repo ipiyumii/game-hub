@@ -10,7 +10,7 @@ sys.path.insert(0, eight_queens_dir)
 from eightqeensUi import EightQueensUI
 
 root = tk.Tk()
-game = EightQueensUI(root, "f", tk)
+game = EightQueensUI(root, "d", tk)
 
 # Add return to hub button at bottom right
 return_btn = tk.Button(
