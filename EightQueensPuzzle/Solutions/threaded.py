@@ -81,7 +81,10 @@ def find_max_solutions_threaded():
     end_time = time.time() 
     time_taken = end_time - start_time
 
-    save_program_solutions(all_solutions, N=8, program_type = "threaded", time_took = time_taken)
+    try:
+        save_program_solutions(all_solutions, N=8, program_type = "threaded", time_took = time_taken)
+    except Exception as e:
+        print(f"Error saving solutions to database: {e}")
 
     i = 0
     while i < 5 and i < len(all_solutions):

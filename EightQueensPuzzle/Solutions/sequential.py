@@ -47,7 +47,10 @@ def find_max_solutions_sequantial():
     end_time = time.time()
     time_taken = end_time - start_time
 
-    save_program_solutions(all_solutions, N=8, program_type = "sequential", time_took = time_taken)
+    try:
+        save_program_solutions(all_solutions, N=8, program_type = "sequential", time_took = time_taken)
+    except Exception as e:
+        print(f"Error saving solutions to database: {e}")
 
     print("Total number of solutions:", len(all_solutions))
 
