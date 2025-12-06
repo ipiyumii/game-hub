@@ -1,9 +1,11 @@
 import sys
 import os
+
 from dbUtil import fetch_games_from_database
 
 dashboard_dir = os.path.join(os.path.dirname(__file__), 'Dashboard')
 sys.path.insert(0, dashboard_dir)
+
 
 def launch_game_dashboard(games=None):
     try:
@@ -20,6 +22,7 @@ def launch_game_dashboard(games=None):
         print(f"Dashboard Error: {e}")
         import traceback
         traceback.print_exc()
+
 
 def main():   
     # Fetch games 

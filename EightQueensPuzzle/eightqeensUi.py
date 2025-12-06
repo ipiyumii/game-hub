@@ -1,6 +1,8 @@
 from tkinter import messagebox
 import math
-from player_solutions import check_solution
+
+from EightQueensPuzzle.player_solutions import check_solution
+
 
 class EightQueensUI:
     def __init__(self, root, player_name, tk=None):
@@ -116,7 +118,6 @@ class EightQueensUI:
 
         self.draw_board()
 
-
     def clear_board(self):
         self.queens.clear()
         self.draw_board()
@@ -212,10 +213,3 @@ class EightQueensUI:
         for (row, col) in self.queens:
             solution[row] = col
         return solution
-
-
-
-
-
-
-
