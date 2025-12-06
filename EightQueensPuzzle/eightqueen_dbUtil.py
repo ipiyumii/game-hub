@@ -3,9 +3,12 @@ from firebase_admin import firestore, credentials
 
 from dbUtil import delete_collection
 
-if not firebase_admin._apps:  #
-    cred = credentials.Certificate("../shared/mind-arena.json")
-    firebase_admin.initialize_app(cred)
+if not firebase_admin._apps:
+    try:
+        cred = credentials.Certificate("../shared/mind-arena.json")
+        firebase_admin.initialize_app(cred)
+    except Exception as e:
+        print(f"Firebase initialization error: {e}")
 
 def save_program_solutions(solutions, N, program_type, time_took=None):
     db = firestore.client()
@@ -32,7 +35,6 @@ def save_program_solutions(solutions, N, program_type, time_took=None):
         })
 
     print(f"Saved {len(solutions)} solutions to Firestore.")
-
 
 def fetch_all_solutions():
     db = firestore.client()

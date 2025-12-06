@@ -16,10 +16,13 @@ def check_solution(self):
     messagebox.showinfo("Result", result)
 
 def validate_player_solution(player_solution, player_name):
-    fetched_solutions = fetch_all_solutions()
+    try:
+        fetched_solutions = fetch_all_solutions()
 
-    #load solved solutions
-    found_solutions = fetch_found_solutions()
+        #load solved solutions
+        found_solutions = fetch_found_solutions()
+    except Exception as e:
+        print(f"Error fetching solutions from database player_solutions: {e}")
 
     #check if solution is in all solutions
     is_correct = False
@@ -30,9 +33,8 @@ def validate_player_solution(player_solution, player_name):
             break
         i += 1
 
+    #not a valid solution
     if not is_correct:
-        #not a valid solution
-        messagebox.showinfo("Incorrect", "Incorrect solution!")
         return "Incorrect solution!"
 
     #check if solution is already found
