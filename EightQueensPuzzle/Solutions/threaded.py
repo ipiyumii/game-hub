@@ -1,7 +1,6 @@
 import threading
 import time
-
-from EightQueensPuzzle.eightqueen_dbUtil import save_threaded_solutions_eight_queens
+from EightQueensPuzzle.eightqueen_dbUtil import save_program_solutions
 
 def solve_eight_queens_threaded(N=8):
 
@@ -76,15 +75,16 @@ def solve_eight_queens_threaded(N=8):
 
     return final_solutions
 
-def findMaxSolutionsThreaded():
+def find_max_solutions_threaded():
     start_time = time.time()
     all_solutions = solve_eight_queens_threaded()
     end_time = time.time() 
-    timeTaken = end_time - start_time
+    time_taken = end_time - start_time
 
-    save_threaded_solutions_eight_queens(all_solutions, N=8, timeTaken=timeTaken)
+    save_program_solutions(all_solutions, N=8, program_type = "threaded", time_took = time_taken)
+
 
     i = 0
     while i < 5 and i < len(all_solutions):
         print("Solution", i + 1, ":", all_solutions[i])
-        i = i + 1 
+        i = i + 1

@@ -1,12 +1,6 @@
 import pygame
-import sys
 import math
-import subprocess
-import os
-from typing import Optional
-
-from EightQueensPuzzle.Solutions.sequential import findMaxSolutionsSequantial
-from EightQueensPuzzle.Solutions.threaded import findMaxSolutionsThreaded
+from EightQueensPuzzle.launch_game import launch_eight_queens
 
 try:
     from Dashboard.name_input_popup import NameInputPopup, Colors
@@ -55,7 +49,6 @@ class GameHub:
         self.game_buttons = []
     
     def draw_animated_background(self):
-        """Draw an  gradient background"""
         # Create animated colors
         time_factor = pygame.time.get_ticks() * 0.001
         
@@ -209,8 +202,6 @@ class GameHub:
         self.screen.blit(instruction_surface, instruction_rect)
     
     def handle_events(self):
-        """Handle all pygame events"""
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -240,13 +231,11 @@ class GameHub:
                         pygame.display.set_caption(f"Mind Arena - Welcome {self.player_name}!")
     
     def update(self):
-        """Update game state"""
         self.bg_offset += self.bg_speed
         if self.bg_offset > self.SCREEN_WIDTH:
             self.bg_offset = 0
     
     def draw(self):
-        """Draw everything to the screen"""
         if self.show_name_popup:
             self.draw_animated_background()
             self.name_popup.draw(self.screen)
@@ -269,82 +258,11 @@ class GameHub:
         if (game_id == "eight_queens" or 
             "eight queens" in game_name.lower() or 
             "queens" in game_name.lower()):
-            self.launch_eight_queens()
+            launch_eight_queens(self)
         elif "Coming Soon" in game_name:
             print(f"{game_name} is not yet implemented.")
             # You could show a message on screen here
         else:
             print(f"Game {game_name} is not implemented yet.")
     
-    def launch_eight_queens(self):
-        findMaxSolutionsSequantial()
-        findMaxSolutionsThreaded()
-
-        try:
-            # Hide the pygame window temporarily
-            pygame.display.iconify()
-            
-            # Path to the Eight Queens game directory
-            game_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "EightQueensPuzzle")
-            game_file = os.path.join(game_dir, "eightqeensUi.py")
-            
-            if os.path.exists(game_file):
-                # Create a simple launcher script that passes the player name
-                launcher_code = f'''
-import tkinter as tk
-import sys
-import os
-
-# Add the Eight Queens directory to Python path
-eight_queens_dir = r"{game_dir}"
-sys.path.insert(0, eight_queens_dir)
-
-from eightqeensUi import EightQueensUI
-
-root = tk.Tk()
-game = EightQueensUI(root, "{self.player_name}", tk)
-
-# Add return to hub button at bottom right
-return_btn = tk.Button(
-    root,
-    text="Return to Game Hub",
-    command=root.quit,
-    bg="#2d3748",
-    fg="white",
-    font=("Arial", 12, "bold"),
-    relief=tk.FLAT,
-    bd=0,
-    activebackground="#4a5568",
-    activeforeground="white",
-    cursor="hand2",
-    padx=15,
-    pady=5
-)
-return_btn.place(x=780, y=570, width=180, height=50)
-
-root.mainloop()
-'''
-                # Write launcher to temp file
-                temp_launcher = os.path.join(os.path.dirname(__file__), "temp_eight_queens_launcher.py")
-                with open(temp_launcher, 'w') as f:
-                    f.write(launcher_code)
-                
-                # Launch the game
-                result = subprocess.run([sys.executable, temp_launcher], 
-                                     cwd=game_dir)
-                
-                # Clean up temp file
-                if os.path.exists(temp_launcher):
-                    os.remove(temp_launcher)
-                
-                # Restore the pygame window
-                pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-                pygame.display.set_caption(f"Mind Arena - Welcome {self.player_name}!")
-                
-            else:
-                print(f"Eight Queens game not found at: {game_file}")
-                
-        except Exception as e:
-            print(f"Error launching Eight Queens: {e}")
-            pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
 
