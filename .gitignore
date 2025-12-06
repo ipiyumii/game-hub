@@ -1,0 +1,37 @@
+.idea/
+__pycache__/
+
+# IDE/Editor
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.Python
+
+# Virtual Environments
+/venv/
+/env/
+
+# Environment Variables
+.env
+
+# Logs and Debug Files
+*.log
+*.tmp
+
+# Build Files
+/build/
+/dist/
+*.egg-info/
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Firebase Credential File
+shared/mind-arena.json
+
+workspace.xmlshared/mind-arena.json
