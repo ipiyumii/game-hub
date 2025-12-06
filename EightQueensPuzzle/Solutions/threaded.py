@@ -83,7 +83,6 @@ def find_max_solutions_threaded():
 
     save_program_solutions(all_solutions, N=8, program_type = "threaded", time_took = time_taken)
 
-
     i = 0
     while i < 5 and i < len(all_solutions):
         print("Solution", i + 1, ":", all_solutions[i])

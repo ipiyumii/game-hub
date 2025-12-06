@@ -1,6 +1,9 @@
 from tkinter import messagebox
 import math
 
+from EightQueensPuzzle.player_solutions import check_solution
+
+
 class EightQueensUI:
     def __init__(self, root, player_name, tk=None):
         self.root = root
@@ -58,7 +61,7 @@ class EightQueensUI:
         check_btn = tk.Button(
             root,
             text="Check Solution",
-            command=self.check_solution,
+            command=lambda:check_solution(self),
             bg="#00adb5",
             **style_btn
         )
@@ -114,28 +117,6 @@ class EightQueensUI:
                 messagebox.showinfo("Limit", "You can only place 8 queens.")
 
         self.draw_board()
-
-    def check_solution(self):
-        if len(self.queens) != 8:
-            messagebox.showinfo("Incomplete", "You must place exactly 8 queens.")
-            return
-
-        # Validation logic
-        rows = set()
-        cols = set()
-        diag1 = set()  # r - c
-        diag2 = set()  # r + c
-
-        for (r, c) in self.queens:
-            if r in rows or c in cols or (r - c) in diag1 or (r + c) in diag2:
-                messagebox.showinfo("Invalid", "Queens are attacking each other!")
-                return
-            rows.add(r)
-            cols.add(c)
-            diag1.add(r - c)
-            diag2.add(r + c)
-
-        messagebox.showinfo("Success", f"Congratulations {self.player_name}! You solved the puzzle.")
 
     def clear_board(self):
         self.queens.clear()
@@ -226,3 +207,9 @@ class EightQueensUI:
         )
         
         self.root.after(50, self.animate_background)
+
+    def store_entered_solution(self):
+        solution = [-1] * self.board_size
+        for (row, col) in self.queens:
+            solution[row] = col
+        return solution

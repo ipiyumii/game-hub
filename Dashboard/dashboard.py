@@ -133,9 +133,7 @@ class GameHub:
                 
                 button_rect = pygame.Rect(game_rect.x - 30, game_rect.y - 12, 
                                         game_rect.width + 60, game_rect.height + 24)
-
-
-                 
+       
                 # Store button info for click detection
                 self.game_buttons.append({
                     'rect': button_rect,
@@ -264,5 +262,3 @@ class GameHub:
             # You could show a message on screen here
         else:
             print(f"Game {game_name} is not implemented yet.")
-    
-
