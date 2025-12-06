@@ -1,31 +1,24 @@
 import pygame
-import sys
 import math
-from typing import Optional
+from EightQueensPuzzle.launch_game import launch_eight_queens
 
 try:
-    from ui.name_input_popup import NameInputPopup, Colors
+    from Dashboard.name_input_popup import NameInputPopup, Colors
+
 except ImportError as e:
     print(f"Import error: {e}")
-    print("Please make sure you're running the script from the correct directory.")
-    sys.exit(1)
 
-class GameHub:
-    """Mind Arena application"""
-    
+class GameHub: 
     def __init__(self, games=None):
         print("Initializing Pygame...")
         # Initialize Pygame
         pygame.init()
-        print("Pygame initialized successfully!")
         
         # Screen settings
-        self.SCREEN_WIDTH = 800
-        self.SCREEN_HEIGHT = 600
-        print(f"Creating screen with dimensions {self.SCREEN_WIDTH}x{self.SCREEN_HEIGHT}...")
+        self.SCREEN_WIDTH = 1100
+        self.SCREEN_HEIGHT = 750
         self.screen = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         pygame.display.set_caption("Mind Arena - Welcome!")
-        print("Screen created successfully!")
         
         # Clock for FPS control
         self.clock = pygame.time.Clock()
@@ -36,33 +29,30 @@ class GameHub:
         self.player_name = None
         self.show_name_popup = True
         
-        # Games from database
+        # Games from db
         self.games = games if games is not None else []
+                
         print(f"Loaded {len(self.games)} games")
         
         # UI Components
-        print("Creating name input popup...")
         self.name_popup = NameInputPopup(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
-        print("Name input popup created successfully!")
         
         # Fonts
-        print("Loading fonts...")
         self.title_font = pygame.font.Font(None, 64)
         self.subtitle_font = pygame.font.Font(None, 32)
         self.text_font = pygame.font.Font(None, 24)
-        print("Fonts loaded successfully!")
         
         # Background animation
         self.bg_offset = 0
         self.bg_speed = 0.5
-        print("Mind Arena initialization complete!")
+
+        self.game_buttons = []
     
     def draw_animated_background(self):
-        """Draw an animated gradient background"""
         # Create animated colors
         time_factor = pygame.time.get_ticks() * 0.001
         
-        # Animated gradient colors
+        # animated gradient colors
         r1 = int(135 + 30 * math.cos(time_factor))
         g1 = int(206 + 20 * math.sin(time_factor * 1.2))
         b1 = int(250 + 5 * math.cos(time_factor * 0.8))
@@ -74,7 +64,7 @@ class GameHub:
         start_color = (r1, g1, b1)
         end_color = (r2, g2, b2)
         
-        # Draw gradient
+        #Draw gradient
         for y in range(self.SCREEN_HEIGHT):
             ratio = y / self.SCREEN_HEIGHT
             r = int(start_color[0] * (1 - ratio) + end_color[0] * ratio)
@@ -87,7 +77,6 @@ class GameHub:
         self.draw_particles()
     
     def draw_particles(self):
-        """Draw floating particle effects"""
         time_factor = pygame.time.get_ticks() * 0.001
         
         for i in range(20):
@@ -103,8 +92,9 @@ class GameHub:
             self.screen.blit(particle_surface, (x - size, y - size))
     
     def draw_welcome_screen(self):
-        """Draw the main welcome screen after name input"""
         self.draw_animated_background()
+
+        self.game_buttons = []
         
         # Welcome title
         title_text = f"Welcome, {self.player_name}!"
@@ -131,22 +121,45 @@ class GameHub:
             for i in range(max_games_to_show):
                 game = self.games[i]
                 game_name = game.get('gameName', game.get('name', f'Game {i+1}'))
-                
+                game_id = game.get('gameId', f'game_{i}')
+
                 if len(game_name) > 30:
-                    game_name = game_name[:27] + "..."
+                    display_name = game_name[:27] + "..."
+                else:
+                    display_name = game_name
                 
-                game_surface = self.text_font.render(game_name, True, Colors.WHITE)
+                game_surface = self.text_font.render(display_name, True, Colors.WHITE)
                 game_rect = game_surface.get_rect(center=(self.SCREEN_WIDTH // 2, start_y + i * 45))
                 
                 button_rect = pygame.Rect(game_rect.x - 30, game_rect.y - 12, 
                                         game_rect.width + 60, game_rect.height + 24)
+
+
+                 
+                # Store button info for click detection
+                self.game_buttons.append({
+                    'rect': button_rect,
+                    'game_id': game_id,
+                    'game_name': game_name
+                })
+                
+                # Check if mouse is hovering
+                mouse_pos = pygame.mouse.get_pos()
+                is_hovering = button_rect.collidepoint(mouse_pos)                        
                 
                 color_offset = i * 20
-                button_color = (
-                    min(255, Colors.BUTTON_COLOR[0] + color_offset),
-                    min(255, Colors.BUTTON_COLOR[1] + color_offset // 2),
-                    min(255, Colors.BUTTON_COLOR[2] + color_offset // 3)
-                )
+                if is_hovering:
+                    button_color = (
+                        min(255, Colors.BUTTON_COLOR[0] + color_offset + 30),
+                        min(255, Colors.BUTTON_COLOR[1] + color_offset // 2 + 30),
+                        min(255, Colors.BUTTON_COLOR[2] + color_offset // 3 + 30)
+                    )
+                else:
+                    button_color = (
+                        min(255, Colors.BUTTON_COLOR[0] + color_offset),
+                        min(255, Colors.BUTTON_COLOR[1] + color_offset // 2),
+                        min(255, Colors.BUTTON_COLOR[2] + color_offset // 3)
+                    )
                 
                 pygame.draw.rect(self.screen, button_color, button_rect, border_radius=12)
                 pygame.draw.rect(self.screen, Colors.WHITE, button_rect, width=2, border_radius=12)
@@ -169,7 +182,7 @@ class GameHub:
                 self.screen.blit(more_surface, more_rect)
             
             # Instructions
-            instruction_text = f"Games loaded from database! ({len(self.games)} total) Press ESC to exit."
+            instruction_text = f"Have fuuunnnnnnn......!!!!!!"
         else:
             # No games available
             no_games_text = "No games available in the database."
@@ -189,7 +202,6 @@ class GameHub:
         self.screen.blit(instruction_surface, instruction_rect)
     
     def handle_events(self):
-        """Handle all pygame events"""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -197,6 +209,15 @@ class GameHub:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
+            
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1 and not self.show_name_popup:  # Left click
+                    mouse_pos = pygame.mouse.get_pos()
+                    # Check if any game button was clicked
+                    for button_info in self.game_buttons:
+                        if button_info['rect'].collidepoint(mouse_pos):
+                            self.launch_game(button_info['game_id'], button_info['game_name'])
+                            break
             
             # Handle name popup events
             if self.show_name_popup:
@@ -210,13 +231,11 @@ class GameHub:
                         pygame.display.set_caption(f"Mind Arena - Welcome {self.player_name}!")
     
     def update(self):
-        """Update game state"""
         self.bg_offset += self.bg_speed
         if self.bg_offset > self.SCREEN_WIDTH:
             self.bg_offset = 0
     
     def draw(self):
-        """Draw everything to the screen"""
         if self.show_name_popup:
             self.draw_animated_background()
             self.name_popup.draw(self.screen)
@@ -226,10 +245,6 @@ class GameHub:
         pygame.display.flip()
     
     def run(self):
-        """Main game loop"""
-        print("Starting Game Hub...")
-        print("Close the game by clicking the X button or pressing ESC")
-        
         while self.running:
             self.handle_events()
             self.update()
@@ -237,5 +252,17 @@ class GameHub:
             self.clock.tick(self.FPS)
         
         pygame.quit()
-        print(f"Thanks for playing, {self.player_name or 'Player'}!")
+
+    def launch_game(self, game_id, game_name):       
+        # Handle Eight Queens game with various possible IDs
+        if (game_id == "eight_queens" or 
+            "eight queens" in game_name.lower() or 
+            "queens" in game_name.lower()):
+            launch_eight_queens(self)
+        elif "Coming Soon" in game_name:
+            print(f"{game_name} is not yet implemented.")
+            # You could show a message on screen here
+        else:
+            print(f"Game {game_name} is not implemented yet.")
+    
 
