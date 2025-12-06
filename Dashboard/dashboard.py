@@ -11,8 +11,6 @@ except ImportError as e:
     sys.exit(1)
 
 class GameHub:
-    """Mind Arena application"""
-    
     def __init__(self, games=None):
         print("Initializing Pygame...")
         # Initialize Pygame
@@ -189,7 +187,6 @@ class GameHub:
         self.screen.blit(instruction_surface, instruction_rect)
     
     def handle_events(self):
-        """Handle all pygame events"""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -197,6 +194,15 @@ class GameHub:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
+            
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1 and not self.show_name_popup:  # Left click
+                    mouse_pos = pygame.mouse.get_pos()
+                    # Check if any game button was clicked
+                    for button_info in self.game_buttons:
+                        if button_info['rect'].collidepoint(mouse_pos):
+                            self.launch_game(button_info['game_id'], button_info['game_name'])
+                            break
             
             # Handle name popup events
             if self.show_name_popup:
@@ -210,13 +216,11 @@ class GameHub:
                         pygame.display.set_caption(f"Mind Arena - Welcome {self.player_name}!")
     
     def update(self):
-        """Update game state"""
         self.bg_offset += self.bg_speed
         if self.bg_offset > self.SCREEN_WIDTH:
             self.bg_offset = 0
     
     def draw(self):
-        """Draw everything to the screen"""
         if self.show_name_popup:
             self.draw_animated_background()
             self.name_popup.draw(self.screen)
@@ -225,11 +229,7 @@ class GameHub:
         
         pygame.display.flip()
     
-    def run(self):
-        """Main game loop"""
-        print("Starting Game Hub...")
-        print("Close the game by clicking the X button or pressing ESC")
-        
+    def run(self):   
         while self.running:
             self.handle_events()
             self.update()
@@ -237,5 +237,15 @@ class GameHub:
             self.clock.tick(self.FPS)
         
         pygame.quit()
-        print(f"Thanks for playing, {self.player_name or 'Player'}!")
 
+    def launch_game(self, game_id, game_name):       
+        # Handle Eight Queens game with various possible IDs
+        if (game_id == "eight_queens" or
+            "eight queens" in game_name.lower() or
+            "queens" in game_name.lower()):
+            launch_eight_queens(self)
+        elif "Coming Soon" in game_name:
+            print(f"{game_name} is not yet implemented.")
+            # You could show a message on screen here
+        else:
+            print(f"Game {game_name} is not implemented yet.")
