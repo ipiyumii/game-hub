@@ -1,40 +1,28 @@
 from firebase_admin import firestore
-
 from dbUtil import delete_collection
 
-
-def save_sequencial_solutions_eigh_queens(solutions, N=8):
+def save_program_solutions(solutions, N, program_type, time_took=None):
     db = firestore.client()
-    parent = db.collection("eightqueens").document("sequential").collection(f"N{N}")
+    all_sols = db.collection("eightqueens").document(f"{program_type}").collection(f"N{N}")
+    time_taken = db.collection("eightqueens").document(f"{program_type}").collection("timeTaken")
 
-    delete_collection(parent)
+    delete_collection(all_sols)
+    delete_collection(time_taken)
 
     i = 0
     while i < len(solutions):
         sol = solutions[i]
-        parent.add({
+        all_sols.add({
             "solution": sol,
             "board_size": N,
-            "saved_at": firestore.SERVER_TIMESTAMP
         })
         i += 1
 
-    print(f"Saved {len(solutions)} sequential solutions to Firestore.")
-
-def save_threaded_solutions_eight_queens(solutions, N=8):
-    db = firestore.client()
-    parent = db.collection("eightqueens").document("threaded").collection(f"N{N}")
-
-    delete_collection(parent)
-
-    i = 0
-    while i < len(solutions):
-        sol = solutions[i]
-        parent.add({
-            "solution": sol,
-            "board_size": N,
-            "saved_at": firestore.SERVER_TIMESTAMP
+    if time_took is not None:
+        time_taken.document("time").set({
+            "program": f"{program_type}",
+            "solutions_count": len(solutions),
+            "time_taken": time_took,
         })
-        i += 1
 
-    print(f"Saved {len(solutions)} threaded solutions to Firestore.")
+    print(f"Saved {len(solutions)} solutions to Firestore.")

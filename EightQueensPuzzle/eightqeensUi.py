@@ -1,7 +1,5 @@
 from tkinter import messagebox
 import math
-import time
-
 
 class EightQueensUI:
     def __init__(self, root, player_name, tk=None):
@@ -117,7 +115,6 @@ class EightQueensUI:
 
         self.draw_board()
 
-
     def check_solution(self):
         if len(self.queens) != 8:
             messagebox.showinfo("Incomplete", "You must place exactly 8 queens.")
@@ -229,12 +226,3 @@ class EightQueensUI:
         )
         
         self.root.after(50, self.animate_background)
-
-
-
-
-
-
-
-
-

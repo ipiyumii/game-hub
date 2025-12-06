@@ -1,7 +1,7 @@
-from EightQueensPuzzle.eightqueen_dbUtil import save_sequencial_solutions_eigh_queens
+import time
+from EightQueensPuzzle.eightqueen_dbUtil import save_program_solutions
 
 def solve_eight_queens_sequential(N=8):
-    solutions = []
 
     def is_safe(current_solution, row, col):
         r = 0
@@ -21,14 +21,11 @@ def solve_eight_queens_sequential(N=8):
     # recursive function
     def checkQueenPosition(current_solution, row):
         if row == N:
-
-            solutions = [current_solution]  
-            return [current_solution]  
+            return [current_solution]
 
         all_solutions = []
-     
-        col_list = [0,1,2,3,4,5,6,7]
-        for col in col_list:
+
+        for col in range(N):
             if is_safe(current_solution, row, col):
                 new_solution = current_solution + [col]
                 result = checkQueenPosition(new_solution, row + 1)
@@ -37,23 +34,24 @@ def solve_eight_queens_sequential(N=8):
                 while temp_index < len(result):
                     all_solutions = all_solutions + [result[temp_index]]
                     temp_index = temp_index + 1
+
         return all_solutions
 
     ##starting point
     solutions = checkQueenPosition([], 0)
     return solutions
 
-
-def findMaxSolutionsSequantial():
-
+def find_max_solutions_sequantial():
+    start_time = time.time()
     all_solutions = solve_eight_queens_sequential()
+    end_time = time.time()
+    time_taken = end_time - start_time
 
-    save_sequencial_solutions_eigh_queens(all_solutions, N=8)
-    
+    save_program_solutions(all_solutions, N=8, program_type = "sequential", time_took = time_taken)
+
     print("Total number of solutions:", len(all_solutions))
 
     i = 0
     while i < 92 and i < len(all_solutions):
         print("Solution", i+1, ":", all_solutions[i])
         i = i + 1
-
