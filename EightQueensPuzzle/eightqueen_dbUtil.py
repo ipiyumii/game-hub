@@ -61,9 +61,9 @@ def fetch_found_solutions():
 
 def save_found_solution(player_name, player_solution):
     db = firestore.client()
-    coll = db.collection("eightqueens").document("player_solutions").collection("N8")
+    collection = db.collection("eightqueens").document("player_solutions").collection("N8")
 
-    coll.add({
+    collection.add({
         "player": player_name,
         "solution": player_solution
     })

@@ -1,5 +1,7 @@
 from tkinter import messagebox
 from firebase_admin import firestore
+
+from EightQueensPuzzle.user_alert import show_toast, show_popup
 from dbUtil import delete_collection
 from eightqueen_dbUtil import fetch_all_solutions, fetch_found_solutions, save_found_solution
 
@@ -11,9 +13,7 @@ def check_solution(self):
         return "Incorrect solution!"
 
         #  compare  with saved solutions in fb
-    result = validate_player_solution(player_solution, self.player_name)
-
-    messagebox.showinfo("Result", result)
+    validate_player_solution(player_solution, self.player_name)
 
 def validate_player_solution(player_solution, player_name):
     try:
@@ -35,7 +35,8 @@ def validate_player_solution(player_solution, player_name):
 
     #not a valid solution
     if not is_correct:
-        return "Incorrect solution!"
+        show_toast("Result", "Incorrect solution!")
+        return
 
     #check if solution is already found
     already_found = False
@@ -47,21 +48,25 @@ def validate_player_solution(player_solution, player_name):
         j += 1
 
     if already_found:
-        messagebox.showinfo("Info", "This solution was already found by someone else!")
-        return "This solution was already found by someone else!"
+        show_popup("Info", "This solution was already found by someone else!")
+        return
+    else:
+        #save new correct solution
+        found_solutions.append({
+            "player": player_name,
+            "solution": player_solution
+        })
 
-    #save new correct solution
-    found_solutions.append({
-        "player": player_name,
-        "solution": player_solution
-    })
+        try:
+            save_found_solution(player_name, player_solution)
+        except Exception as e:
+            print(f"Error saving found solution to database: {e}")
 
-    save_found_solution(player_name, player_solution)
-
+    #clear flag
     if len(found_solutions) == len(fetched_solutions) - 1:
         clear_found_solutions()
-
-    return f"Congratulations {player_name}! You found a new solution!"
+    show_popup(already_found,f"Congratulations {player_name}! \n You found a new solution!")
+    return
 
 #clear the flag (db)
 def clear_found_solutions():
