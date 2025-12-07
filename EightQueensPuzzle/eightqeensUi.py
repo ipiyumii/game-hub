@@ -114,7 +114,7 @@ class EightQueensUI:
             if len(self.queens) < 8:
                 self.queens.add((row, col))
             else:
-                messagebox.showinfo("Limit", "You can only place 8 queens.")
+                messagebox.showwarning("Limit", "You can only place 8 queens.")
 
         self.draw_board()
 

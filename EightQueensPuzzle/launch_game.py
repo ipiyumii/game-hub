@@ -60,8 +60,7 @@ root.mainloop()
                 f.write(launcher_code)
 
             # Launch the game
-            result = subprocess.run([sys.executable, temp_launcher],
-                                    cwd=game_dir)
+            result = subprocess.run([sys.executable, temp_launcher], cwd=game_dir)
 
             # Clean up temp file
             if os.path.exists(temp_launcher):
