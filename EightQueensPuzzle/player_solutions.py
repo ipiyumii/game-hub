@@ -3,7 +3,11 @@ from firebase_admin import firestore
 
 from EightQueensPuzzle.user_alert import show_toast, show_popup
 from dbUtil import delete_collection
-from eightqueen_dbUtil import fetch_all_solutions, fetch_found_solutions, save_found_solution
+from EightQueensPuzzle.eightqueen_dbUtil import (
+    fetch_all_solutions,
+    fetch_found_solutions,
+    save_found_solution
+)
 
 def check_solution(self):
     player_solution = self.store_entered_solution()
