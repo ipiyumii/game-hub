@@ -2,6 +2,7 @@ from tkinter import messagebox
 import math
 
 from EightQueensPuzzle.player_solutions import check_solution
+from EightQueensPuzzle.eightqueen_dbUtil import fetch_all_solutions
 
 
 class EightQueensUI:
@@ -79,6 +80,9 @@ class EightQueensUI:
 
         # Draw initial board
         self.draw_board()
+        
+        # show game instructions
+        self.show_total_solutions_info()
 
     def draw_board(self):
         self.canvas.delete("all")
@@ -213,3 +217,23 @@ class EightQueensUI:
         for (row, col) in self.queens:
             solution[row] = col
         return solution
+    
+    def show_total_solutions_info(self):
+        try:
+            solutions = fetch_all_solutions()
+            total_solutions = len(solutions)
+            message = (
+                f"Eight Queens Puzzle Challenge\n\n"
+                f"There are {total_solutions} valid solutions.\n\n"
+                f"Your task: Find all solutions where no two queens\n"
+                f"attack each other (horizontally, vertically, or diagonally).\n\n"
+                f"Good luck!"
+            )
+            messagebox.showinfo("How to play ", message)
+        except Exception as e:
+            print(f"Error fetching total solutions: {e}")
+            messagebox.showwarning(
+                "Warning",
+                "There is a problem. Close and retry!.\n"
+                f"Error: {str(e)}"
+            )
