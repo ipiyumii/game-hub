@@ -75,7 +75,7 @@ class ReportGenerator:
                          f'{height:.2f} ms', ha='center', va='bottom')
 
         plt.tight_layout()
-        plt.savefig('Traffic Simulation/algorithm_performance_report.png', dpi=300, bbox_inches='tight')
+        plt.savefig('algorithm_performance_report.png', dpi=300, bbox_inches='tight')
         plt.show()
 
     def create_complexity_chart(self):
@@ -92,7 +92,7 @@ class ReportGenerator:
         plt.ylabel('Operations')
         plt.legend()
         plt.grid(True, alpha=0.3)
-        plt.savefig('Traffic Simulation/complexity_analysis.png', dpi=300, bbox_inches='tight')
+        plt.savefig('complexity_analysis.png', dpi=300, bbox_inches='tight')
 
     def _show_no_data_message(self, message="No performance data available yet!"):
         """Show a message when no data is available"""

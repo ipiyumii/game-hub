@@ -66,7 +66,7 @@ class PerformanceTracker:
         plt.axhline(y=avg_ek, color='blue', linestyle='--', alpha=0.7, label=f'EK Avg: {avg_ek:.2f}ms')
 
         plt.tight_layout()
-        plt.savefig('Traffic Simulation/algorithm_performance.png', dpi=300, bbox_inches='tight')
+        plt.savefig('algorithm_performance.png', dpi=300, bbox_inches='tight')
         plt.close()
 
         print(f" Performance chart generated: 'algorithm_performance.png' ({len(self.performance_data)} rounds)")
