@@ -39,9 +39,9 @@ class GameStyles:
         'snake_eye': '#FFD700',
         
         # Ladder colors - darker wooden
-        'ladder_rail': '#5D4037',      # Darker brown
-        'ladder_rung': '#6D4C41',      # Darker brown-grey
-        'ladder_shadow': '#3E2723',    # Very dark brown
+        'ladder_rail': '#5D4037',
+        'ladder_rung': '#6D4C41',
+        'ladder_shadow': '#3E2723',
         
         # Border colors
         'border_light': '#34495e',
