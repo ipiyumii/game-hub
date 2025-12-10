@@ -4,10 +4,11 @@ import sys
 
 import pygame
 import math
-# from EightQueensPuzzle.launch_game import launch_eight_queens
+from typing import Optional
 
 try:
     from Dashboard.ui.name_input_popup import NameInputPopup, Colors
+
 
 except ImportError as e:
     print(f"Import error: {e}")
