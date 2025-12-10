@@ -68,12 +68,6 @@ def main():
         input("Press Enter to exit...")  # Keep console open to see error
         return 1
 
-def run_traffic_simulation():
-    return main()
-
 # Prevent direct execution
 if __name__ == "__main__":
-    print("Run this game through the Mind Arena Dashboard.")
-
-
-
+    main()
