@@ -1,22 +1,8 @@
-"""
-Board Generator - Creates random snakes and ladders for NxN board
-Each game generates NEW random positions for snakes and ladders
-"""
 import random
-
 class BoardGenerator:
-    """Generates random snake and ladder positions"""
     
     def __init__(self, board_size):
-        """
-        Initialize board generator
         
-        Args:
-            board_size: N for NxN board (must be 6-12)
-        
-        Raises:
-            ValueError: If board_size is not between 6 and 12
-        """
         if not isinstance(board_size, int):
             raise ValueError("Board size must be an integer")
         
@@ -35,7 +21,7 @@ class BoardGenerator:
         self._generate_board()
     
     def _generate_board(self):
-        """Generate random snakes and ladders - NEW positions each game"""
+
         print(f"\n🎲 Generating NEW random board...")
         
         # Available cells (exclude cell 1 and last cell)
@@ -52,14 +38,14 @@ class BoardGenerator:
         print(f"   Ladders will take you UP ⬆️")
     
     def _generate_ladders(self, available_cells):
-        """Generate ladder positions"""
+
         ladder_count = 0
         attempts = 0
         max_attempts = 1000
         
         while ladder_count < self.num_ladders and attempts < max_attempts:
             attempts += 1
-            
+
             # Ladder base should be in lower/middle portion of board
             max_base = self.total_cells - (self.board_size * 2)
             possible_bases = [c for c in available_cells if c <= max_base]
@@ -92,7 +78,7 @@ class BoardGenerator:
             ladder_count += 1
     
     def _generate_snakes(self, available_cells):
-        """Generate snake positions"""
+
         snake_count = 0
         attempts = 0
         max_attempts = 1000
@@ -132,19 +118,7 @@ class BoardGenerator:
             snake_count += 1
     
     def get_position_coordinates(self, cell_num):
-        """
-        Convert cell number to (row, col) coordinates
-        Board numbering: bottom-left to top-right, serpentine pattern
-        
-        Args:
-            cell_num: Cell number (1 to N²)
-        
-        Returns:
-            tuple: (row, col) - 0-based indices
-        
-        Raises:
-            ValueError: If cell_num is out of range
-        """
+       
         if cell_num < 1 or cell_num > self.total_cells:
             raise ValueError(f"Cell number must be between 1 and {self.total_cells}")
         
@@ -222,7 +196,7 @@ class BoardGenerator:
         }
     
     def get_board_info(self):
-        """Get complete board information"""
+        
         return {
             'board_size': self.board_size,
             'total_cells': self.total_cells,

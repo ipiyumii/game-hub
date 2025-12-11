@@ -5,35 +5,35 @@ SNAKE AND LADDER GAME - 15 ROUND PERFORMANCE STATISTICS
 
 PREDICTION ACCURACY
 ----------------------------------------------------------------------
-Total Rounds:           15
-Correct Predictions:    7 (46.7%)
-Incorrect Predictions:  8 (53.3%)
+Total Rounds:           16
+Correct Predictions:    5 (31.2%)
+Incorrect Predictions:  11 (68.8%)
 
 PREDICTION DIFFERENCE (Moves)
 ----------------------------------------------------------------------
-Average Difference:     1.27 moves
+Average Difference:     2.00 moves
 Min Difference:         0 moves
-Max Difference:         3 moves
+Max Difference:         5 moves
 
 ALGORITHM PERFORMANCE (Execution Time)
 ----------------------------------------------------------------------
-BFS Average Time:       0.1386 ms
-Dijkstra Avg Time:      0.2191 ms
+BFS Average Time:       0.3795 ms
+Dijkstra Avg Time:      0.5501 ms
 Faster Algorithm:       BFS
 
 GAME STATISTICS
 ----------------------------------------------------------------------
-Average Dice Rolls:     26.33 rolls
+Average Dice Rolls:     23.44 rolls
 Min Dice Rolls:         4 rolls
-Max Dice Rolls:         66 rolls
+Max Dice Rolls:         75 rolls
 
 BOARD STATISTICS
 ----------------------------------------------------------------------
 Most Used Board Size:   6×6 (36 cells)
-Board Sizes Used:       6, 7, 8
+Board Sizes Used:       6, 7, 8, 9, 11
 
 REPORT GENERATED
 ----------------------------------------------------------------------
-Date & Time: 2025-12-10 21:35:04
-Location:    C:\Users\zeena\OneDrive\Desktop\game-hub\Snake and Ladder\game_reports\statistics_20251210_213504.txt
+Date & Time: 2025-12-12 03:56:54
+Location:    C:\Users\zeena\OneDrive\Desktop\game-hub\Snake and Ladder\game_reports\statistics_20251212_035654.txt
 ======================================================================

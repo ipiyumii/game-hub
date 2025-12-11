@@ -1,15 +1,12 @@
-"""
-Answer Choice Screen - FINAL with improved spacing (info box moved closer)
-"""
 import tkinter as tk
 from styles import GameStyles
 import random
 
 class AnswerChoiceScreen:
-    """Screen where player predicts minimum moves before playing"""
+    
     
     def __init__(self, root, game_state, correct_answer, on_choice_callback):
-        """Initialize answer choice screen"""
+       
         self.root = root
         self.game_state = game_state
         self.correct_answer = correct_answer
@@ -20,7 +17,7 @@ class AnswerChoiceScreen:
         self.choices = self._generate_choices()
     
     def _generate_choices(self):
-        """Generate 3 answer choices"""
+        
         choices = [self.correct_answer]
         
         offset1 = random.randint(2, max(3, self.correct_answer // 3))
@@ -40,14 +37,14 @@ class AnswerChoiceScreen:
         return sorted(choices)
     
     def show(self):
-        """Display the answer choice screen"""
+        
         for widget in self.root.winfo_children():
             widget.destroy()
         
         self.frame = tk.Frame(self.root, bg=self.styles.get_color('bg_main'))
         self.frame.pack(fill=tk.BOTH, expand=True)
         
-        # Top: centered emoji + title
+       
         top = tk.Frame(self.frame, bg=self.styles.get_color('bg_main'))
         top.pack(fill=tk.X, pady=(20, 8))
         

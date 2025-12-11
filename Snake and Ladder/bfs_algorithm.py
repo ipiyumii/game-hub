@@ -10,7 +10,7 @@ class BFSAlgorithm:
     
     def __init__(self, board):
         """
-        Initialize BFS algorithm
+        Initialize BFS algorithm  
         
         Args:
             board: BoardGenerator instance with snakes and ladders

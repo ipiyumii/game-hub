@@ -1,6 +1,6 @@
 """
 Report Generator - Generates performance reports after 15 rounds
-Creates JSON and CSV files
+Creates JSON, CSV, TXT files and PNG charts
 """
 import os
 import json
@@ -8,6 +8,9 @@ import csv
 from datetime import datetime
 from pathlib import Path
 
+import matplotlib
+matplotlib.use('Agg')  # Use non-GUI backend
+import matplotlib.pyplot as plt
 
 class ReportGenerator:
     """Generates game reports after 15 rounds"""
@@ -93,6 +96,12 @@ class ReportGenerator:
             
             # Generate statistics file
             self._generate_statistics()
+            
+            # Generate Algorithm Performance Chart (PNG)
+            self._generate_algorithm_performance_chart()
+            
+            # Generate Performance Comparison Chart (PNG)
+            self._generate_performance_comparison_chart()
             
             print(f"\n✅ ALL REPORTS GENERATED SUCCESSFULLY!")
             print(f"   Location: {self.report_dir}/")
@@ -202,7 +211,7 @@ Max Dice Rolls:         {summary['max_dice_rolls']} rolls
 BOARD STATISTICS
 {'-'*70}
 Most Used Board Size:   {summary['most_used_board_size']}×{summary['most_used_board_size']} ({summary['most_used_board_size']**2} cells)
-Board Sizes Used:       {', '.join(map(str, sorted(set(r['board_size'] for r in self.rounds))))}
+Board Sizes Used:       {', '.join(str(x) for x in sorted(set(r['board_size'] for r in self.rounds)))}
 
 REPORT GENERATED
 {'-'*70}
@@ -219,6 +228,152 @@ Location:    {os.path.abspath(filename)}
         
         except Exception as e:
             print(f"   ❌ Statistics Error: {e}")
+    
+    def _generate_algorithm_performance_chart(self):
+        """Generate Algorithm Performance Chart (BFS vs Dijkstra execution times)"""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"{self.report_dir}/algorithm_performance_{timestamp}.png"
+        
+        try:
+            # Extract data
+            rounds_num = [r['round_number'] for r in self.rounds]
+            bfs_times = [r['bfs_time_ms'] for r in self.rounds]
+            dijkstra_times = [r['dijkstra_time_ms'] for r in self.rounds]
+            
+            # Create figure and axis
+            fig, ax = plt.subplots(figsize=(12, 6))
+            fig.patch.set_facecolor('#1a1a2e')
+            ax.set_facecolor('#16213e')
+            
+            # Plot lines
+            ax.plot(rounds_num, bfs_times, marker='o', linestyle='-', linewidth=2.5, 
+                   markersize=8, label='BFS Algorithm', color='#2ecc71')
+            ax.plot(rounds_num, dijkstra_times, marker='s', linestyle='-', linewidth=2.5, 
+                   markersize=8, label='Dijkstra Algorithm', color='#3498db')
+            
+            # Customize chart
+            ax.set_xlabel('Game Round', fontsize=12, color='#ecf0f1', fontweight='bold')
+            ax.set_ylabel('Execution Time (milliseconds)', fontsize=12, color='#ecf0f1', fontweight='bold')
+            ax.set_title('Algorithm Performance Comparison\nExecution Time per Round', 
+                        fontsize=14, color='#ecf0f1', fontweight='bold', pad=20)
+            
+            # Customize grid
+            ax.grid(True, alpha=0.2, color='#34495e', linestyle='--')
+            ax.set_axisbelow(True)
+            
+            # Customize ticks
+            ax.tick_params(colors='#ecf0f1', labelsize=10)
+            ax.spines['bottom'].set_color('#34495e')
+            ax.spines['left'].set_color('#34495e')
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            
+            # Add legend
+            legend = ax.legend(loc='upper left', fontsize=11, framealpha=0.95, 
+                             facecolor='#16213e', edgecolor='#34495e')
+            for text in legend.get_texts():
+                text.set_color('#ecf0f1')
+            
+            # Add value labels on points
+            for i, (r, b, d) in enumerate(zip(rounds_num, bfs_times, dijkstra_times)):
+                ax.text(r, b, f'{b:.2f}', ha='center', va='bottom', fontsize=8, color='#2ecc71')
+                ax.text(r, d, f'{d:.2f}', ha='center', va='bottom', fontsize=8, color='#3498db')
+            
+            plt.tight_layout()
+            plt.savefig(filename, dpi=300, facecolor='#1a1a2e', edgecolor='none')
+            plt.close()
+            
+            print(f"   ✅ Algorithm Performance Chart: {filename}")
+            
+        except Exception as e:
+            print(f"   ❌ Algorithm Performance Chart Error: {e}")
+    
+    def _generate_performance_comparison_chart(self):
+        """Generate Performance Comparison Chart (Prediction Accuracy & Algorithm Speed)"""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"{self.report_dir}/performance_comparison_{timestamp}.png"
+        
+        try:
+            # Extract data
+            summary = self._calculate_summary()
+            
+            # Create figure with subplots
+            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+            fig.patch.set_facecolor('#1a1a2e')
+            
+            # ===== LEFT: Prediction Accuracy Bar Chart =====
+            ax1.set_facecolor('#16213e')
+            
+            accuracy_data = [summary['correct_predictions'], summary['incorrect_predictions']]
+            accuracy_labels = ['Correct\nPredictions', 'Incorrect\nPredictions']
+            accuracy_colors = ['#2ecc71', '#e74c3c']
+            
+            bars1 = ax1.bar(accuracy_labels, accuracy_data, color=accuracy_colors, 
+                           edgecolor='#ecf0f1', linewidth=2, width=0.6)
+            
+            ax1.set_ylabel('Count', fontsize=12, color='#ecf0f1', fontweight='bold')
+            ax1.set_title('Prediction Accuracy\n15 Rounds', fontsize=12, color='#ecf0f1', 
+                         fontweight='bold', pad=15)
+            ax1.set_ylim(0, max(accuracy_data) + 3)
+            
+            # Add value labels on bars
+            for bar, val in zip(bars1, accuracy_data):
+                height = bar.get_height()
+                ax1.text(bar.get_x() + bar.get_width()/2., height,
+                        f'{int(val)}\n({val/summary["total_rounds"]*100:.1f}%)',
+                        ha='center', va='bottom', fontsize=11, color='#ecf0f1', fontweight='bold')
+            
+            ax1.tick_params(colors='#ecf0f1', labelsize=10)
+            ax1.spines['bottom'].set_color('#34495e')
+            ax1.spines['left'].set_color('#34495e')
+            ax1.spines['top'].set_visible(False)
+            ax1.spines['right'].set_visible(False)
+            ax1.grid(True, axis='y', alpha=0.2, color='#34495e', linestyle='--')
+            ax1.set_axisbelow(True)
+            
+            # ===== RIGHT: Algorithm Speed Comparison =====
+            ax2.set_facecolor('#16213e')
+            
+            algo_names = ['BFS', 'Dijkstra']
+            algo_times = [summary['avg_bfs_time'], summary['avg_dijkstra_time']]
+            algo_colors = ['#2ecc71', '#3498db']
+            
+            bars2 = ax2.bar(algo_names, algo_times, color=algo_colors, 
+                           edgecolor='#ecf0f1', linewidth=2, width=0.5)
+            
+            ax2.set_ylabel('Average Time (milliseconds)', fontsize=12, color='#ecf0f1', fontweight='bold')
+            ax2.set_title('Algorithm Speed Comparison\nAverage Execution Time', fontsize=12, 
+                         color='#ecf0f1', fontweight='bold', pad=15)
+            ax2.set_ylim(0, max(algo_times) * 1.2)
+            
+            # Add value labels on bars
+            for bar, val in zip(bars2, algo_times):
+                height = bar.get_height()
+                ax2.text(bar.get_x() + bar.get_width()/2., height,
+                        f'{val:.4f} ms',
+                        ha='center', va='bottom', fontsize=11, color='#ecf0f1', fontweight='bold')
+            
+            ax2.tick_params(colors='#ecf0f1', labelsize=10)
+            ax2.spines['bottom'].set_color('#34495e')
+            ax2.spines['left'].set_color('#34495e')
+            ax2.spines['top'].set_visible(False)
+            ax2.spines['right'].set_visible(False)
+            ax2.grid(True, axis='y', alpha=0.2, color='#34495e', linestyle='--')
+            ax2.set_axisbelow(True)
+            
+            # Add faster algorithm indicator
+            faster = 'BFS' if summary['avg_bfs_time'] < summary['avg_dijkstra_time'] else 'Dijkstra'
+            fig.suptitle(f'⚡ Faster Algorithm: {faster}', fontsize=10, color='#f39c12', 
+                        fontweight='bold', y=0.98)
+            
+            plt.tight_layout()
+            plt.savefig(filename, dpi=300, facecolor='#1a1a2e', edgecolor='none')
+            plt.close()
+            
+            print(f"   ✅ Performance Comparison Chart: {filename}")
+            
+        except Exception as e:
+            print(f"   ❌ Performance Comparison Chart Error: {e}")
     
     def _calculate_summary(self):
         """Calculate summary statistics"""
