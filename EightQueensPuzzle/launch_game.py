@@ -7,8 +7,8 @@ from EightQueensPuzzle.Solutions.sequential import find_max_solutions_sequantial
 from EightQueensPuzzle.Solutions.threaded import find_max_solutions_threaded
 
 def launch_eight_queens(self):
-    find_max_solutions_sequantial()
-    find_max_solutions_threaded()
+    find_max_solutions_sequantial(player_name=self.player_name)
+    find_max_solutions_threaded(player_name=self.player_name)
 
     try:
         # Hide the pygame window temporarily

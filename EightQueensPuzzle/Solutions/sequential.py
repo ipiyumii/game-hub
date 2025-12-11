@@ -41,14 +41,14 @@ def solve_eight_queens_sequential(N=8):
     solutions = checkQueenPosition([], 0)
     return solutions
 
-def find_max_solutions_sequantial():
+def find_max_solutions_sequantial(player_name=None):
     start_time = time.time()
     all_solutions = solve_eight_queens_sequential()
     end_time = time.time()
     time_taken = end_time - start_time
 
     try:
-        save_program_solutions(all_solutions, N=8, program_type = "sequential", time_took = time_taken)
+        save_program_solutions(all_solutions, N=8, program_type = "sequential", time_took = time_taken, player_name = player_name)
     except Exception as e:
         print(f"Error saving solutions to database: {e}")
 
