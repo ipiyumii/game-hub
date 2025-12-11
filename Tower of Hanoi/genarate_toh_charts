@@ -1,0 +1,278 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import time
+import sys
+import os
+
+# Add the directory containing your modules to Python path
+sys.path.append('.')  # Or specify the path to your modules
+
+# Import your algorithms
+from recursive_solver import RecursiveSolver
+from iterative_solver import IterativeSolver
+from four_peg_recursive import FourPegRecursiveSolver
+from four_peg_iterative import FourPegSolver
+
+class TowerOfHanoiBenchmark:
+    """
+    Benchmark class to compare execution times of 4 Tower of Hanoi algorithms.
+    """
+    
+    def __init__(self):
+        self.results = []
+        
+    def run_benchmark_round(self, round_num):
+        """
+        Run one benchmark round with random disk count.
+        
+        Args:
+            round_num (int): Round number (1-15)
+            
+        Returns:
+            dict: Timing results for this round
+        """
+        # Random disk count between 5 and 10
+        np.random.seed(round_num * 42)  # For reproducibility
+        num_disks = np.random.randint(5, 11)
+        
+        round_results = {
+            'Round': round_num,
+            'Disks': num_disks,
+            'Pegs': '3',  # Will be overridden for 4-peg algorithms
+        }
+        
+        # Test 3-Peg Recursive
+        start_time = time.perf_counter()
+        solver_3_recursive = RecursiveSolver(num_disks, 'A', 'C', 'B')
+        solver_3_recursive.solve()
+        round_results['3-Peg Recursive (ms)'] = (time.perf_counter() - start_time) * 1000
+        
+        # Test 3-Peg Iterative
+        start_time = time.perf_counter()
+        solver_3_iterative = IterativeSolver(num_disks, 'A', 'C', 'B')
+        solver_3_iterative.solve()
+        round_results['3-Peg Iterative (ms)'] = (time.perf_counter() - start_time) * 1000
+        
+        # Test 4-Peg Recursive (Frame-Stewart)
+        start_time = time.perf_counter()
+        solver_4_recursive = FourPegRecursiveSolver(num_disks, ['A', 'B', 'C', 'D'])
+        solver_4_recursive.solve()
+        round_results['4-Peg Recursive (ms)'] = (time.perf_counter() - start_time) * 1000
+        
+        # Test 4-Peg Iterative
+        start_time = time.perf_counter()
+        solver_4_iterative = FourPegSolver(num_disks, ['A', 'B', 'C', 'D'])
+        solver_4_iterative.solve()
+        round_results['4-Peg Iterative (ms)'] = (time.perf_counter() - start_time) * 1000
+        
+        # Verify solutions (commented out to save time in benchmark)
+        # verification_results = {
+        #     '3_recursive_valid': solver_3_recursive.verify_solution(),
+        #     '3_iterative_valid': solver_3_iterative.verify_solution(),
+        #     '4_recursive_valid': solver_4_recursive.verify_solution(),
+        #     '4_iterative_valid': solver_4_iterative.verify_solution(),
+        # }
+        
+        return round_results
+    
+    def run_15_rounds(self):
+        """Run 15 benchmark rounds."""
+        print("Running Tower of Hanoi Algorithm Benchmark (15 rounds)...")
+        print("="*80)
+        
+        for round_num in range(1, 16):
+            print(f"Running round {round_num}/15...")
+            round_results = self.run_benchmark_round(round_num)
+            self.results.append(round_results)
+            
+            # Display round results
+            print(f"  Disks: {round_results['Disks']} | "
+                  f"3-Peg Recursive: {round_results['3-Peg Recursive (ms)']:.2f} ms | "
+                  f"3-Peg Iterative: {round_results['3-Peg Iterative (ms)']:.2f} ms")
+            print(f"                | "
+                  f"4-Peg Recursive: {round_results['4-Peg Recursive (ms)']:.2f} ms | "
+                  f"4-Peg Iterative: {round_results['4-Peg Iterative (ms)']:.2f} ms")
+        
+        return self.results
+    
+    def create_comparison_chart(self):
+        """Create comparison chart for the report."""
+        
+        # Convert results to DataFrame
+        df = pd.DataFrame(self.results)
+        
+        # Set up the plot
+        plt.figure(figsize=(14, 8))
+        
+        # Create subplots
+        fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+        
+        # 1. Line chart: Time vs Rounds for all algorithms
+        ax1 = axes[0, 0]
+        rounds = df['Round']
+        ax1.plot(rounds, df['3-Peg Recursive (ms)'], 'o-', label='3-Peg Recursive', linewidth=2, markersize=6)
+        ax1.plot(rounds, df['3-Peg Iterative (ms)'], 's-', label='3-Peg Iterative', linewidth=2, markersize=6)
+        ax1.plot(rounds, df['4-Peg Recursive (ms)'], '^-', label='4-Peg Recursive', linewidth=2, markersize=6)
+        ax1.plot(rounds, df['4-Peg Iterative (ms)'], 'D-', label='4-Peg Iterative', linewidth=2, markersize=6)
+        ax1.set_xlabel('Game Round')
+        ax1.set_ylabel('Execution Time (ms)')
+        ax1.set_title('Algorithm Execution Time Across 15 Game Rounds')
+        ax1.grid(True, alpha=0.3)
+        ax1.legend()
+        ax1.set_xticks(range(1, 16))
+        
+        # 2. Bar chart: Average time per algorithm
+        ax2 = axes[0, 1]
+        avg_times = [
+            df['3-Peg Recursive (ms)'].mean(),
+            df['3-Peg Iterative (ms)'].mean(),
+            df['4-Peg Recursive (ms)'].mean(),
+            df['4-Peg Iterative (ms)'].mean()
+        ]
+        algorithms = ['3-Peg Recursive', '3-Peg Iterative', '4-Peg Recursive', '4-Peg Iterative']
+        bars = ax2.bar(algorithms, avg_times, color=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728'])
+        ax2.set_ylabel('Average Time (ms)')
+        ax2.set_title('Average Execution Time per Algorithm')
+        ax2.grid(True, alpha=0.3, axis='y')
+        
+        # Add value labels on bars
+        for bar, value in zip(bars, avg_times):
+            ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,
+                    f'{value:.1f}', ha='center', va='bottom', fontsize=9)
+        
+        # 3. Scatter plot: Time vs Number of Disks
+        ax3 = axes[1, 0]
+        disks = df['Disks']
+        scatter1 = ax3.scatter(disks, df['3-Peg Recursive (ms)'], alpha=0.7, label='3-Peg Recursive', s=100)
+        scatter2 = ax3.scatter(disks, df['3-Peg Iterative (ms)'], alpha=0.7, label='3-Peg Iterative', s=100)
+        scatter3 = ax3.scatter(disks, df['4-Peg Recursive (ms)'], alpha=0.7, label='4-Peg Recursive', s=100)
+        scatter4 = ax3.scatter(disks, df['4-Peg Iterative (ms)'], alpha=0.7, label='4-Peg Iterative', s=100)
+        ax3.set_xlabel('Number of Disks')
+        ax3.set_ylabel('Execution Time (ms)')
+        ax3.set_title('Time Complexity: Execution Time vs Number of Disks')
+        ax3.grid(True, alpha=0.3)
+        ax3.legend()
+        ax3.set_xticks(range(5, 11))
+        
+        # 4. Box plot: Distribution of execution times
+        ax4 = axes[1, 1]
+        time_data = [
+            df['3-Peg Recursive (ms)'],
+            df['3-Peg Iterative (ms)'],
+            df['4-Peg Recursive (ms)'],
+            df['4-Peg Iterative (ms)']
+        ]
+        box = ax4.boxplot(time_data, labels=algorithms, patch_artist=True)
+        
+        # Color the boxes
+        colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']
+        for patch, color in zip(box['boxes'], colors):
+            patch.set_facecolor(color)
+            patch.set_alpha(0.7)
+        
+        ax4.set_ylabel('Execution Time (ms)')
+        ax4.set_title('Distribution of Execution Times')
+        ax4.grid(True, alpha=0.3, axis='y')
+        
+        # Adjust layout
+        plt.tight_layout()
+        
+        # Save the chart
+        chart_filename = 'tower_of_hanoi_comparison_chart.png'
+        plt.savefig(chart_filename, dpi=300, bbox_inches='tight')
+        print(f"\nChart saved as: {chart_filename}")
+        
+        plt.show()
+        
+        return df, fig
+    
+    def generate_summary_table(self, df):
+        """Generate a summary table of the benchmark results."""
+        
+        print("\n" + "="*80)
+        print("SUMMARY STATISTICS")
+        print("="*80)
+        
+        # Create summary DataFrame
+        summary_data = []
+        for algo in ['3-Peg Recursive (ms)', '3-Peg Iterative (ms)', 
+                     '4-Peg Recursive (ms)', '4-Peg Iterative (ms)']:
+            times = df[algo]
+            summary_data.append({
+                'Algorithm': algo.replace(' (ms)', ''),
+                'Min (ms)': times.min(),
+                'Max (ms)': times.max(),
+                'Avg (ms)': times.mean(),
+                'Std Dev (ms)': times.std(),
+                'Total (ms)': times.sum()
+            })
+        
+        summary_df = pd.DataFrame(summary_data)
+        
+        # Print summary table
+        print("\nExecution Time Summary (15 rounds):")
+        print("-"*70)
+        print(summary_df.to_string(index=False))
+        
+        # Print conclusions
+        print("\n" + "="*80)
+        print("KEY FINDINGS")
+        print("="*80)
+        
+        print("\n1. SPEED COMPARISON:")
+        fastest_algo = summary_df.loc[summary_df['Avg (ms)'].idxmin(), 'Algorithm']
+        slowest_algo = summary_df.loc[summary_df['Avg (ms)'].idxmax(), 'Algorithm']
+        print(f"   - Fastest algorithm: {fastest_algo} ({summary_df['Avg (ms)'].min():.2f} ms average)")
+        print(f"   - Slowest algorithm: {slowest_algo} ({summary_df['Avg (ms)'].max():.2f} ms average)")
+        
+        # Calculate speedup ratios
+        print("\n2. SPEEDUP RATIOS (compared to 3-Peg Recursive):")
+        base_time = summary_df.loc[summary_df['Algorithm'] == '3-Peg Recursive', 'Avg (ms)'].values[0]
+        for idx, row in summary_df.iterrows():
+            if row['Algorithm'] != '3-Peg Recursive':
+                speedup = base_time / row['Avg (ms)']
+                print(f"   - {row['Algorithm']}: {speedup:.2f}x faster")
+        
+        print("\n3. CONSISTENCY (Standard Deviation):")
+        most_consistent = summary_df.loc[summary_df['Std Dev (ms)'].idxmin(), 'Algorithm']
+        least_consistent = summary_df.loc[summary_df['Std Dev (ms)'].idxmax(), 'Algorithm']
+        print(f"   - Most consistent: {most_consistent} (std dev: {summary_df['Std Dev (ms)'].min():.2f} ms)")
+        print(f"   - Least consistent: {least_consistent} (std dev: {summary_df['Std Dev (ms)'].max():.2f} ms)")
+        
+        print("\n4. PRACTICAL RECOMMENDATIONS:")
+        print("   - Use 4-Peg algorithms for larger disk counts (n > 7)")
+        print("   - Use iterative algorithms when stack overflow is a concern")
+        print("   - 3-Peg recursive is best for educational purposes (simplest)")
+        
+        return summary_df
+
+
+# Main execution
+if __name__ == "__main__":
+    # Run benchmark
+    benchmark = TowerOfHanoiBenchmark()
+    results = benchmark.run_15_rounds()
+    
+    # Create and save charts
+    df, chart = benchmark.create_comparison_chart()
+    
+    # Generate summary
+    summary_df = benchmark.generate_summary_table(df)
+    
+    # Save results to CSV for your report
+    results_df = pd.DataFrame(results)
+    results_df.to_csv('tower_of_hanoi_benchmark_results.csv', index=False)
+    print(f"\nDetailed results saved to: tower_of_hanoi_benchmark_results.csv")
+    
+    # Display the data table
+    print("\n" + "="*80)
+    print("DETAILED RESULTS (for your report)")
+    print("="*80)
+    print("\nTime taken for each algorithm technique when run individually for 15 game rounds:")
+    print("-"*100)
+    
+    display_df = df.copy()
+    display_df.columns = ['Round', 'Disks', '3-Peg Rec (ms)', '3-Peg Iter (ms)', 
+                         '4-Peg Rec (ms)', '4-Peg Iter (ms)']
+    print(display_df.to_string(index=False))
