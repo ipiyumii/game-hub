@@ -75,14 +75,14 @@ def solve_eight_queens_threaded(N=8):
 
     return final_solutions
 
-def find_max_solutions_threaded():
+def find_max_solutions_threaded(player_name=None):
     start_time = time.time()
     all_solutions = solve_eight_queens_threaded()
     end_time = time.time() 
     time_taken = end_time - start_time
 
     try:
-        save_program_solutions(all_solutions, N=8, program_type = "threaded", time_took = time_taken)
+        save_program_solutions(all_solutions, N=8, program_type = "threaded", time_took = time_taken, player_name = player_name)
     except Exception as e:
         print(f"Error saving solutions to database: {e}")
 

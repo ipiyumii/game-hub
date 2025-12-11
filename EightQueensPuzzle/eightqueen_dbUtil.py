@@ -10,32 +10,45 @@ if not firebase_admin._apps:
     except Exception as e:
         print(f"Firebase initialization error: {e}")
 
-def save_program_solutions(solutions, N, program_type, time_took=None):
+def save_program_solutions(solutions, N, program_type, time_took=None, player_name=None):
     db = firestore.client()
     all_sols = db.collection("eightqueens").document(f"{program_type}").collection(f"N{N}")
-    time_taken = db.collection("eightqueens").document(f"{program_type}").collection("timeTaken")
-
-    delete_collection(all_sols)
-    delete_collection(time_taken)
-
-    i = 0
-    while i < len(solutions):
-        sol = solutions[i]
-        all_sols.add({
-            "solution": sol,
-            "board_size": N,
-        })
-        i += 1
-
+    
+    # Check if solutions already exist
+    existing_docs = list(all_sols.stream())
+    
+    if not existing_docs:
+        #if no solutions; save
+        for sol in solutions:
+            all_sols.add({
+                "solution": sol,
+                "board_size": N,
+            })
+    else:
+        print(f"Solutions already exist in database. Skipping solution insertion.")
+    
+    # save game round
     if time_took is not None:
-        time_taken.document("time").set({
-            "program": f"{program_type}",
-            "solutions_count": len(solutions),
-            "time_taken": time_took,
-        })
+        save_game_round(program_type, N, player_name, time_took, len(solutions))
 
-    print(f"Saved {len(solutions)} solutions to Firestore.")
-
+def save_game_round(program_type, N, player_name, time_took, solutions_count):
+    db = firestore.client()
+    game_rounds = db.collection("eightqueens").document("game_rounds").collection(f"{program_type}_N{N}")
+    
+    from datetime import datetime
+    
+    # Count existing rounds to generate sequential ID
+    existing_rounds = list(game_rounds.stream())
+    round_number = len(existing_rounds) + 1
+    round_id = f"round{round_number}"
+    
+    game_rounds.document(round_id).set({
+        "program_type": program_type,
+        "player_name": player_name,
+        "time_taken": time_took,
+        "solutions_count": solutions_count,
+    })
+    
 def fetch_all_solutions():
     db = firestore.client()
     solutions_ref = db.collection("eightqueens").document("sequential").collection("N8")
@@ -67,3 +80,4 @@ def save_found_solution(player_name, player_solution):
         "player": player_name,
         "solution": player_solution
     })
+
