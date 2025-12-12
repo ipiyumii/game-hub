@@ -1,8 +1,6 @@
 import firebase_admin
 from firebase_admin import firestore, credentials
 
-from dbUtil import delete_collection
-
 if not firebase_admin._apps:
     try:
         cred = credentials.Certificate("../shared/mind-arena.json")
@@ -27,17 +25,16 @@ def save_program_solutions(solutions, N, program_type, time_took=None, player_na
     else:
         print(f"Solutions already exist in database. Skipping solution insertion.")
     
-    # save game round
+    # save game round with time took
     if time_took is not None:
         save_game_round(program_type, N, player_name, time_took, len(solutions))
-
+        
 def save_game_round(program_type, N, player_name, time_took, solutions_count):
     db = firestore.client()
     game_rounds = db.collection("eightqueens").document("game_rounds").collection(f"{program_type}_N{N}")
     
     from datetime import datetime
     
-    # Count existing rounds to generate sequential ID
     existing_rounds = list(game_rounds.stream())
     round_number = len(existing_rounds) + 1
     round_id = f"round{round_number}"

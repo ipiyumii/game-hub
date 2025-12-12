@@ -1,7 +1,6 @@
 from tkinter import messagebox
 from firebase_admin import firestore
-
-from EightQueensPuzzle.user_alert import show_toast, show_popup
+from EightQueensPuzzle.user_alert import show_toast, show_win_popup
 from dbUtil import delete_collection
 from EightQueensPuzzle.eightqueen_dbUtil import (
     fetch_all_solutions,
@@ -26,7 +25,7 @@ def validate_player_solution(player_solution, player_name):
         #load solved solutions
         found_solutions = fetch_found_solutions()
     except Exception as e:
-        print(f"Error fetching solutions from database player_solutions: {e}")
+        print(f"Error fetching solutions from database  {e}")
 
     #check if solution is in all solutions
     is_correct = False
@@ -52,7 +51,7 @@ def validate_player_solution(player_solution, player_name):
         j += 1
 
     if already_found:
-        show_popup("Info", "This solution was already found by someone else!")
+        messagebox.showwarning("warning", "This solution was already found by someone else!")
         return
     else:
         #save new correct solution
@@ -69,7 +68,7 @@ def validate_player_solution(player_solution, player_name):
     #clear flag
     if len(found_solutions) == len(fetched_solutions) - 1:
         clear_found_solutions()
-    show_popup(already_found,f"Congratulations {player_name}! \n You found a new solution!")
+        show_win_popup()
     return
 
 #clear the flag (db)
