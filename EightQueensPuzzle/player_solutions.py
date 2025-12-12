@@ -68,7 +68,8 @@ def validate_player_solution(player_solution, player_name):
     #clear flag
     if len(found_solutions) == len(fetched_solutions) - 1:
         clear_found_solutions()
-        show_win_popup()
+
+    show_win_popup()
     return
 
 #clear the flag (db)

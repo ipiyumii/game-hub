@@ -59,7 +59,7 @@ def show_win_popup():
     # Message
     msg_label = tk.Label(
         win,
-        text="You found a new solution!",
+        text="You found a new solution! \n Excellent job!",
         font=("Arial", 14, "bold"),
         bg="white"
     )

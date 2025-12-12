@@ -3,7 +3,7 @@ import math
 from EightQueensPuzzle.launch_game import launch_eight_queens
 
 try:
-    from Dashboard.name_input_popup import NameInputPopup, Colors
+    from Dashboard.ui.name_input_popup import NameInputPopup, Colors
 
 except ImportError as e:
     print(f"Import error: {e}")
