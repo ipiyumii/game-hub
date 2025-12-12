@@ -1,18 +1,21 @@
+import os
+import subprocess
+import sys
 import pygame
 import math
-import os
-import sys
-import subprocess
-#from EightQueensPuzzle.launch_game import launch_eight_queens
+from typing import Optional
+
 
 try:
     from Dashboard.ui.name_input_popup import NameInputPopup, Colors
 
+
 except ImportError as e:
     print(f"Import error: {e}")
 
+
 class GameHub:
-    def _init_(self, games=None):
+    def __init__(self, games=None):
         print("Initializing Pygame...")
         # Initialize Pygame
         pygame.init()
@@ -67,7 +70,7 @@ class GameHub:
         start_color = (r1, g1, b1)
         end_color = (r2, g2, b2)
 
-        #Draw gradient
+        # Draw gradient
         for y in range(self.SCREEN_HEIGHT):
             ratio = y / self.SCREEN_HEIGHT
             r = int(start_color[0] * (1 - ratio) + end_color[0] * ratio)
@@ -123,7 +126,7 @@ class GameHub:
 
             for i in range(max_games_to_show):
                 game = self.games[i]
-                game_name = game.get('gameName', game.get('name', f'Game {i+1}'))
+                game_name = game.get('gameName', game.get('name', f'Game {i + 1}'))
                 game_id = game.get('gameId', f'game_{i}')
 
                 if len(game_name) > 30:
@@ -135,7 +138,7 @@ class GameHub:
                 game_rect = game_surface.get_rect(center=(self.SCREEN_WIDTH // 2, start_y + i * 45))
 
                 button_rect = pygame.Rect(game_rect.x - 30, game_rect.y - 12,
-                                        game_rect.width + 60, game_rect.height + 24)
+                                          game_rect.width + 60, game_rect.height + 24)
 
                 # Store button info for click detection
                 self.game_buttons.append({
@@ -167,8 +170,8 @@ class GameHub:
 
                 for j in range(5):
                     inner_rect = pygame.Rect(button_rect.x + j, button_rect.y + j,
-                                           button_rect.width - 2*j, button_rect.height - 2*j)
-                    alpha_color = (*button_color, max(0, 50 - j*10))
+                                             button_rect.width - 2 * j, button_rect.height - 2 * j)
+                    alpha_color = (*button_color, max(0, 50 - j * 10))
                     gradient_surface = pygame.Surface((inner_rect.width, inner_rect.height), pygame.SRCALPHA)
                     gradient_surface.fill(alpha_color)
                     self.screen.blit(gradient_surface, inner_rect)
@@ -183,7 +186,7 @@ class GameHub:
                 self.screen.blit(more_surface, more_rect)
 
             # Instructions
-            instruction_text = f"Have fuuunnnnnnn......!!!!!!"
+            instruction_text = f"Have Fun Playing......!!!!!!"
         else:
             # No games available
             no_games_text = "No games available in the database."
@@ -218,7 +221,6 @@ class GameHub:
                     for button_info in self.game_buttons:
                         if button_info['rect'].collidepoint(mouse_pos):
                             self.launch_game(button_info['game_id'], button_info['game_name'])
-                            print(button_info['game_id'])
                             break
 
             # Handle name popup events
@@ -256,40 +258,70 @@ class GameHub:
         pygame.quit()
 
     def launch_game(self, game_id, game_name):
-        """Handle Eight Queens game with various possible IDs
-        if (game_id == "eight_queens" or
-            "eight queens" in game_name.lower() or
-            "queens" in game_name.lower()):
-            launch_eight_queens(self)
-        elif "Coming Soon" in game_name:
-            print(f"{game_name} is not yet implemented.")
-            # You could show a message on screen here
-        else:
-            print(f"Game {game_name} is not implemented yet.")"""
+        # """Handle Eight Queens game with various possible IDs
+        # if (game_id == "eight_queens" or
+        #         "eight queens" in game_name.lower() or
+        #         "queens" in game_name.lower()):
+        #     launch_eight_queens(self)
+        # elif "Coming Soon" in game_name:
+        #     print(f"{game_name} is not yet implemented.")
+        #     # You could show a message on screen here
+        # else:
+        #     print(f"Game {game_name} is not implemented yet.")"""
 
-        if (
-                game_id == "snake_and_ladder"
-                or "snake" in game_name.lower()
-                or "ladder" in game_name.lower()
-        ):
+        # if (game_id == "traffic_simulation" or
+        #         "traffic" in game_name.lower() or
+        #         "simulation" in game_name.lower()):
+        #     try:
+        #         print(f"Launching Traffic Simulation: {game_name}...")
+        #         base_path = os.path.dirname(os.path.dirname(os.path.abspath(_file_)))
+        #         traffic_game_path = os.path.join(base_path, "Traffic Simulation", "traffic_app.py")
+        #         print("Running Traffic Simulation from:", traffic_game_path)
+        #         subprocess.Popen([sys.executable, traffic_game_path])
+        #     except Exception as e:
+        #         print(f"Failed to launch Traffic Simulation: {e}")
+        #     return
+        # print(f"Game '{game_name}' is not implemented or recognized.")
+
+             # TOWER OF HANOI - SAME PATTERN
+        if (game_id == "tower_of_hanoi" or
+              "tower" in game_name.lower() or
+              "hanoi" in game_name.lower()):
             try:
-                print(f"Launching Snake & Ladder Game: {game_name}...")
-                # Get project root directory
+                print(f"Launching Tower of Hanoi: {game_name}...")
                 base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-                # Path to your Snake & Ladder main.py
-                snake_game_path = os.path.join(base_path, "Snake and Ladder", "snake_and_ladder_main.py")
-                print("Running Snake & Ladder from:", snake_game_path)
-
-                # Ensure the file exists
-                if not os.path.exists(snake_game_path):
-                    raise FileNotFoundError(f"Snake & Ladder main.py not found at: {snake_game_path}")
-                # Launch using the same Python interpreter
-                subprocess.Popen([sys.executable, snake_game_path])
-
+                tower_hanoi_path = os.path.join(base_path, "Tower of Hanoi", "tower_of_hanoi_ui.py")
+                print("Running Tower of Hanoi from:", tower_hanoi_path)
+                subprocess.Popen([sys.executable, tower_hanoi_path])
             except Exception as e:
-                print(f"Failed to launch Snake & Ladder: {e}")
-            import traceback
-            traceback.print_exc()
+                print(f"Failed to launch Tower of Hanoi: {e}")
             return
 
+        # if (game_id == "travelling_salesman" or
+        #         "travelling" in game_name.lower() or
+        #         "salesman" in game_name.lower()):
+        #     try:
+        #         print(f"Launching travelling_salesman: {game_name}...")
+        #         base_path = os.path.dirname(os.path.dirname(os.path.abspath(_file_)))
+        #         traffic_game_path = os.path.join(base_path, "Travelling Salesman/src", "tsp_main.py")
+        #         print("Running travelling_salesman from:", traffic_game_path)
+        #         subprocess.Popen([sys.executable, traffic_game_path])
+        #     except Exception as e:
+        #         print(f"Failed to launch Traffic Simulation: {e}")
+        #     return
+        # print(f"Game '{game_name}' is not implemented or recognized.")
 
+        if (game_id == "snake_and_ladder" or
+                "snake" in game_name.lower() or
+                "ladder" in game_name.lower()):
+            try:
+                print(f"Launching Snake and Ladder: {game_name}...")
+                base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                snake_game_dir = os.path.join(base_path, "Snake and Ladder")
+                snake_game_path = os.path.join(snake_game_dir, "snake_and_ladder_main.py")
+                print("Running Snake and Ladder from:", snake_game_path)
+                subprocess.Popen([sys.executable, snake_game_path], cwd=snake_game_dir)
+            except Exception as e:
+                print(f"Failed to launch Snake and Ladder: {e}")
+            return
+        print(f"Game '{game_name}' is not implemented or recognized.")
