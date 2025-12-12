@@ -24,7 +24,7 @@ def launch_game_dashboard(games=None):
         traceback.print_exc()
 
 
-def main():   
+def main():
     # Fetch games 
     games = fetch_games_from_database()
     
