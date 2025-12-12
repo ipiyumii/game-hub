@@ -1,16 +1,12 @@
-"""
-Game Board UI - Fixed player marker and darker ladder
-"""
 import tkinter as tk
 from tkinter import messagebox
 from styles import GameStyles
 import math
 
 class GameBoardUI:
-    """Game board display with realistic visuals"""
     
     def __init__(self, root, game_state, on_back_callback, on_game_complete_callback):
-        """Initialize game board UI"""
+        #Initialize game board UI
         self.root = root
         self.game_state = game_state
         self.on_back_callback = on_back_callback
@@ -28,7 +24,7 @@ class GameBoardUI:
         self.rolls_label = None
     
     def show(self):
-        """Display the game board screen"""
+        #Display the game board screen
         for widget in self.root.winfo_children():
             widget.destroy()
         
@@ -45,7 +41,7 @@ class GameBoardUI:
         self._create_dice_panel(content_frame)
     
     def _create_header(self):
-        """Create header"""
+       
         header = tk.Frame(self.frame, bg=self.styles.get_color('bg_dark'), height=80)
         header.pack(fill=tk.X)
         header.pack_propagate(False)
@@ -85,7 +81,7 @@ class GameBoardUI:
         ).pack(side=tk.RIGHT, padx=30, pady=20)
     
     def _create_info_panel(self, parent):
-        """Create info panel"""
+        
         info_panel = tk.Frame(
             parent, bg=self.styles.get_color('bg_dark'),
             width=220, relief=tk.RAISED, bd=3
@@ -171,7 +167,7 @@ class GameBoardUI:
             ).pack(padx=20, pady=3, anchor='w')
     
     def _create_board_area(self, parent):
-        """Create game board"""
+       
         board_frame = tk.Frame(parent, bg=self.styles.get_color('bg_main'))
         board_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=15)
         
@@ -204,7 +200,7 @@ class GameBoardUI:
         self._draw_player()
     
     def _draw_board(self):
-        """Draw complete board"""
+        
         board = self.game_state.board
         board_size = board.board_size
         
@@ -226,7 +222,7 @@ class GameBoardUI:
             self._draw_realistic_snake(head, tail)
     
     def _draw_cell(self, row, col, cell_num):
-        """Draw single cell"""
+        
         x1, y1 = col * self.cell_size, row * self.cell_size
         x2, y2 = x1 + self.cell_size, y1 + self.cell_size
         
@@ -253,7 +249,7 @@ class GameBoardUI:
         )
     
     def _draw_realistic_snake(self, head, tail):
-        """Draw realistic snake"""
+        
         board = self.game_state.board
         hr, hc = board.get_position_coordinates(head)
         tr, tc = board.get_position_coordinates(tail)
@@ -360,7 +356,7 @@ class GameBoardUI:
         )
     
     def _draw_realistic_ladder(self, base, top):
-        """Draw realistic darker wooden ladder"""
+        
         board = self.game_state.board
         br, bc = board.get_position_coordinates(base)
         tr, tc = board.get_position_coordinates(top)
@@ -426,7 +422,7 @@ class GameBoardUI:
             )
     
     def _draw_player(self):
-        """Draw player marker - DELETE old one first"""
+        
         pos = self.game_state.current_position
         board = self.game_state.board
         row, col = board.get_position_coordinates(pos)
@@ -453,7 +449,7 @@ class GameBoardUI:
         )
     
     def _update_player_position(self):
-        """Update player position WITHOUT full refresh"""
+        
         self._draw_player()
         
         status = self.game_state.get_game_status()
@@ -461,7 +457,7 @@ class GameBoardUI:
         self.rolls_label.config(text=f"Rolls: {status['dice_rolls']}")
     
     def _create_dice_panel(self, parent):
-        """Create dice panel"""
+       
         dice_panel = tk.Frame(
             parent, bg=self.styles.get_color('bg_dark'),
             width=260, relief=tk.RAISED, bd=3
@@ -509,7 +505,7 @@ class GameBoardUI:
         ).pack(pady=5)
     
     def _draw_dice_face(self, value):
-        """Draw dice face with dots"""
+        
         self.dice_canvas.delete('all')
         size = self.styles.get_size('dice_size')
         
@@ -540,7 +536,7 @@ class GameBoardUI:
             )
     
     def _on_roll_dice(self):
-        """Handle dice roll"""
+        
         if not self.game_state.is_game_active:
             messagebox.showinfo("Game Over", "Start a new game!", parent=self.root)
             return
@@ -563,6 +559,6 @@ class GameBoardUI:
             self.on_game_complete_callback()
     
     def destroy(self):
-        """Destroy UI"""
+        
         if self.frame:
             self.frame.destroy() 

@@ -1,27 +1,11 @@
-"""
-Result Screen - Shows Win/Lose/Draw based on prediction accuracy
-Layout: Details (left) | Summary & Actions (right)
-"""
 import tkinter as tk
 from styles import GameStyles
 
 class ResultScreen:                                                                                                                                                                 
-    """Shows game result - Left details panel, right summary + actions"""
     
     def __init__(self, root, game_state, player_choice, correct_answer, 
                  algorithm_results, on_play_again_callback, on_back_callback=None):
-        """
-        Initialize result screen
-        
-        Args:
-            root: Tkinter root window
-            game_state: GameState object
-            player_choice: Player's predicted moves
-            correct_answer: Actual minimum moves
-            algorithm_results: Results from BFS and Dijkstra
-            on_play_again_callback: Callback for play again
-            on_back_callback: Callback for back to start (optional)
-        """
+      
         self.root = root
         self.game_state = game_state
         self.player_choice = player_choice
@@ -38,7 +22,7 @@ class ResultScreen:
         self.determine_result()
     
     def determine_result(self):
-        """Determine win/lose/draw based on prediction"""
+      
         if self.player_choice == self.correct_answer:
             self.result_type = 'win'
             self.is_correct = True
@@ -47,7 +31,7 @@ class ResultScreen:
             self.is_correct = False
     
     def show(self):
-        """Display the result screen with left details and right actions"""
+      
         print("\n🏆 Displaying Result Screen...")
         print(f"   Player Choice: {self.player_choice}")
         print(f"   Correct Answer: {self.correct_answer}")
@@ -65,9 +49,9 @@ class ResultScreen:
         main_container = tk.Frame(self.frame, bg=self.styles.get_color('bg_main'))
         main_container.pack(fill=tk.BOTH, expand=True, padx=24, pady=20)
         
-        # -----------------------
+        
         # LEFT PANEL - DETAILS
-        # -----------------------
+        
         left_width = 520  # reduced width
         details_panel = tk.Frame(
             main_container,
@@ -201,9 +185,8 @@ class ResultScreen:
         # Small spacer to push content up slightly
         tk.Frame(details_panel, bg=self.styles.get_color('bg_dark'), height=6).pack()
         
-        # -----------------------
+       
         # RIGHT PANEL - SUMMARY & ACTIONS
-        # -----------------------
         # Top summary (icon/title)
         right_panel = tk.Frame(main_container, bg=self.styles.get_color('bg_main'))
         right_panel.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(18,0))
@@ -330,6 +313,5 @@ class ResultScreen:
         print("✅ Result screen displayed successfully")
     
     def destroy(self):
-        """Destroy the screen"""
         if self.frame:
             self.frame.destroy()

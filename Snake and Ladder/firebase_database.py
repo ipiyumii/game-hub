@@ -1,13 +1,9 @@
-"""
-Firebase Database Manager - Using credentials JSON from gamehub folder
-"""
 import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime
 import os
 
 class FirebaseDatabase:
-    """Manages Firebase Firestore database operations"""
     
     _instance = None
     _initialized = False
@@ -18,7 +14,7 @@ class FirebaseDatabase:
         return cls._instance
     
     def __init__(self):
-        """Initialize Firebase connection"""
+       
         if not FirebaseDatabase._initialized:
             try:
                 # Path to credentials file in gamehub folder
@@ -70,7 +66,7 @@ class FirebaseDatabase:
                 FirebaseDatabase._initialized = True
     
     def _create_collection_structure(self):
-        """Create 'snake_and_ladder' collection structure"""
+        
         try:
             collection_ref = self.db.collection('snake_and_ladder')
             
@@ -90,7 +86,7 @@ class FirebaseDatabase:
     
     def save_game_session(self, player_name, board_size, snakes, ladders, 
                          player_choice, correct_answer, bfs_time, dijkstra_time):
-        """Save game session to Firebase"""
+        
         if not self.enabled:
             print("⚠️  Firebase not enabled")
             return None
@@ -128,7 +124,7 @@ class FirebaseDatabase:
             return None
     
     def save_player_details(self, player_name, board_size, correct_answer, session_id):
-        """Save or update player details"""
+        
         if not self.enabled:
             print("⚠️  Firebase not enabled")
             return None
@@ -183,7 +179,7 @@ class FirebaseDatabase:
             return None
     
     def test_connection(self):
-        """Test Firebase connection"""
+       
         if not self.enabled:
             print("⚠️  Firebase not enabled - skipping connection test")
             return False
@@ -204,7 +200,7 @@ class FirebaseDatabase:
             return False
     
     def get_player_stats(self, player_name):
-        """Get player statistics"""
+       
         if not self.enabled:
             return None
         
@@ -221,7 +217,7 @@ class FirebaseDatabase:
             return None
     
     def get_all_sessions(self):
-        """Get all game sessions"""
+        
         if not self.enabled:
             return []
         
@@ -234,5 +230,5 @@ class FirebaseDatabase:
             return []
     
     def is_connected(self):
-        """Check if Firebase is connected"""
+        
         return self.enabled

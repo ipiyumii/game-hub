@@ -1,8 +1,3 @@
-"""
-Snake and Ladder Game - COMPLETE FINAL VERSION
-With Report Generator (15 rounds)
-"""
-
 import tkinter as tk
 from tkinter import messagebox
 
@@ -18,10 +13,9 @@ from report_generator import ReportGenerator
 from styles import GameStyles
 
 class SnakeLadderGame:
-    """Main game controller with report generation"""
     
     def __init__(self):
-        """Initialize the game"""
+        
         self.root = tk.Tk()
         self.root.title("🎲 Snake and Ladder Game - Algorithm Challenge")
         
@@ -60,7 +54,7 @@ class SnakeLadderGame:
         self.show_start_screen()
     
     def show_start_screen(self):
-        """Display the start screen"""
+       
         print("\n" + "="*70)
         print("🎲 SNAKE AND LADDER GAME")
         print("="*70)
@@ -76,7 +70,7 @@ class SnakeLadderGame:
         self.current_screen.show()
     
     def on_game_start(self, player_name, board_size):
-        """STEP 1: Generate board and run algorithms"""
+        
         try:
             print(f"\n{'='*70}")
             print(f"🎮 STARTING GAME")
@@ -115,7 +109,7 @@ class SnakeLadderGame:
             messagebox.showerror("Error", f"Failed:\n{str(e)}", parent=self.root)
     
     def show_answer_choice_screen(self):
-        """STEP 2: Show answer choice screen"""
+        
         print(f"\n🎯 SHOWING ANSWER CHOICES...")
         
         if self.current_screen:
@@ -130,7 +124,7 @@ class SnakeLadderGame:
         self.current_screen.show()
     
     def on_player_choice(self, choice):
-        """STEP 3: Player made prediction"""
+        
         self.player_choice = choice
         
         print(f"\n{'='*70}")
@@ -144,7 +138,7 @@ class SnakeLadderGame:
         self.show_game_board()
     
     def show_game_board(self):
-        """STEP 4: Display game board"""
+        
         print(f"\n📊 SHOWING GAME BOARD...")
         
         if self.current_screen:
@@ -159,7 +153,7 @@ class SnakeLadderGame:
         self.current_screen.show()
     
     def on_game_complete(self):
-        """STEP 5: Game finished - Save and generate report"""
+       
         print(f"\n{'='*70}")
         print(f"🏁 GAME COMPLETED")
         print(f"{'='*70}")
@@ -223,7 +217,7 @@ class SnakeLadderGame:
             ))
     
     def show_result_screen(self):
-        """STEP 6: Show result screen"""
+       
         print(f"\n🏆 SHOWING RESULT...")
         
         if self.current_screen:
@@ -241,7 +235,7 @@ class SnakeLadderGame:
         self.current_screen.show()
     
     def on_play_again(self):
-        """Play again"""
+        
         print(f"\n🔄 RESTARTING...")
         self.game_state.reset_game()
         self.player_choice = None
@@ -250,7 +244,7 @@ class SnakeLadderGame:
         self.show_start_screen()
     
     def on_back_to_start(self):
-        """Back to start"""
+        
         print(f"\n⬅ BACK TO START...")
         self.game_state.reset_game()
         self.player_choice = None
@@ -259,7 +253,7 @@ class SnakeLadderGame:
         self.show_start_screen()
     
     def run(self):
-        """Start the game"""
+    
         print("\n" + "="*70)
         print("🚀 SNAKE AND LADDER GAME - FINAL VERSION")
         print("="*70)
@@ -282,7 +276,7 @@ class SnakeLadderGame:
         self.root.mainloop()
     
     def on_close(self):
-        """Handle window close"""
+      
         print("\n" + "="*70)
         print("👋 THANKS FOR PLAYING!")
         print(f"📊 Rounds completed: {self.report_gen.get_round_count()}/15")
@@ -291,7 +285,7 @@ class SnakeLadderGame:
 
 
 def main():
-    """Main function"""
+    
     try:
         game = SnakeLadderGame()
         game.run()

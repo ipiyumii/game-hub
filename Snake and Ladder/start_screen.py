@@ -1,21 +1,11 @@
-"""
-Start Screen - First interface where player enters name and board size
-"""
 import tkinter as tk
 from tkinter import messagebox
 from styles import GameStyles
 
 class StartScreen:
-    """Start screen for the game"""
     
     def __init__(self, root, on_start_callback):
-        """
-        Initialize start screen
         
-        Args:
-            root: Tkinter root window
-            on_start_callback: Function to call when starting game
-        """
         self.root = root
         self.on_start_callback = on_start_callback
         self.styles = GameStyles()
@@ -25,7 +15,7 @@ class StartScreen:
         self.size_var = None
     
     def show(self):
-        """Display the start screen"""
+    
         # Clear existing widgets
         for widget in self.root.winfo_children():
             widget.destroy()
@@ -173,7 +163,7 @@ class StartScreen:
         footer_label.pack(pady=5)
     
     def _on_start_clicked(self):
-        """Handle start button click"""
+        
         player_name = self.name_entry.get().strip()
         board_size = self.size_var.get()
         
@@ -200,6 +190,6 @@ class StartScreen:
         self.on_start_callback(player_name, board_size)
     
     def destroy(self):
-        """Destroy the start screen"""
+        
         if self.frame:
             self.frame.destroy()

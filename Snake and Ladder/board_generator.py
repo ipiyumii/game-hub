@@ -8,10 +8,15 @@ class BoardGenerator:
         
         if not 6 <= board_size <= 12:
             raise ValueError("Board size must be between 6 and 12")
-        
+
+
         self.board_size = board_size
         self.total_cells = board_size * board_size
+
+        #set the number of snakes as N-2
         self.num_snakes = board_size - 2
+
+        #set the number of ladders as N-2
         self.num_ladders = board_size - 2
         
         self.snakes = {}  # {head_position: tail_position}
@@ -21,9 +26,9 @@ class BoardGenerator:
         self._generate_board()
     
     def _generate_board(self):
-
-        print(f"\n🎲 Generating NEW random board...")
         
+        print(f"\n🎲 Generating NEW random board...")
+
         # Available cells (exclude cell 1 and last cell)
         available_cells = set(range(2, self.total_cells))
         
@@ -38,14 +43,14 @@ class BoardGenerator:
         print(f"   Ladders will take you UP ⬆️")
     
     def _generate_ladders(self, available_cells):
-
+       
         ladder_count = 0
         attempts = 0
         max_attempts = 1000
         
         while ladder_count < self.num_ladders and attempts < max_attempts:
             attempts += 1
-
+            
             # Ladder base should be in lower/middle portion of board
             max_base = self.total_cells - (self.board_size * 2)
             possible_bases = [c for c in available_cells if c <= max_base]
@@ -53,6 +58,7 @@ class BoardGenerator:
             if not possible_bases:
                 break
             
+            #random starting position for ladder 
             base = random.choice(possible_bases)
             
             # Calculate minimum and maximum climb
@@ -69,6 +75,7 @@ class BoardGenerator:
             if not valid_tops:
                 continue
             
+            #random ending position for ladder
             top = random.choice(valid_tops)
             
             # Add ladder
@@ -78,7 +85,7 @@ class BoardGenerator:
             ladder_count += 1
     
     def _generate_snakes(self, available_cells):
-
+        
         snake_count = 0
         attempts = 0
         max_attempts = 1000
@@ -93,6 +100,7 @@ class BoardGenerator:
             if not possible_heads:
                 break
             
+            #random starting position for snake
             head = random.choice(possible_heads)
             
             # Calculate minimum descent and tail range
@@ -109,6 +117,7 @@ class BoardGenerator:
             if not valid_tails:
                 continue
             
+            #random ending position for snake 
             tail = random.choice(valid_tails)
             
             # Add snake
@@ -118,7 +127,7 @@ class BoardGenerator:
             snake_count += 1
     
     def get_position_coordinates(self, cell_num):
-       
+        
         if cell_num < 1 or cell_num > self.total_cells:
             raise ValueError(f"Cell number must be between 1 and {self.total_cells}")
         
@@ -141,20 +150,7 @@ class BoardGenerator:
         return (row, col)
     
     def get_next_position(self, current_pos, dice_roll):
-        """
-        Get next position after dice roll
-        Automatically applies snake/ladder if landing on one
         
-        Args:
-            current_pos: Current cell position (1 to N²)
-            dice_roll: Dice value (1-6)
-        
-        Returns:
-            dict: Movement information with 'next_pos', 'landed_on', 'final_pos'
-        
-        Raises:
-            ValueError: If dice_roll is not between 1 and 6
-        """
         if not 1 <= dice_roll <= 6:
             raise ValueError("Dice roll must be between 1 and 6")
         
@@ -207,7 +203,7 @@ class BoardGenerator:
         }
     
     def print_board_info(self):
-        """Print board information to console"""
+        
         print(f"\n{'='*60}")
         print(f"🎲 SNAKE AND LADDER BOARD")
         print(f"{'='*60}")

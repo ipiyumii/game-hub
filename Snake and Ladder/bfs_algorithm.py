@@ -1,32 +1,18 @@
-"""
-BFS Algorithm - Breadth First Search
-Finds minimum number of dice throws to reach the last cell
-"""
 from collections import deque
 import time
 
 class BFSAlgorithm:
-    """BFS implementation for Snake and Ladder"""
+    
     
     def __init__(self, board):
-        """
-        Initialize BFS algorithm  
         
-        Args:
-            board: BoardGenerator instance with snakes and ladders
-        """
         self.board = board
         self.total_cells = board.total_cells
         self.snakes = board.snakes
         self.ladders = board.ladders
     
     def find_minimum_moves(self):
-        """
-        Find minimum number of dice throws using BFS
         
-        Returns:
-            tuple: (minimum_moves, execution_time_seconds)
-        """
         print("\n🔍 Running BFS Algorithm...")
         start_time = time.time()
         
@@ -69,15 +55,7 @@ class BFSAlgorithm:
         return -1, execution_time
     
     def _apply_snake_or_ladder(self, position):
-        """
-        Apply snake or ladder at given position
         
-        Args:
-            position: Current position on board
-            
-        Returns:
-            Final position after applying snake/ladder
-        """
         # Check if there's a ladder at this position
         if position in self.ladders:
             return self.ladders[position]
@@ -90,7 +68,7 @@ class BFSAlgorithm:
         return position
     
     def get_algorithm_info(self):
-        """Get information about BFS algorithm"""
+        
         return {
             'name': 'BFS (Breadth-First Search)',
             'description': 'Explores all possible moves level by level',

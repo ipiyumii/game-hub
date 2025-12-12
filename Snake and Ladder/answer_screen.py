@@ -1,25 +1,11 @@
-"""
-Answer Screen - Ask player to guess minimum moves with 3 choices
-"""
 import tkinter as tk
 from tkinter import messagebox
 from styles import GameStyles
 
 class AnswerScreen:
-    """Screen where player chooses minimum moves"""
     
     def __init__(self, root, game_state, choices, correct_answer, algorithm_results, on_answer_callback):
-        """
-        Initialize answer screen
         
-        Args:
-            root: Tkinter root window
-            game_state: GameState object
-            choices: List of 3 answer choices
-            correct_answer: Correct answer
-            algorithm_results: Results from both algorithms
-            on_answer_callback: Callback when answer is selected
-        """
         self.root = root
         self.game_state = game_state
         self.choices = sorted(choices)  # Sort for better display
@@ -32,7 +18,7 @@ class AnswerScreen:
         self.selected_choice = None
     
     def show(self):
-        """Display the answer screen"""
+        
         for widget in self.root.winfo_children():
             widget.destroy()
         
@@ -107,7 +93,7 @@ class AnswerScreen:
         ).pack()
     
     def _on_choice_selected(self, choice):
-        """Handle choice selection"""
+        
         self.selected_choice = choice
         
         # Check if correct
@@ -125,6 +111,6 @@ class AnswerScreen:
         self.on_answer_callback(choice, is_correct)
     
     def destroy(self):
-        """Destroy the screen"""
+    
         if self.frame:
             self.frame.destroy()

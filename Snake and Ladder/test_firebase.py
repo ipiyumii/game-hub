@@ -11,7 +11,7 @@ from firebase_database import FirebaseDatabase
 
 @pytest.fixture(autouse=True)
 def reset_singleton():
-    """Reset singleton before each test so instances don't carry state across tests."""
+   
     fbmod.FirebaseDatabase._instance = None
     fbmod.FirebaseDatabase._initialized = False
     yield
@@ -20,7 +20,6 @@ def reset_singleton():
 
 
 def test_init_missing_credentials(monkeypatch, tmp_path):
-    """If credentials file doesn't exist the instance should be disabled."""
     # Make os.path.exists return False for the expected path
     monkeypatch.setattr(os.path, "exists", lambda p: False)
 
@@ -30,7 +29,7 @@ def test_init_missing_credentials(monkeypatch, tmp_path):
 
 
 def test_init_success_creates_info_doc(monkeypatch):
-    """When credentials exist and firestore.client returns a mock, _info doc set should be called."""
+   
     # Make os.path.exists True
     monkeypatch.setattr(os.path, "exists", lambda p: True)
 
@@ -67,7 +66,7 @@ def test_init_success_creates_info_doc(monkeypatch):
 
 
 def test_save_game_session_writes_session(monkeypatch):
-    """save_game_session should call add(...) and return the session id."""
+    
     # Prepare instance but bypass init: create instance and set its db to a mock
     db = FirebaseDatabase.__new__(FirebaseDatabase)
     # Reset init flag so we don't run __init__
@@ -111,7 +110,7 @@ def test_save_game_session_writes_session(monkeypatch):
 
 
 def test_save_player_details_update_and_create(monkeypatch):
-    """Test both update existing player and create new player branches."""
+
     db = FirebaseDatabase.__new__(FirebaseDatabase)
     FirebaseDatabase._initialized = True
     db.enabled = True
@@ -151,7 +150,7 @@ def test_save_player_details_update_and_create(monkeypatch):
 
 
 def test_test_connection_success_and_missing(monkeypatch):
-    """test_connection should return True when _info exists, False otherwise."""
+   
     db = FirebaseDatabase.__new__(FirebaseDatabase)
     FirebaseDatabase._initialized = True
     db.enabled = True
@@ -171,7 +170,7 @@ def test_test_connection_success_and_missing(monkeypatch):
 
 
 def test_get_player_stats_and_get_all_sessions(monkeypatch):
-    """Test retrieval methods return expected values from the mocked DB."""
+    
     db = FirebaseDatabase.__new__(FirebaseDatabase)
     FirebaseDatabase._initialized = True
     db.enabled = True
@@ -200,7 +199,7 @@ def test_get_player_stats_and_get_all_sessions(monkeypatch):
 
 
 def test_is_connected_property():
-    """is_connected should mirror enabled flag and db presence."""
+    
     db = FirebaseDatabase.__new__(FirebaseDatabase)
     FirebaseDatabase._initialized = True
 

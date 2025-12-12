@@ -1,7 +1,3 @@
-"""
-Report Generator - Generates performance reports after 15 rounds
-Creates JSON, CSV, TXT files and PNG charts
-"""
 import os
 import json
 import csv
@@ -13,10 +9,9 @@ matplotlib.use('Agg')  # Use non-GUI backend
 import matplotlib.pyplot as plt
 
 class ReportGenerator:
-    """Generates game reports after 15 rounds"""
     
     def __init__(self):
-        """Initialize report generator"""
+        
         self.rounds = []
         self.max_rounds = 15
         self.report_dir = 'game_reports'
@@ -27,7 +22,7 @@ class ReportGenerator:
         print(f"   Output directory: {self.report_dir}")
     
     def create_report_directory(self):
-        """Create reports directory if it doesn't exist"""
+        
         try:
             Path(self.report_dir).mkdir(exist_ok=True)
             print(f"   ✅ Report directory ready: {self.report_dir}/")
@@ -36,22 +31,7 @@ class ReportGenerator:
     
     def add_game_round(self, player_name, board_size, player_choice, 
                       correct_answer, is_correct, bfs_time, dijkstra_time, dice_rolls):
-        """
-        Add a game round to the report
         
-        Args:
-            player_name: Name of player
-            board_size: Size of board (N×N)
-            player_choice: Player's prediction
-            correct_answer: Actual minimum moves
-            is_correct: Whether prediction was correct
-            bfs_time: BFS execution time in seconds
-            dijkstra_time: Dijkstra execution time in seconds
-            dice_rolls: Number of dice rolls used
-        
-        Returns:
-            bool: True if report was generated (15 rounds reached)
-        """
         round_data = {
             'round_number': len(self.rounds) + 1,
             'timestamp': datetime.now().isoformat(),
@@ -82,7 +62,7 @@ class ReportGenerator:
         return False
     
     def generate_final_report(self):
-        """Generate final report after 15 rounds"""
+        
         print(f"\n{'='*70}")
         print(f"🎉 GENERATING FINAL REPORT - 15 ROUNDS COMPLETED!")
         print(f"{'='*70}")
@@ -113,7 +93,7 @@ class ReportGenerator:
             traceback.print_exc()
     
     def _generate_json_report(self):
-        """Generate JSON format report"""
+       
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"{self.report_dir}/report_{timestamp}.json"
         
@@ -131,7 +111,7 @@ class ReportGenerator:
         print(f"   ✅ JSON Report: {filename}")
     
     def _generate_csv_report(self):
-        """Generate CSV format report"""
+       
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"{self.report_dir}/report_{timestamp}.csv"
         
@@ -173,7 +153,7 @@ class ReportGenerator:
             print(f"   ❌ CSV Error: {e}")
     
     def _generate_statistics(self):
-        """Generate statistics file"""
+      
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"{self.report_dir}/statistics_{timestamp}.txt"
         
@@ -230,7 +210,7 @@ Location:    {os.path.abspath(filename)}
             print(f"   ❌ Statistics Error: {e}")
     
     def _generate_algorithm_performance_chart(self):
-        """Generate Algorithm Performance Chart (BFS vs Dijkstra execution times)"""
+      
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"{self.report_dir}/algorithm_performance_{timestamp}.png"
         
@@ -289,7 +269,7 @@ Location:    {os.path.abspath(filename)}
             print(f"   ❌ Algorithm Performance Chart Error: {e}")
     
     def _generate_performance_comparison_chart(self):
-        """Generate Performance Comparison Chart (Prediction Accuracy & Algorithm Speed)"""
+      
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"{self.report_dir}/performance_comparison_{timestamp}.png"
         
@@ -376,7 +356,7 @@ Location:    {os.path.abspath(filename)}
             print(f"   ❌ Performance Comparison Chart Error: {e}")
     
     def _calculate_summary(self):
-        """Calculate summary statistics"""
+        
         if not self.rounds:
             return {
                 'total_rounds': 0,
@@ -431,14 +411,11 @@ Location:    {os.path.abspath(filename)}
         }
     
     def get_round_count(self):
-        """Get current round count"""
         return len(self.rounds)
     
     def get_rounds(self):
-        """Get all rounds data"""
         return self.rounds.copy()
     
     def reset(self):
-        """Reset all rounds"""
         self.rounds = []
         print("\n🔄 Report generator reset")

@@ -1,9 +1,6 @@
-"""
-Color Styles and Constants for Snake and Ladder Game
-"""
 
 class GameStyles:
-    """All color schemes and styling constants"""
+    #All color schemes and styling constants
     
     # Main color palette
     COLORS = {

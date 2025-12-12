@@ -8,12 +8,7 @@ from dijkstra_algorithm import DijkstraAlgorithm
 
 # ----- Minimal Board Stub -----
 class BoardStub:
-    """
-    Minimal board stub that provides required attributes:
-        total_cells (int)
-        snakes (dict)
-        ladders (dict)
-    """
+    
     def __init__(self, total_cells, snakes=None, ladders=None):
         self.total_cells = total_cells
         self.snakes = snakes or {}
@@ -21,14 +16,13 @@ class BoardStub:
 
 # ----- Helpers -----
 def baseline_min_moves(total_cells):
-    """Minimum moves on an empty board = ceil((target - 1) / 6)."""
+    
     if total_cells <= 1:
         return 0
     return math.ceil((total_cells - 1) / 6)
 
-# ----------------------------------------------------
 # TEST 1: EMPTY BOARD → both algorithms must match baseline
-# ----------------------------------------------------
+
 @pytest.mark.parametrize("total_cells", [2, 7, 10, 25, 100])
 def test_algorithms_empty_board_min_moves(total_cells):
     board = BoardStub(total_cells)
@@ -46,9 +40,9 @@ def test_algorithms_empty_board_min_moves(total_cells):
     assert bfs_time >= 0.0
     assert dij_time >= 0.0
 
-# ----------------------------------------------------
+
 # TEST 2: LADDER → should reduce required moves
-# ----------------------------------------------------
+
 @pytest.fixture
 def board_with_ladder():
     total_cells = 30
@@ -69,9 +63,9 @@ def test_ladder_reduces_moves(board_with_ladder):
     assert dij_moves <= baseline
     assert bfs_moves == dij_moves
 
-# ----------------------------------------------------
+
 # TEST 3: SNAKE → should increase or match baseline moves
-# ----------------------------------------------------
+
 @pytest.fixture
 def board_with_snake():
     total_cells = 30
@@ -92,9 +86,9 @@ def test_snake_increases_or_equals_moves(board_with_snake):
     assert dij_moves >= baseline
     assert bfs_moves == dij_moves
 
-# ----------------------------------------------------
+
 # TEST 4: Algorithm info returns expected keys
-# ----------------------------------------------------
+
 def test_get_algorithm_info_contains_expected_keys():
     board = BoardStub(10)
     bfs = BFSAlgorithm(board)
@@ -108,9 +102,8 @@ def test_get_algorithm_info_contains_expected_keys():
         for key in ('name', 'description', 'complexity', 'guarantees'):
             assert key in info
 
-# ----------------------------------------------------
 # TEST 5: Performance sanity check
-# ----------------------------------------------------
+
 def test_performance_small_board_runs_quickly():
     board = BoardStub(50)
     bfs = BFSAlgorithm(board)

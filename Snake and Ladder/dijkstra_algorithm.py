@@ -1,32 +1,17 @@
-"""
-Dijkstra's Algorithm
-Finds minimum number of dice throws to reach the last cell
-"""
 import heapq
 import time
 
 class DijkstraAlgorithm:
-    """Dijkstra's algorithm implementation for Snake and Ladder"""
     
     def __init__(self, board):
-        """
-        Initialize Dijkstra algorithm
         
-        Args:
-            board: BoardGenerator instance with snakes and ladders
-        """
         self.board = board
         self.total_cells = board.total_cells
         self.snakes = board.snakes
         self.ladders = board.ladders
     
     def find_minimum_moves(self):
-        """
-        Find minimum number of dice throws using Dijkstra's Algorithm
         
-        Returns:
-            tuple: (minimum_moves, execution_time_seconds)
-        """
         print("\n🔍 Running Dijkstra's Algorithm...")
         start_time = time.time()
         
@@ -77,15 +62,7 @@ class DijkstraAlgorithm:
         return -1, execution_time
     
     def _apply_snake_or_ladder(self, position):
-        """
-        Apply snake or ladder at given position
         
-        Args:
-            position: Current position on board
-            
-        Returns:
-            Final position after applying snake/ladder
-        """
         # Check if there's a ladder at this position
         if position in self.ladders:
             return self.ladders[position]
@@ -98,7 +75,7 @@ class DijkstraAlgorithm:
         return position
     
     def get_algorithm_info(self):
-        """Get information about Dijkstra algorithm"""
+    
         return {
             'name': 'Dijkstra\'s Algorithm',
             'description': 'Uses priority queue to find shortest path',

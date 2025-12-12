@@ -1,14 +1,10 @@
-"""
-Game State Manager - Manages current game session data
-"""
 import random
 from board_generator import BoardGenerator
 
 class GameState:
-    """Manages the current game state"""
     
     def __init__(self):
-        """Initialize game state"""
+        #Initialize game state
         self.player_name = ""
         self.board_size = 8
         self.board = None
@@ -19,16 +15,7 @@ class GameState:
         self.dice_rolls = 0
     
     def start_new_game(self, player_name, board_size):
-        """
-        Start a new game session with NEW random snakes and ladders
         
-        Args:
-            player_name: Name of the player
-            board_size: Size of the board (6-12)
-        
-        Raises:
-            ValueError: If inputs are invalid
-        """
         # Validate player name
         if not player_name or not player_name.strip():
             raise ValueError("Player name cannot be empty")
@@ -58,28 +45,14 @@ class GameState:
         self.board.print_board_info()
     
     def roll_dice(self):
-        """
-        Simulate dice roll (1-6)
-        
-        Returns:
-            int: Dice value (1-6)
-        """
+       
         dice_value = random.randint(1, 6)
         self.dice_rolls += 1
         print(f"\n🎲 Dice Roll #{self.dice_rolls}: {dice_value}")
         return dice_value
     
     def move_player(self, dice_value):
-        """
-        Move player based on dice roll
-        Automatically handles snakes and ladders
         
-        Args:
-            dice_value: Value rolled on dice (1-6)
-        
-        Returns:
-            dict: Movement information
-        """
         if not self.is_game_active:
             raise RuntimeError("No active game")
         
@@ -110,13 +83,13 @@ class GameState:
         return move_result
     
     def get_board_info(self):
-        """Get current board information"""
+        
         if not self.board:
             return None
         return self.board.get_board_info()
     
     def get_game_status(self):
-        """Get current game status"""
+       
         return {
             'player_name': self.player_name,
             'board_size': self.board_size,
@@ -128,7 +101,7 @@ class GameState:
         }
     
     def reset_game(self):
-        """Reset game state"""
+        
         self.player_name = ""
         self.board_size = 8
         self.board = None
