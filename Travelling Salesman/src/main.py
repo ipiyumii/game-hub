@@ -2,19 +2,23 @@
 import pygame
 import sys
 import math
+import traceback
 import game_logic
 from firebase_config import save_game_result
 
 # CONFIG
-WIDTH, HEIGHT = 1100, 720
+WIDTH, HEIGHT = 1200, 720
 FPS = 30
 CITY_RADIUS = 20
+RIGHT_PANEL_W = 380
+MAP_TOP_OFFSET = 40
 
 pygame.init()
-FONT = pygame.font.SysFont(None, 20)
-BIGFONT = pygame.font.SysFont(None, 28)
+FONT = pygame.font.SysFont(None, 18)
+BIG = pygame.font.SysFont(None, 22)
+TITLE = pygame.font.SysFont(None, 24, bold=True)
 
-# arrange cities in a circle
+# Map positions
 def make_positions(center, radius):
     positions = {}
     n = len(game_logic.CITIES)
@@ -26,235 +30,286 @@ def make_positions(center, radius):
         positions[city] = (int(x), int(y))
     return positions
 
-POSITIONS = make_positions((400, 360), 240)
+LEFT_PANEL_W = WIDTH - RIGHT_PANEL_W - 40
+POSITIONS = make_positions((LEFT_PANEL_W//2, (HEIGHT-150)//2 + MAP_TOP_OFFSET//2), 200)
 
-# UI helpers
-def draw_text(screen, text, pos, color=(0,0,0), font=FONT):
-    surf = font.render(text, True, color)
-    screen.blit(surf, pos)
+def draw_text(screen, text, pos, font=FONT, color=(255,255,255), maxw=None):
+    if maxw is None:
+        surf = font.render(text, True, color)
+        screen.blit(surf, pos)
+    else:
+        words = text.split()
+        x, y = pos
+        line = ""
+        for w in words:
+            test = (line + " " + w).strip()
+            surf = font.render(test, True, color)
+            if surf.get_width() > maxw and line:
+                screen.blit(font.render(line, True, color), (x, y))
+                y += surf.get_height() + 2
+                line = w
+            else:
+                line = test
+        if line:
+            screen.blit(font.render(line, True, color), (x, y))
+
+def split_message(msg, max_len=45):
+    return [msg] if len(msg) <= max_len else [msg[:max_len], msg[max_len:]]
+
+def log_exception(e):
+    tb = traceback.format_exc()
+    print(tb)
+    try:
+        with open("error.log", "a", encoding="utf-8") as f:
+            f.write(tb + "\n\n")
+    except Exception:
+        pass
 
 def distance_of_route(dist_matrix, route_labels):
-    # convert to indices
-    idxs = [game_logic.index_of(l) for l in route_labels]
-    total = 0
-    for i in range(len(idxs)-1):
-        total += dist_matrix[idxs[i]][idxs[i+1]]
+    idxs = [game_logic.CITIES.index(l) for l in route_labels]
+    total = sum(dist_matrix[idxs[i]][idxs[i + 1]] for i in range(len(idxs) - 1))
     return total
+
+def button_rect(x, y, w, h):
+    return pygame.Rect(x, y, w, h)
+
+def draw_button(screen, rect, text, active=True):
+    pygame.draw.rect(screen, (76, 175, 80) if active else (100, 100, 100), rect)
+    pygame.draw.rect(screen, (255, 255, 255), rect, 2)
+    txt = BIG.render(text, True, (255, 255, 255))
+    txt_r = txt.get_rect(center=rect.center)
+    screen.blit(txt, txt_r)
 
 def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Traveling Salesman Problem - Game")
+    pygame.display.set_caption("Traveling Salesman - Game (Pygame)")
     clock = pygame.time.Clock()
 
-    # game state
     dist_matrix = None
     home_label = None
-    selected = []        # list of labels selected to visit
-    player_route = []    # sequence of labels clicked by player as proposed route
-    results = None       # algorithm outputs
-    message = "Press 'N' to start a new round (random distances & home)."
+    selected = []
+    player_route = []
+    results = None
+    message = "Press New Round to begin."
     player_name = ""
-
     input_active = False
     input_text = ""
+    home_idx = None
+    win_status = None
 
+    bottom_h = 100
+    bottom_y = HEIGHT - bottom_h - 20
+    btn_w, btn_h, btn_gap = 140, 32, 10
+    x0, y0 = 30, bottom_y + 10
+
+    btn_new = button_rect(x0, y0, btn_w, btn_h); x0 += btn_w + btn_gap
+    btn_run = button_rect(x0, y0, btn_w, btn_h); x0 += btn_w + btn_gap
+    btn_clear = button_rect(x0, y0, btn_w, btn_h); x0 += btn_w + btn_gap
+    btn_save = button_rect(x0, y0, btn_w, btn_h); x0 += btn_w + btn_gap
+    btn_quit = button_rect(x0, y0, btn_w, btn_h)
+    input_rect = button_rect(30, bottom_y + 50, 300, 28)
+
+    results_area = pygame.Rect(WIDTH - RIGHT_PANEL_W - 20, 20, RIGHT_PANEL_W, HEIGHT - 40)
     running = True
+
     while running:
-        clock.tick(FPS)
-        screen.fill((245,245,245))
+        delta_time = clock.tick(FPS)
+        screen.fill((20,20,20))
 
-        # Left panel: map
-        pygame.draw.rect(screen, (230,230,230), (20,20,760,680))
-        # title
-        draw_text(screen, "Cities (click to select/deselect to visit). Click sequence to propose route.", (30,30), font=BIGFONT)
-        # draw cities
-        for city, (x,y) in POSITIONS.items():
-            color = (255,255,255)
-            border = (0,0,0)
-            # if home
+        # --- Map panel ---
+        pygame.draw.rect(screen, (40,40,40), (20, MAP_TOP_OFFSET, LEFT_PANEL_W, HEIGHT - bottom_h - 40 - MAP_TOP_OFFSET))
+        draw_text(screen, "Map: cities A-J (click to build route). SHIFT+click to select target.",
+                  (30, MAP_TOP_OFFSET+4), font=BIG, color=(255,255,255))
+
+        for city, (cx, cy) in POSITIONS.items():
+            color = (255, 215, 0) if city == home_label else (173,216,230) if city in selected else (200,200,200)
+            if city in player_route:
+                color = (0,120,215)
+            outline = (255,255,255) if city == home_label else (100,100,100)
+            pygame.draw.circle(screen, color, (cx,cy), CITY_RADIUS)
+            pygame.draw.circle(screen, outline, (cx,cy), CITY_RADIUS, 3 if city==home_label else 2)
+            draw_text(screen, city, (cx-8, cy-8), color=(0,0,0))
             if city == home_label:
-                color = (255, 215, 0)
-                border = (200,100,0)
-            # if selected to visit
-            if city in selected:
-                color = (173,216,230)
-            pygame.draw.circle(screen, color, (x,y), CITY_RADIUS)
-            pygame.draw.circle(screen, border, (x,y), CITY_RADIUS, 2)
-            draw_text(screen, city, (x-6, y-8))
+                draw_text(screen, "HOME", (cx+CITY_RADIUS+6, cy-8), color=(255,200,0))
 
-        # draw player's proposed route lines if any
+        # Draw route lines
         if len(player_route) >= 2:
-            coords = [POSITIONS[c] for c in player_route]
-            pygame.draw.lines(screen, (0, 100, 200), False, coords, 4)
-            # draw line back to home if last not home and route complete?
-            if player_route:
-                # if last and route contains all selected + home return not included, show return line if clicked home
-                pass
+            pts = [POSITIONS[c] for c in player_route]
+            pygame.draw.lines(screen, (0,200,255), False, pts, 5)
+            for i in range(len(player_route)-1):
+                c1, c2 = player_route[i], player_route[i+1]
+                x1, y1 = POSITIONS[c1]
+                x2, y2 = POSITIONS[c2]
+                midx, midy = (x1+x2)//2, (y1+y2)//2
+                dist = dist_matrix[game_logic.CITIES.index(c1)][game_logic.CITIES.index(c2)] if dist_matrix else 0
+                draw_text(screen, f"{dist:.1f}", (midx, midy), font=FONT, color=(255,255,0))
+            if player_route[-1] == home_label and len(player_route) == len(selected) + 2:
+                x, y0_ = POSITIONS[home_label]
+                draw_text(screen, "CLOSED", (x-20, y0_+CITY_RADIUS+5), color=(0,200,255), font=BIG)
 
-        # Right panel: controls & info
-        pygame.draw.rect(screen, (250,250,250), (800,20,280,680))
-        draw_text(screen, "Controls:", (810,30), font=BIGFONT)
-        draw_text(screen, "N - New Round (random distances & home)", (810,70))
-        draw_text(screen, "R - Run algorithms on current selection", (810,95))
-        draw_text(screen, "C - Clear player's proposed route", (810,120))
-        draw_text(screen, "S - Save results (only saves if player route matches optimal)", (810,145))
-        draw_text(screen, "Enter player name below, then press Save to store result.", (810,170))
+        # --- Bottom controls ---
+        pygame.draw.rect(screen, (50,50,50), (20, bottom_y, LEFT_PANEL_W, bottom_h))
+        draw_button(screen, btn_new, "New Round (@)")
+        draw_button(screen, btn_run, "Run Algorithms (#)")
+        draw_button(screen, btn_clear, "Clear Route ($)")
+        draw_button(screen, btn_save, "Save Result (%)")
+        draw_button(screen, btn_quit, "Quit Game (Esc)")
 
-        draw_text(screen, f"Message: {message}", (810, 200))
-        # show selected list and home
-        draw_text(screen, f"Home City: {home_label}", (810, 230))
-        draw_text(screen, f"Selected to visit: {', '.join(selected) if selected else '(none)'}", (810, 255))
+        # Player input
+        pygame.draw.rect(screen, (30,30,30), input_rect)
+        pygame.draw.rect(screen, (255,255,255), input_rect, 2)
+        text_to_show = input_text if input_active else player_name or "Enter player name (click/Enter)"
+        draw_text(screen, text_to_show, (input_rect.x + 6, input_rect.y + 6))
+        if input_active and pygame.time.get_ticks() % 1000 < 500:
+            txt_surf = FONT.render(input_text, True, (255,255,255))
+            cursor_x = input_rect.x + 6 + txt_surf.get_width()
+            pygame.draw.line(screen, (255,255,255), (cursor_x, input_rect.y + 8), (cursor_x, input_rect.y + 24), 2)
 
-        # show table of algorithm results
-        draw_text(screen, "Algorithm results:", (810, 290), font=BIGFONT)
+        # --- Right panel: results ---
+        pygame.draw.rect(screen, (35,35,35), results_area)
+        info_y = results_area.y + 10
+        draw_text(screen, "Click cities to build your route.", (results_area.x+6, info_y), font=BIG, color=(200,200,255))
+        draw_text(screen, "Use SHIFT+click to select target cities.", (results_area.x+6, info_y+22), font=BIG, color=(200,200,255))
+        info_y += 50
+        message_lines = split_message(message)
+        for i, line in enumerate(message_lines):
+            draw_text(screen, line, (results_area.x+6, info_y + i*20), color=(255,255,0))
+        info_y_bottom = info_y + len(message_lines)*20
+        draw_text(screen, f"Home: {home_label}", (results_area.x+6, info_y_bottom + 2))
+        draw_text(screen, f"Selected: {', '.join(selected) if selected else '(none)'}",
+                  (results_area.x+6, info_y_bottom + 22))
+        results_y = info_y_bottom + 50
+        draw_text(screen, "Algorithm results (route, distance, time):", (results_area.x+6, results_y), font=BIG)
         if results:
-            y = 330
+            y0 = results_y + 30
+            player_dist = distance_of_route(dist_matrix, player_route) if len(player_route) >= 2 else None
+            if player_dist is not None:
+                draw_text(screen, "Player Route:", (results_area.x+6, y0), font=BIG, color=(0,200,255))
+                draw_text(screen, f"Distance: {player_dist:.2f}", (results_area.x+6, y0+18), color=(0,200,255))
+                y0 += 40
             for algo, data in results.items():
-                draw_text(screen, f"{algo}", (810, y))
-                draw_text(screen, f"Route: {'→'.join(data['route'])}", (810, y+18))
-                draw_text(screen, f"Distance: {data['distance']}  Time: {data['time']:.6f}s  Complexity: {data['complexity']}", (810, y+36))
-                y += 70
+                draw_text(screen, algo+":", (results_area.x+6, y0))
+                draw_text(screen, "Route: " + " → ".join(data["route"]), (results_area.x+6, y0+18), maxw=results_area.w-12)
+                draw_text(screen, f"Distance: {data['distance']:.2f} | Time: {data['time']:.6f}s | Complexity: {data['complexity']}", (results_area.x+6, y0+36))
+                y0 += 70
 
-        # player name input box
-        pygame.draw.rect(screen, (255,255,255), (810, 560, 240, 28))
-        pygame.draw.rect(screen, (0,0,0), (810, 560, 240, 28), 2)
-        draw_text(screen, input_text or "Player name...", (815, 565))
+            # Display Win/Lose if route closed
+            if player_route and player_route[0]==home_label and player_route[-1]==home_label and set(player_route[1:-1])==set(selected):
+                best_dist = results["Held-Karp (DP)"]["distance"]
+                if abs(player_dist - best_dist) < 1e-6:
+                    win_status = ("You Win!", (0,255,0))
+                else:
+                    win_status = ("You Lose!", (255,0,0))
+            if win_status:
+                draw_text(screen, win_status[0], (results_area.x+6, y0+10), font=BIG, color=win_status[1])
 
-        # draw legend of distances (optional small table)
-        if dist_matrix:
-            ym = 480
-            draw_text(screen, "Sample distances (A-B, A-C, ...):", (810, 420))
-            # show first row few distances
-            row = 0
-            labels = game_logic.CITIES
-            for j in range(1, 6):  # show A-B..A-F
-                a = labels[0]
-                b = labels[j]
-                d = dist_matrix[0][j]
-                draw_text(screen, f"{a}-{b}: {d}", (810, 440 + 16*(j-1)))
-
-        # events
+        # --- Event Handling ---
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-                break
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_n:
-                    # new round
-                    dist_matrix = game_logic.generate_distance_matrix()
-                    home_idx = game_logic.pick_random_home()
-                    home_label = game_logic.CITIES[home_idx]
-                    selected = []
-                    player_route = []
-                    results = None
-                    message = f"New round created. Home={home_label}. Select cities to visit (click)."
-                elif event.key == pygame.K_r:
-                    if dist_matrix is None or home_label is None:
-                        message = "Create a new round first (press N)."
-                    else:
-                        if len(selected) == 0:
-                            message = "Select at least one city to visit."
+            try:
+                if event.type == pygame.QUIT:
+                    running = False
+                    break
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    mx,my = event.pos
+                    city_clicked = None
+                    for city,(cx,cy) in POSITIONS.items():
+                        if (mx-cx)**2+(my-cy)**2 <= CITY_RADIUS**2:
+                            city_clicked = city
+                            break
+                    if city_clicked:
+                        if pygame.key.get_pressed()[pygame.K_LSHIFT] or pygame.key.get_pressed()[pygame.K_RSHIFT]:
+                            if city_clicked != home_label:
+                                if city_clicked in selected:
+                                    selected.remove(city_clicked)
+                                    message=f"Unselected {city_clicked}."
+                                else:
+                                    selected.append(city_clicked)
+                                    message=f"Selected {city_clicked} to visit."
+                            else:
+                                message="Cannot select home city as target."
+                        else:
+                            if not player_route:
+                                if city_clicked != home_label:
+                                    message="Start route by clicking HOME city first."
+                                else:
+                                    player_route.append(city_clicked)
+                                    message="Home added to route."
+                            else:
+                                if city_clicked in player_route and city_clicked != home_label:
+                                    message="City already in route."
+                                elif city_clicked == home_label and len(player_route) < len(selected)+1:
+                                    message="Visit all selected cities before returning home."
+                                else:
+                                    player_route.append(city_clicked)
+                                    message=f"Added {city_clicked}."
+                    elif btn_new.collidepoint((mx,my)):
+                        dist_matrix = game_logic.generate_distance_matrix()
+                        home_idx = game_logic.pick_random_home()
+                        home_label = game_logic.CITIES[home_idx]
+                        selected=[]
+                        player_route=[]
+                        results=None
+                        message=f"New round created. Home={home_label}."
+                        win_status=None
+                    elif btn_run.collidepoint((mx,my)):
+                        if dist_matrix is None or home_label is None:
+                            message="No round active."
+                        elif not selected:
+                            message="Select at least one city."
                         else:
                             try:
-                                results = game_logic.run_all(dist_matrix, home_label, selected)
-                                message = "Algorithms computed. Compare your route with optimal (Brute Force)."
+                                results=game_logic.run_all(dist_matrix, home_label, selected)
+                                message="Algorithms computed."
+                                win_status=None
                             except Exception as e:
-                                message = f"Error computing algorithms: {e}"
-                elif event.key == pygame.K_c:
-                    player_route = []
-                    message = "Player route cleared."
-                elif event.key == pygame.K_s:
-                    if not results:
-                        message = "Run algorithms first (R)."
-                    elif len(player_route) < 2:
-                        message = "You must propose a route by clicking cities in order."
-                    else:
-                        # validate player's route visits each selected exactly once and returns to home
-                        valid = True
-                        # route must start at home and end at home
-                        if player_route[0] != home_label:
-                            valid = False
-                            message = "Your proposed route must start at the home city."
-                        if player_route[-1] != home_label:
-                            valid = False
-                            message = "Your proposed route must end at the home city."
-                        # internal cities visited exactly once and equal to selected set
-                        middle = player_route[1:-1]
-                        if sorted(middle) != sorted(selected):
-                            valid = False
-                            message = "Your proposed route must visit each selected city exactly once."
-                        if valid:
-                            # compute player's distance and compare with brute force optimal distance
-                            player_dist = distance_of_route(dist_matrix, player_route)
-                            bf = results["Brute Force"]["distance"]
-                            if player_dist == bf:
-                                # success -> save
-                                player = input_text.strip()
-                                if not player:
-                                    message = "Enter player name in the input box before saving."
+                                log_exception(e)
+                                message=f"Error: {e}"
+                    elif btn_clear.collidepoint((mx,my)):
+                        player_route=[]
+                        message="Player route cleared."
+                        win_status=None
+                    elif btn_save.collidepoint((mx,my)):
+                        if results and len(player_route)>=2:
+                            valid=player_route[0]==home_label and player_route[-1]==home_label
+                            mid=player_route[1:-1]
+                            if valid and set(mid)==set(selected):
+                                player=player_name.strip() or input_text.strip()
+                                if player:
+                                    player_dist=distance_of_route(dist_matrix, player_route)
+                                    best_algo_dist=min(data["distance"] for data in results.values())
+                                    ok=save_game_result(player, home_label, selected, player_route, player_dist, best_algo_dist, results)
+                                    message="Saved!" if ok else "Save failed."
                                 else:
-                                    # save all algorithm results and times
-                                    saved = save_game_result(player, home_label, selected, player_route, results)
-                                    if saved:
-                                        message = "Correct! Saved to Firebase."
-                                    else:
-                                        message = "Correct route but failed to save (see console)."
+                                    message="Enter player name."
                             else:
-                                message = f"Route found but not optimal. Your distance {player_dist}, optimal {bf}."
-                elif event.key == pygame.K_BACKSPACE:
-                    input_text = input_text[:-1]
-                elif event.key == pygame.K_RETURN:
-                    # confirm input
-                    player_name = input_text.strip()
-                    message = f"Player name set: {player_name}"
-                else:
-                    # capture alphanumeric for player name (simple)
-                    if len(input_text) < 24 and (event.unicode.isprintable()):
-                        input_text += event.unicode
-
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                mx, my = event.pos
-                # check if click on a city (left panel)
-                for city, (cx, cy) in POSITIONS.items():
-                    if (mx - cx)**2 + (my - cy)**2 <= CITY_RADIUS**2:
-                        # if algorithms already run and user is clicking sequence: treat as route addition
-                        # if city is already the first or last in player_route allow removing last
-                        if pygame.key.get_mods() & pygame.KMOD_SHIFT:
-                            # shift+click toggles selection to visit
-                            if city in selected:
-                                selected.remove(city)
-                            else:
-                                if city == home_label:
-                                    message = "Cannot select home city to visit."
-                                else:
-                                    selected.append(city)
+                                message="Invalid route."
                         else:
-                            # normal click: add to player's proposed route
-                            # if player_route empty, require starting at home
-                            if not player_route:
-                                if city != home_label:
-                                    message = "Your route must start at the home city. Click the home city first."
-                                else:
-                                    player_route.append(city)
-                                    message = "Added home to route. Click next city to continue (click home at end to finish)."
-                            else:
-                                # append city unless invalid repetition
-                                if city in player_route and not (city == home_label and len(player_route) == len(selected)+1):
-                                    # allow final click of home to close
-                                    message = "City already in route. Do not repeat cities (except home at end)."
-                                else:
-                                    player_route.append(city)
-                                    message = f"Added {city} to route."
-                        break
-
-        # update display for player input text (mirror input_text)
-        # draw bottom instructions for SHIFT selection hint
-        draw_text(screen, "Tip: SHIFT+Click toggles selecting a city to visit. Normal click appends to your proposed route (start at home).", (30, 640))
+                            message="Run algorithms & propose a route first."
+                    elif btn_quit.collidepoint((mx,my)):
+                        running=False
+                    input_active = input_rect.collidepoint((mx,my))
+                if event.type == pygame.KEYDOWN:
+                    if input_active:
+                        if event.key == pygame.K_BACKSPACE:
+                            input_text=input_text[:-1]
+                        elif event.key == pygame.K_RETURN:
+                            player_name=input_text.strip()
+                            input_text=""
+                            input_active=False
+                            message=f"Player set: {player_name}"
+                        else:
+                            if event.unicode.isprintable() and len(input_text)<32:
+                                input_text+=event.unicode
+                    if event.key == pygame.K_ESCAPE:
+                        running=False
+            except Exception as e:
+                log_exception(e)
+                message=f"Unexpected error: {e}"
 
         pygame.display.flip()
 
     pygame.quit()
     sys.exit()
 
-if __name__ == "__main__":
+if __name__=="__main__":
     main()

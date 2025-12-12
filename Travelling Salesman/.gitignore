@@ -1,0 +1,6 @@
+.venv/
+.env
+*.json
+__pycache__/
+# firebase config
+shared/mind-arena.json

@@ -1,28 +1,55 @@
+# src/firebase_config.py
 import firebase_admin
 from firebase_admin import credentials, firestore
 import os
 
-FIREBASE_KEY_PATH = os.path.join(os.path.dirname(__file__), "pdsa-project-firebase-adminsdk-fbsvc-4bd448c3aa.json")
+# JSON file is inside: src/
+KEY_FILENAME = "mind-arena.json"
+
+# Absolute path to this file's folder (src/)
+THIS_DIR = os.path.dirname(__file__)
+
+# Full path to JSON file
+KEY_PATH = os.path.join(THIS_DIR, KEY_FILENAME)
 
 def init_firebase():
-    if not firebase_admin._apps:
-        cred = credentials.Certificate(FIREBASE_KEY_PATH)
-        firebase_admin.initialize_app(cred)
-    return firestore.client()
+    try:
+        if not firebase_admin._apps:
+            cred = credentials.Certificate(KEY_PATH)
+            firebase_admin.initialize_app(cred)
+        return firestore.client()
+    except Exception as e:
+        print("Firebase init error:", e)
+        print("Looking for JSON at:", KEY_PATH)
+        return None
 
 db = init_firebase()
 
-def save_game_result(player_name, home_city, selected_cities, route, total_distance, algorithm, elapsed_time):
+
+def save_game_result(player_name, home_city, selected_cities, player_route,
+                     player_dist, best_algo_dist, best_results):
+
+    if db is None:
+        print("Firebase not initialized. Skipping save.")
+        return False
+
     try:
-        doc_ref = db.collection("tsp_game_results").document()
-        doc_ref.set({
+        doc = {
             "player": player_name,
             "home_city": home_city,
             "selected_cities": selected_cities,
-            "shortest_route": route,
-            "total_distance": total_distance,
-            "algorithm": algorithm,
-            "time_taken": elapsed_time
-        })
+            "player_route": player_route,
+            "player_distance": player_dist,
+            "best_algorithm_distance": best_algo_dist,
+            "results": best_results
+        }
+
+        # Saves inside COLLECTION: Traveling_Salesman_Problem
+        db.collection("Traveling_Salesman_Problem").add(doc)
+
+        print("Saved to Firebase in 'Traveling_Salesman_Problem' collection!")
+        return True
+
     except Exception as e:
-        print("Error saving to Firebase:", e)
+        print("Error saving to Firestore:", e)
+        return False
