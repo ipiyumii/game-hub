@@ -238,14 +238,15 @@ class GameHub:
         
         pygame.quit()
 
-    def launch_game(self, game_id, game_name):       
+    #def launch_game(self, game_id, game_name):
         # Handle Eight Queens game with various possible IDs
-        if (game_id == "eight_queens" or
-            "eight queens" in game_name.lower() or
-            "queens" in game_name.lower()):
-            launch_eight_queens(self)
-        elif "Coming Soon" in game_name:
-            print(f"{game_name} is not yet implemented.")
+      #  if (game_id == "eight_queens" or
+       #     "eight queens" in game_name.lower() or
+        #    "queens" in game_name.lower()):
+         #   launch_eight_queens(self)
+        #elif "Coming Soon" in game_name:
+         #   print(f"{game_name} is not yet implemented.")
             # You could show a message on screen here
-        else:
-            print(f"Game {game_name} is not implemented yet.")
+        #else:
+          #  print(f"Game {game_name} is not implemented yet.")
+
