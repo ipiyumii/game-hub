@@ -5,6 +5,7 @@ import pygame
 import math
 from typing import Optional
 
+
 try:
     from Dashboard.ui.name_input_popup import NameInputPopup, Colors
 
@@ -282,10 +283,10 @@ class GameHub:
         #     return
         # print(f"Game '{game_name}' is not implemented or recognized.")
 
-        # TOWER OF HANOI - SAME PATTERN
+             # TOWER OF HANOI - SAME PATTERN
         if (game_id == "tower_of_hanoi" or
-                "tower" in game_name.lower() or
-                "hanoi" in game_name.lower()):
+              "tower" in game_name.lower() or 
+              "hanoi" in game_name.lower()):
             try:
                 print(f"Launching Tower of Hanoi: {game_name}...")
                 base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
