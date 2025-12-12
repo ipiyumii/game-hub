@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 Simple test script to run the Game Hub
 """
