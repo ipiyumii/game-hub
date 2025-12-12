@@ -296,6 +296,17 @@ class GameHub:
             except Exception as e:
                 print(f"Failed to launch Tower of Hanoi: {e}")
             return
-        
-        
-       
+
+        if (game_id == "travelling_salesman" or
+                "travelling" in game_name.lower() or
+                "salesman" in game_name.lower()):
+            try:
+                print(f"Launching travelling_salesman: {game_name}...")
+                base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                traffic_game_path = os.path.join(base_path, "Travelling Salesman/src", "tsp_main.py")
+                print("Running travelling_salesman from:", traffic_game_path)
+                subprocess.Popen([sys.executable, traffic_game_path])
+            except Exception as e:
+                print(f"Failed to launch Traffic Simulation: {e}")
+            return
+        print(f"Game '{game_name}' is not implemented or recognized.")
