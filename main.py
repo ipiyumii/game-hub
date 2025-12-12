@@ -4,7 +4,7 @@ import os
 from Dashboard.dashboard import GameHub
 from dbUtil import fetch_games_from_database
 
-dashboard_dir = os.path.join(os.path.dirname(_file_), 'Dashboard')
+dashboard_dir = os.path.join(os.path.dirname(__file__), 'Dashboard')
 sys.path.insert(0, dashboard_dir)
 
 
@@ -25,11 +25,10 @@ def launch_game_dashboard(games=None):
 
 
 def main():
-    # Fetch games 
+    # Fetch games
     games = fetch_games_from_database()
-    
-    launch_game_dashboard(games=games)
-    
 
-if _name_ == "_main_":
+    launch_game_dashboard(games=games)
+
+if __name__ == "__main__":
     main()
