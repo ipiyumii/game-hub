@@ -1,10 +1,6 @@
-# tsp_game.py
 import pygame
-import sys
 import math
-import traceback
 import game_logic
-from firebase_config import save_game_result
 
 class TravelingSalesmanGame:
     def __init__(self, player_name=None):
@@ -56,16 +52,10 @@ class TravelingSalesmanGame:
         home_idx = None
         win_status = None
 
-        # Buttons, input_rects same as your main.py
-        # ... (copy all initialization code from main.py)
-
         running = True
         while running:
             delta_time = clock.tick(self.FPS)
             screen.fill((20,20,20))
-            # Copy your draw logic from main.py
-            # Copy your event handling from main.py
-            # Make sure to remove `sys.exit()` at the end so it doesn't close the whole dashboard
-
+         
             pygame.display.flip()
         pygame.quit()

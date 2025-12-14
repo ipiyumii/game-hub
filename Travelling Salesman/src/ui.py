@@ -1,4 +1,3 @@
-# src/ui.py
 import tkinter as tk
 from tkinter import ttk
 import game_logic
@@ -27,7 +26,7 @@ class TSPApp:
         self.latest_results = None
         self.city_positions = game_logic.city_positions(center=(210,210), radius=160)
 
-        # --- Top controls ---
+        # Top controls
         top = ttk.Frame(root, padding=8)
         top.pack(fill="x")
         ttk.Label(top, text="Player name:").pack(side="left")
@@ -37,7 +36,7 @@ class TSPApp:
         ttk.Button(top, text="Run Algorithms", command=self.run_algorithms).pack(side="left", padx=6)
         ttk.Button(top, text="Save Results", command=self.save_results).pack(side="left", padx=6)
 
-        # --- Left panel: City selection & Map ---
+        # Left panel: City selection & Map
         left = ttk.Frame(root, padding=8)
         left.pack(side="left", fill="y")
         ttk.Label(left, text="Select cities:").pack(anchor="w")
@@ -51,7 +50,7 @@ class TSPApp:
         self.canvas = tk.Canvas(left, width=420, height=420, bg="#222222", highlightthickness=0)
         self.canvas.pack(pady=10)
 
-        # --- Right panel: Algorithm results only ---
+        # Right panel: Algorithm results only
         right = ttk.Frame(root, padding=8)
         right.pack(side="right", fill="both", expand=True)
         columns = ("Algorithm","Route","Distance","Time (s)","Complexity")
@@ -61,14 +60,11 @@ class TSPApp:
             self.tree.column(c, anchor="center", width=120)
         self.tree.pack(fill="both", expand=True)
 
-        # --- Bottom: Info / Messages ---
+        #  Bottom: Info / Messages
         bottom = ttk.Frame(root, padding=8)
         bottom.pack(fill="x")
         self.info_label = ttk.Label(bottom, text="Press 'New Round' to start.")
         self.info_label.pack(anchor="w", pady=4)
-
-    # Implement new_round, run_algorithms, save_results
-    # You can reuse your previous methods here
 
 if __name__=="__main__":
     root = tk.Tk()

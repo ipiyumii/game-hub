@@ -1,21 +1,8 @@
-"""
-4-Peg Tower of Hanoi Algorithm Comparison
-Compares different algorithms for solving 4-peg Tower of Hanoi.
-"""
-
 from four_peg_iterative import FourPegSolver
 from four_peg_recursive import FourPegRecursiveSolver
-
 class AlgorithmComparator:
-    """Compare different 4-peg Tower of Hanoi algorithms."""
-    
+ 
     def __init__(self, max_disks=8):
-        """
-        Initialize the comparator.
-        
-        Args:
-            max_disks (int): Maximum number of disks to test
-        """
         self.max_disks = max_disks
         
         # Known optimal moves for 4 pegs (Frame numbers)
@@ -35,12 +22,6 @@ class AlgorithmComparator:
         }
     
     def test_iterative(self, num_disks):
-        """
-        Test iterative algorithm for given number of disks.
-        
-        Returns:
-            dict: Results with moves count and verification status
-        """
         solver = FourPegSolver(num_disks)
         solver.solve()
         moves = solver.moves
@@ -54,12 +35,6 @@ class AlgorithmComparator:
         }
     
     def test_recursive(self, num_disks):
-        """
-        Test recursive algorithm for given number of disks.
-        
-        Returns:
-            dict: Results with moves count and verification status
-        """
         solver = FourPegRecursiveSolver(num_disks)
         solver.solve()
         moves = solver.moves
@@ -75,12 +50,6 @@ class AlgorithmComparator:
         }
     
     def run_comparison(self):
-        """
-        Run comparison for all disk counts up to max_disks.
-        
-        Returns:
-            list: List of comparison results for each disk count
-        """
         results = []
         
         print("="*70)
@@ -139,7 +108,6 @@ class AlgorithmComparator:
         return results
     
     def print_detailed_analysis(self, results):
-        """Print detailed analysis of comparison results."""
         print("\n" + "="*70)
         print("DETAILED ANALYSIS")
         print("="*70)
@@ -176,7 +144,6 @@ class AlgorithmComparator:
                 print(f"Error occurred during testing")
     
     def print_summary_statistics(self, results):
-        """Print summary statistics."""
         print("\n" + "="*70)
         print("SUMMARY STATISTICS")
         print("="*70)
@@ -211,7 +178,6 @@ class AlgorithmComparator:
 
 
 def main():
-    """Main function to run the comparison."""
     # Set maximum disks to test
     max_disks = 8
     

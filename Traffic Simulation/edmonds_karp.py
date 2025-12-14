@@ -1,7 +1,6 @@
 from collections import defaultdict, deque
 from timer import timer
 
-
 class EdmondsKarpBFS:
     def __init__(self):
         pass

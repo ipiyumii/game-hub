@@ -6,17 +6,14 @@ import subprocess
 import time
 
 def launch_tower_of_hanoi(dashboard):
-    """
-    Launch Tower of Hanoi game from dashboard
-    Returns: True if successful, False otherwise
-    """
     print(f"\n{'='*50}")
     print(f"LAUNCHING TOWER OF HANOI")
     print(f"Player: {dashboard.player_name}")
     print(f"{'='*50}")
     
-   
-    GAME_PATH = r"c:\Users\mihik\game-hub\Tower of Hanoi\tower_of_hanoi_ui.py"
+    # Get the directory where this script is located
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    GAME_PATH = os.path.join(current_dir, "tower_of_hanoi_ui.py")
     
     if not os.path.exists(GAME_PATH):
         print(f"[ERROR] Game file not found at: {GAME_PATH}")
@@ -83,11 +80,7 @@ def launch_tower_of_hanoi(dashboard):
     
     return True
 
-
 def test_launcher():
-    """Test the launcher function"""
-    print("Testing Tower of Hanoi launcher...")
-    
     # Create a mock dashboard object for testing
     class MockDashboard:
         def __init__(self):
@@ -113,7 +106,6 @@ def test_launcher():
     print(f"Result: {'Success' if result else 'Failed'}")
     
     pygame.quit()
-
 
 if __name__ == "__main__":
     test_launcher()

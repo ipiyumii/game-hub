@@ -1,4 +1,3 @@
-# firebase_handler.py
 import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime
@@ -94,9 +93,7 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
         return self.initialized and self.db is not None
     
     def get_high_scores(self, limit=5):
-        """
-        Get high scores from hanoi_scores collection
-        """
+        # Get high scores from hanoi_scores collection
         try:
             if not self.is_connected():
                 print("Firebase not connected.")
@@ -122,9 +119,7 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
             return []
     
     def save_player_score(self, **kwargs):
-        """
-        Save player score to hanoi_scores collection
-        """
+        # Save player score to hanoi_scores collection
         try:
             if not self.is_connected():
                 print("Firebase not connected. Score not saved.")
@@ -165,9 +160,7 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
             return False
     
     def get_all_scores(self):
-        """
-        Get all existing scores from hanoi_scores collection
-        """
+        # Get all existing scores from hanoi_scores collection
         try:
             if not self.is_connected():
                 print("Firebase not connected.")
@@ -191,9 +184,7 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
             return []
     
     def generate_csv_from_scores(self, scores):
-        """
-        Generate CSV data from existing scores
-        """
+        # Generate CSV data from existing scores
         csv_data = []
         
         for i, score in enumerate(scores):
@@ -204,7 +195,6 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
             player_name = score.get('player_name', 'Unknown')
             
             # Calculate simulated times based on number of moves
-            # (This is just simulation - you can adjust these formulas)
             recursive_time = num_moves * 0.002  # Simulated recursive time
             iterative_time = num_moves * 0.0015  # Simulated iterative time
             four_peg_recursive_time = num_moves * 0.001  # Simulated 4-peg recursive
@@ -344,10 +334,6 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
             return 0
     
     def save_session(self, score_doc_id, session_data):
-        """
-        Save session as SUB-COLLECTION under a hanoi_scores document
-        Structure: hanoi_scores/{score_doc_id}/sessions/{session_id}
-        """
         try:
             if not self.is_connected():
                 print("Firebase not connected. Session data not saved.")
@@ -372,9 +358,6 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
             return False
     
     def export_scores_to_csv_file(self, filename="hanoi_scores_export.csv"):
-        """
-        Export all scores to a CSV file
-        """
         try:
             scores = self.get_all_scores()
             
@@ -415,9 +398,6 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
             return False
     
     def print_score_summary(self):
-        """
-        Print a summary of all existing scores
-        """
         scores = self.get_all_scores()
         
         print(f"\n{'='*60}")
@@ -493,21 +473,6 @@ if __name__ == "__main__":
                 
             else:
                 print("Invalid choice")
-            
-            # Show final structure
-            print("\n" + "="*60)
-            print("FINAL STRUCTURE IN FIREBASE:")
-            print("="*60)
-            print("hanoi_scores (collection)")
-            print("├── [document_id_1] (score document)")
-            print("│   └── sessions (sub-collection)")
-            print("│       ├── [score_id]_session_01")
-            print("│       ├── [score_id]_session_02")
-            print("│       └── [score_id]_session_03")
-            print("├── [document_id_2] (score document)")
-            print("│   └── sessions (sub-collection)")
-            print("└── ... (all other scores)")
-            print("\nEach existing score now has 3 sessions as sub-collections!")
             
         except ValueError:
             print("Please enter a valid number")

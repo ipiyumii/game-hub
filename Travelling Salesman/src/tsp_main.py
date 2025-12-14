@@ -147,7 +147,6 @@ def main():
                 x, y0_ = POSITIONS[home_label]
                 draw_text(screen, "CLOSED", (x-20, y0_+CITY_RADIUS+5), color=(0,200,255), font=BIG)
 
-        # --- Bottom controls ---
         pygame.draw.rect(screen, (50,50,50), (20, bottom_y, LEFT_PANEL_W, bottom_h))
         draw_button(screen, btn_new, "New Round (@)")
         draw_button(screen, btn_run, "Run Algorithms (#)")
@@ -203,7 +202,7 @@ def main():
             if win_status:
                 draw_text(screen, win_status[0], (results_area.x+6, y0+10), font=BIG, color=win_status[1])
 
-        # --- Event Handling ---
+        # event handeling
         for event in pygame.event.get():
             try:
                 if event.type == pygame.QUIT:

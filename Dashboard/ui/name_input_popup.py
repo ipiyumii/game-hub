@@ -2,7 +2,6 @@ import pygame
 import pygame.font
 from typing import Optional
 
-
 class Colors:
     GRADIENT_START = (135, 206, 250)  
     GRADIENT_END = (25, 25, 112)     
@@ -25,7 +24,6 @@ class Colors:
     TITLE_COLOR = (255, 215, 0)     
     TEXT_COLOR = (25, 25, 112)      
     PLACEHOLDER_COLOR = (128, 128, 128)  
-
 
 class NameInputPopup:    
     def __init__(self, screen_width: int, screen_height: int):

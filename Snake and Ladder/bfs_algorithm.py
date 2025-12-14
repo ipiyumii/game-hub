@@ -1,8 +1,7 @@
 from collections import deque
 import time
 
-class BFSAlgorithm:
-    
+class BFSAlgorithm:  
     
     def __init__(self, board):
         

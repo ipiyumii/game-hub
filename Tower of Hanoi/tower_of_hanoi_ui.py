@@ -11,7 +11,6 @@ from four_peg_recursive import FourPegRecursiveSolver
 from iterative_solver import IterativeSolver, solve_iteratively
 from recursive_solver import RecursiveSolver, solve_recursively
 os.environ['GRPC_DNS_RESOLVER'] = 'native' 
-# ---------------- Thread-Safe Firebase wrapper ----------------
 
 class FirebaseManager:
     """Thread-safe Firebase manager to prevent freezing"""
@@ -59,7 +58,7 @@ class FirebaseManager:
                             return []
                         
                         # Use the same collection name as firebase_handler.py
-                        collection_name = 'hanoi_scores'  # FIXED: Use 'hanoi_scores'
+                        collection_name = 'hanoi_scores' 
                         
                         try:
                             # Get scores from Firebase
@@ -180,8 +179,6 @@ class FirebaseManager:
 # Initialize Firebase manager
 firebase_manager = FirebaseManager()
 
-# ---------------- Pygame setup ----------------
-
 pygame.init()
 
 WIDTH, HEIGHT = 1200, 800
@@ -235,9 +232,6 @@ DISK_COLORS = [
     (255, 220, 120),
     (120, 255, 120),
 ]
-
-
-# ---------------- Algorithm helper ----------------
 
 class AlgorithmHelper:
     """Helper class to integrate solver algorithms with the game"""
@@ -367,9 +361,6 @@ class AlgorithmHelper:
             else:
                 display_solution.append((move[0], move[1]))
         return display_solution
-
-
-# ---------------- UI components ----------------
 
 class NameInputDialog:
     def __init__(self, x, y, width, height, title="Enter Your Name"):
@@ -537,7 +528,6 @@ class Button:
             self.click_effect = True
             self.click_timer = 0
         return clicked
-
 
 class InputBox:
     def __init__(self, x, y, width, height, label="", default_text=""):
@@ -931,8 +921,6 @@ class ScoresPanel:
                 y += 35
 
 
-# ---------------- Particle system ----------------
-
 class ParticleSystem:
     def __init__(self):
         self.particles = []
@@ -971,8 +959,6 @@ class ParticleSystem:
                 size,
             )
 
-
-# ---------------- Main Game UI ----------------
 
 class GameUI:
     def __init__(self):

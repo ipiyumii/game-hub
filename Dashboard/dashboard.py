@@ -259,58 +259,57 @@ class GameHub:
         pygame.quit()
 
     def launch_game(self, game_id, game_name):
-        # """Handle Eight Queens game with various possible IDs
-        # if (game_id == "eight_queens" or
-        #         "eight queens" in game_name.lower() or
-        #         "queens" in game_name.lower()):
-        #     launch_eight_queens(self)
-        # elif "Coming Soon" in game_name:
-        #     print(f"{game_name} is not yet implemented.")
-        #     # You could show a message on screen here
-        # else:
-        #     print(f"Game {game_name} is not implemented yet.")"""
+        if (game_id == "eight_queens" or
+                "eight queens" in game_name.lower() or
+                "queens" in game_name.lower()):
+            launch_eight_queens(self)
+        elif "Coming Soon" in game_name:
+            print(f"{game_name} is not yet implemented.")
+            # You could show a message on screen here
+        else:
+            print(f"Game {game_name} is not implemented yet.")
 
-        # if (game_id == "traffic_simulation" or
-        #         "traffic" in game_name.lower() or
-        #         "simulation" in game_name.lower()):
-        #     try:
-        #         print(f"Launching Traffic Simulation: {game_name}...")
-        #         base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        #         traffic_game_path = os.path.join(base_path, "Traffic Simulation", "traffic_app.py")
-        #         print("Running Traffic Simulation from:", traffic_game_path)
-        #         subprocess.Popen([sys.executable, traffic_game_path])
-        #     except Exception as e:
-        #         print(f"Failed to launch Traffic Simulation: {e}")
-        #     return
-        # print(f"Game '{game_name}' is not implemented or recognized.")
+        if (game_id == "traffic_simulation" or
+                "traffic" in game_name.lower() or
+                "simulation" in game_name.lower()):
+            try:
+                print(f"Launching Traffic Simulation: {game_name}...")
+                base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                traffic_game_path = os.path.join(base_path, "Traffic Simulation", "traffic_app.py")
+                print("Running Traffic Simulation from:", traffic_game_path)
+                subprocess.Popen([sys.executable, traffic_game_path])
+            except Exception as e:
+                print(f"Failed to launch Traffic Simulation: {e}")
+            return
+        print(f"Game '{game_name}' is not implemented or recognized.")
 
-             # TOWER OF HANOI - SAME PATTERN
-        # if (game_id == "tower_of_hanoi" or
-        #       "tower" in game_name.lower() or 
-        #       "hanoi" in game_name.lower()):
-        #     try:
-        #         print(f"Launching Tower of Hanoi: {game_name}...")
-        #         base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        #         tower_hanoi_path = os.path.join(base_path, "Tower of Hanoi", "tower_of_hanoi_ui.py")
-        #         print("Running Tower of Hanoi from:", tower_hanoi_path)
-        #         subprocess.Popen([sys.executable, tower_hanoi_path])
-        #     except Exception as e:
-        #         print(f"Failed to launch Tower of Hanoi: {e}")
-        #     return
+             #TOWER OF HANOI - SAME PATTERN
+        if (game_id == "tower_of_hanoi" or
+              "tower" in game_name.lower() or
+              "hanoi" in game_name.lower()):
+            try:
+                print(f"Launching Tower of Hanoi: {game_name}...")
+                base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                tower_hanoi_path = os.path.join(base_path, "Tower of Hanoi", "tower_of_hanoi_ui.py")
+                print("Running Tower of Hanoi from:", tower_hanoi_path)
+                subprocess.Popen([sys.executable, tower_hanoi_path])
+            except Exception as e:
+                print(f"Failed to launch Tower of Hanoi: {e}")
+            return
 
-        # if (game_id == "travelling_salesman" or
-        #         "travelling" in game_name.lower() or
-        #         "salesman" in game_name.lower()):
-        #     try:
-        #         print(f"Launching travelling_salesman: {game_name}...")
-        #         base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        #         traffic_game_path = os.path.join(base_path, "Travelling Salesman/src", "tsp_main.py")
-        #         print("Running travelling_salesman from:", traffic_game_path)
-        #         subprocess.Popen([sys.executable, traffic_game_path])
-        #     except Exception as e:
-        #         print(f"Failed to launch Traffic Simulation: {e}")
-        #     return
-        # print(f"Game '{game_name}' is not implemented or recognized.")
+        if (game_id == "travelling_salesman" or
+                "travelling" in game_name.lower() or
+                "salesman" in game_name.lower()):
+            try:
+                print(f"Launching travelling_salesman: {game_name}...")
+                base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                traffic_game_path = os.path.join(base_path, "Travelling Salesman/src", "tsp_main.py")
+                print("Running travelling_salesman from:", traffic_game_path)
+                subprocess.Popen([sys.executable, traffic_game_path])
+            except Exception as e:
+                print(f"Failed to launch Traffic Simulation: {e}")
+            return
+        print(f"Game '{game_name}' is not implemented or recognized.")
 
         if (game_id == "snake_and_ladder" or
                 "snake" in game_name.lower() or

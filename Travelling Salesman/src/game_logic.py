@@ -1,4 +1,3 @@
-# src/game_logic.py
 import random
 import math
 import itertools
@@ -8,7 +7,7 @@ import time
 CITIES = [chr(ord("A") + i) for i in range(10)]
 
 def city_positions(center=(210, 210), radius=160):
-    """Return dictionary mapping city label -> (x,y) for UI drawing (same as main)."""
+    # Return dictionary mapping city label - (x,y) for UI drawing (same as main)
     positions = {}
     cx, cy = center
     n = len(CITIES)
@@ -20,7 +19,7 @@ def city_positions(center=(210, 210), radius=160):
     return positions
 
 def generate_distance_matrix(min_d=50, max_d=100):
-    """Generate symmetric distance matrix with integers in [min_d, max_d]."""
+    # Generate symmetric distance matrix with integers in [min_d, max_d]
     n = len(CITIES)
     m = [[0] * n for _ in range(n)]
     for i in range(n):
@@ -31,12 +30,8 @@ def generate_distance_matrix(min_d=50, max_d=100):
     return m
 
 def pick_random_home():
-    """Return index of chosen HOME city."""
+    # Return index of chosen HOME city
     return random.randint(0, len(CITIES) - 1)
-
-# ---------------------------
-# Algorithm implementations
-# ---------------------------
 
 def brute_force_tsp(dist_matrix, start_idx, city_indices):
     """Brute force by permutations. Returns (route_indices_list, total_distance, elapsed_time)."""
@@ -54,7 +49,7 @@ def brute_force_tsp(dist_matrix, start_idx, city_indices):
     return best_route, best_cost, time.time() - t0
 
 def nearest_neighbour_tsp(dist_matrix, start_idx, city_indices):
-    """Greedy nearest neighbour."""
+    # Greedy nearest neighbour
     t0 = time.time()
     unvisited = set(city_indices)
     route = [start_idx]
@@ -69,10 +64,7 @@ def nearest_neighbour_tsp(dist_matrix, start_idx, city_indices):
     return route, cost, time.time() - t0
 
 def held_karp_tsp(dist_matrix, start_idx, city_indices):
-    """
-    Held-Karp DP. city_indices is a list (global indices) not including start.
-    Returns (route_global_indices, cost, elapsed_time)
-    """
+
     t0 = time.time()
     n = len(city_indices)
     if n == 0:
@@ -117,14 +109,8 @@ def held_karp_tsp(dist_matrix, start_idx, city_indices):
     elapsed = time.time() - t0
     return best_path, best_cost, elapsed
 
-# ---------------------------
-# Recursive TSP (new)
-# ---------------------------
 def _tsp_recursive_helper(dist_matrix, current, unvisited_set, start_idx):
-    """
-    Helper returns (route_from_current_to_end_including_return_to_start, cost).
-    unvisited_set contains global indices (ints).
-    """
+
     if not unvisited_set:
         # return path back to start
         return [current, start_idx], dist_matrix[current][start_idx]
@@ -142,12 +128,7 @@ def _tsp_recursive_helper(dist_matrix, current, unvisited_set, start_idx):
     return best_route, best_cost
 
 def tsp_recursive(dist_matrix, start_idx, city_indices):
-    """
-    Wrapper for recursive TSP.
-    start_idx: global index of HOME
-    city_indices: list of global indices to visit (not including start)
-    Returns (route_global_indices, cost, elapsed_time)
-    """
+ 
     t0 = time.time()
     if not city_indices:
         return [start_idx, start_idx], 0, 0.0
@@ -157,16 +138,8 @@ def tsp_recursive(dist_matrix, start_idx, city_indices):
     elapsed = time.time() - t0
     return best_route, best_cost, elapsed
 
-# ---------------------------
-# Runner to produce user-friendly results (labels, times)
-# ---------------------------
 def run_all(dist_matrix, home_label, selected_labels):
-    """
-    dist_matrix: numerical matrix
-    home_label: label like 'A'
-    selected_labels: list of labels to visit (strings)
-    Returns dict: algo_name -> {"route": [labels], "distance": float, "time": float, "complexity": str}
-    """
+
     if dist_matrix is None:
         raise ValueError("dist_matrix is None")
 

@@ -1,14 +1,8 @@
-"""
-Unit Tests for Tower of Hanoi Algorithms
-Test both iterative and recursive solutions.
-"""
-
 import unittest
 from iterative_solver import IterativeSolver, solve_iteratively
 from recursive_solver import RecursiveSolver, solve_recursively
 
 class TestTowerOfHanoiAlgorithms(unittest.TestCase):
-    """Test cases for Tower of Hanoi algorithms."""
     
     def test_1_disk(self):
         """Test with 1 disk."""
@@ -43,14 +37,11 @@ class TestTowerOfHanoiAlgorithms(unittest.TestCase):
         iterative_solver = IterativeSolver(2, 'A', 'C', 'B')
         iterative_moves = iterative_solver.solve()
         self.assertEqual(len(iterative_moves), 3)
-        # Note: Iterative algorithm may produce different but valid sequence for even disks
-        # Both are valid solutions
-        
+      
         # Both should have correct number of moves
         self.assertEqual(len(recursive_moves), len(iterative_moves))
     
     def test_3_disks(self):
-        """Test with 3 disks (classic case)."""
         # Both algorithms should produce the same optimal solution
         expected_move_count = 7  # 2^3 - 1 = 7
         
@@ -76,7 +67,6 @@ class TestTowerOfHanoiAlgorithms(unittest.TestCase):
         self.assertEqual(iterative_moves, classic_solution)
     
     def test_formula_2_power_n_minus_1(self):
-        """Test that solution follows 2^n - 1 formula."""
         for n in range(1, 6):  # Test for 1 to 5 disks
             expected_moves = (1 << n) - 1  # 2^n - 1
             
@@ -93,7 +83,6 @@ class TestTowerOfHanoiAlgorithms(unittest.TestCase):
                           f"Iterative failed for n={n}: got {len(iterative_moves)}, expected {expected_moves}")
     
     def test_different_peg_labels(self):
-        """Test with different peg labels."""
         # Recursive with custom labels
         recursive_solver = RecursiveSolver(3, 'X', 'Z', 'Y')
         recursive_moves = recursive_solver.solve()
@@ -115,7 +104,6 @@ class TestTowerOfHanoiAlgorithms(unittest.TestCase):
             self.assertIn(move[1], ['X', 'Y', 'Z'])
     
     def test_legal_moves_only(self):
-        """Test that all moves are legal (no larger disk on smaller)."""
         for n in range(1, 5):
             # Test both algorithms
             for solver_class, solver_name in [(RecursiveSolver, 'Recursive'), 
@@ -151,7 +139,6 @@ class TestTowerOfHanoiAlgorithms(unittest.TestCase):
                                f"{solver_name}: Not all disks moved to target")
     
     def test_convenience_functions(self):
-        """Test the convenience functions."""
         # Test recursive convenience function
         recursive_sequence = solve_recursively(3, 'A', 'C', 'B')
         self.assertEqual(len(recursive_sequence), 7)
@@ -163,7 +150,6 @@ class TestTowerOfHanoiAlgorithms(unittest.TestCase):
         self.assertEqual(iterative_sequence, ['AC', 'AB', 'CB', 'AC', 'BA', 'BC', 'AC'])
     
     def test_solution_completeness(self):
-        """Test that solution ends with all disks on target peg."""
         for n in range(1, 5):
             # Test recursive
             recursive_solver = RecursiveSolver(n, 'A', 'C', 'B')
@@ -198,11 +184,8 @@ class TestTowerOfHanoiAlgorithms(unittest.TestCase):
                            f"Iterative failed for n={n}: disks not all on target")
 
 
-class TestAlgorithmEdgeCases(unittest.TestCase):
-    """Test edge cases and special scenarios."""
-    
+class TestAlgorithmEdgeCases(unittest.TestCase):    
     def test_large_number_of_disks(self):
-        """Test with relatively large number of disks (but not too large for performance)."""
         n = 10  # 2^10 - 1 = 1023 moves
         expected_moves = (1 << n) - 1
         
@@ -241,7 +224,7 @@ class TestAlgorithmEdgeCases(unittest.TestCase):
 
 
 def run_performance_test():
-    """Run performance comparison (not a unit test)."""
+    """Run performance comparison"""
     print("\n" + "="*80)
     print("PERFORMANCE COMPARISON")
     print("="*80)

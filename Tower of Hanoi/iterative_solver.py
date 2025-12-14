@@ -1,25 +1,6 @@
-"""
-Iterative Tower of Hanoi Solver
-This module provides an iterative solution to the Tower of Hanoi problem.
-The solution uses mathematical patterns based on disk parity.
-"""
-
 class IterativeSolver:
-    """
-    Iterative solver for Tower of Hanoi with 3 pegs.
-    Uses pattern-based approach that works for any number of disks.
-    """
-    
+ 
     def __init__(self, num_disks=3, source='A', target='C', auxiliary='B'):
-        """
-        Initialize the iterative solver.
-        
-        Args:
-            num_disks (int): Number of disks to solve
-            source (str): Source peg label
-            target (str): Target peg label
-            auxiliary (str): Auxiliary peg label
-        """
         self.num_disks = num_disks
         self.source = source
         self.target = target
@@ -28,13 +9,6 @@ class IterativeSolver:
         self.total_moves = 0
         
     def solve(self):
-        """
-        Solve the Tower of Hanoi problem iteratively.
-        Always produces optimal solution with 2^n - 1 moves.
-        
-        Returns:
-            list: List of moves as tuples (from_peg, to_peg)
-        """
         self.moves = []
         
         # No disks, no moves needed
@@ -42,7 +16,7 @@ class IterativeSolver:
             self.total_moves = 0
             return self.moves
         
-        # Initialize towers (disks numbered from largest to smallest)
+        # Initialize towers
         towers = {
             self.source: list(range(self.num_disks, 0, -1)),
             self.auxiliary: [],
@@ -54,18 +28,17 @@ class IterativeSolver:
         
         # Determine move pattern based on parity of number of disks
         if self.num_disks % 2 == 1:
-            # Odd number of disks: pattern is source->target, source->auxiliary, target->auxiliary
             move_patterns = [
-                (self.source, self.target),      # Move 1: source -> target
-                (self.source, self.auxiliary),   # Move 2: source -> auxiliary
-                (self.target, self.auxiliary)    # Move 3: target -> auxiliary
+                (self.source, self.target),     
+                (self.source, self.auxiliary),  
+                (self.target, self.auxiliary)   
             ]
         else:
             # Even number of disks: pattern is source->auxiliary, source->target, auxiliary->target
             move_patterns = [
-                (self.source, self.auxiliary),   # Move 1: source -> auxiliary
-                (self.source, self.target),      # Move 2: source -> target
-                (self.auxiliary, self.target)    # Move 3: auxiliary -> target
+                (self.source, self.auxiliary),   
+                (self.source, self.target),    
+                (self.auxiliary, self.target)   
             ]
         
         move_count = 0
@@ -101,21 +74,9 @@ class IterativeSolver:
         return self.moves
     
     def get_move_sequence(self):
-        """
-        Get the move sequence as a list of strings.
-        
-        Returns:
-            list: List of moves as strings (e.g., ["AB", "AC", "BC"])
-        """
         return [f"{move[0]}{move[1]}" for move in self.moves]
     
     def get_total_moves(self):
-        """
-        Get the total number of moves required.
-        
-        Returns:
-            int: Total number of moves (should be 2^n - 1)
-        """
         return self.total_moves
     
     def print_solution(self):
@@ -128,12 +89,6 @@ class IterativeSolver:
             print(f"{i:3d}. {move[0]} -> {move[1]}")
     
     def verify_solution(self):
-        """
-        Verify that the solution is correct by simulating it.
-        
-        Returns:
-            bool: True if solution is correct, False otherwise
-        """
         if self.num_disks == 0:
             return len(self.moves) == 0
         
@@ -177,25 +132,12 @@ class IterativeSolver:
 
 
 def solve_iteratively(num_disks=3, source='A', target='C', auxiliary='B'):
-    """
-    Convenience function to solve Tower of Hanoi iteratively.
-    
-    Args:
-        num_disks (int): Number of disks
-        source (str): Source peg
-        target (str): Target peg
-        auxiliary (str): Auxiliary peg
-        
-    Returns:
-        list: List of moves as strings
-    """
     solver = IterativeSolver(num_disks, source, target, auxiliary)
     solver.solve()
     return solver.get_move_sequence()
 
 
 def run_demo():
-    """Run a demonstration of the iterative solver."""
     print("="*70)
     print("ITERATIVE TOWER OF HANOI SOLVER DEMONSTRATION")
     print("="*70)
@@ -271,27 +213,6 @@ def run_demo():
     print(f"\n{'='*70}")
     print("ALGORITHM EXPLANATION")
     print("="*70)
-    print("""
-    The iterative algorithm works by following a simple pattern:
-    
-    1. For ODD number of disks (1, 3, 5, ...):
-       Pattern repeats every 3 moves:
-       1. source -> target
-       2. source -> auxiliary  
-       3. target -> auxiliary
-    
-    2. For EVEN number of disks (2, 4, 6, ...):
-       Pattern repeats every 3 moves:
-       1. source -> auxiliary
-       2. source -> target
-       3. auxiliary -> target
-    
-    At each step, if the pattern move is not legal (would place a larger
-    disk on a smaller one), the reverse move is made instead.
-    
-    This always produces the optimal solution with 2^n - 1 moves.
-    """)
-
 
 if __name__ == "__main__":
     # Run the demonstration

@@ -3,8 +3,7 @@ from styles import GameStyles
 import random
 
 class AnswerChoiceScreen:
-    
-    
+     
     def __init__(self, root, game_state, correct_answer, on_choice_callback):
        
         self.root = root

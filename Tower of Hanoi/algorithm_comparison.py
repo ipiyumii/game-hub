@@ -1,36 +1,12 @@
-"""
-Algorithm Comparison for Tower of Hanoi
-This module compares the iterative and recursive solutions.
-"""
-
 import time
 from iterative_solver import IterativeSolver, solve_iteratively
 from recursive_solver import RecursiveSolver, solve_recursively
 
 class AlgorithmComparator:
-    """
-    Compare iterative and recursive Tower of Hanoi solutions.
-    """
-    
     def __init__(self, max_disks=8):
-        """
-        Initialize the comparator.
-        
-        Args:
-            max_disks (int): Maximum number of disks to test
-        """
         self.max_disks = max_disks
         
     def compare_solutions(self, num_disks):
-        """
-        Compare solutions for a given number of disks.
-        
-        Args:
-            num_disks (int): Number of disks
-            
-        Returns:
-            dict: Comparison results
-        """
         results = {
             'num_disks': num_disks,
             'expected_moves': (1 << num_disks) - 1  # 2^n - 1
@@ -70,12 +46,6 @@ class AlgorithmComparator:
         return results
     
     def run_comparison(self):
-        """
-        Run comparison for different numbers of disks.
-        
-        Returns:
-            list: List of comparison results
-        """
         print("="*80)
         print("TOWER OF HANOI ALGORITHM COMPARISON")
         print("="*80)
@@ -97,12 +67,6 @@ class AlgorithmComparator:
         return all_results
     
     def print_detailed_analysis(self, num_disks=3):
-        """
-        Print detailed analysis for a specific number of disks.
-        
-        Args:
-            num_disks (int): Number of disks to analyze
-        """
         print(f"\n{'='*80}")
         print(f"DETAILED ANALYSIS FOR {num_disks} DISKS")
         print(f"{'='*80}")
@@ -216,34 +180,6 @@ def integration_with_game():
     print("\n4. SOLUTION VALIDATION:")
     print("   - Check if player's solution is optimal")
     print("   - Validate sequence mode input against optimal solution")
-    
-    print("\nExample integration code:")
-    print("""
-    # In your game_logic.py or a new solver module:
-    
-    from recursive_solver import RecursiveSolver
-    from iterative_solver import IterativeSolver
-    
-    class GameWithSolvers:
-        def __init__(self, num_disks=3):
-            self.num_disks = num_disks
-            self.recursive_solver = RecursiveSolver(num_disks, 'A', 'C', 'B')
-            self.iterative_solver = IterativeSolver(num_disks, 'A', 'C', 'B')
-            
-        def get_optimal_solution(self, method='recursive'):
-            if method == 'recursive':
-                return self.recursive_solver.solve()
-            else:
-                return self.iterative_solver.solve()
-                
-        def get_next_optimal_move(self, current_state):
-            # Calculate next optimal move based on current game state
-            pass
-            
-        def validate_player_solution(self, player_moves):
-            # Check if player's solution matches optimal solution
-            pass
-    """)
 
 
 if __name__ == "__main__":

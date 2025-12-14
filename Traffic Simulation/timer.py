@@ -5,7 +5,6 @@ from datetime import datetime
 import csv
 import json
 
-
 def timer(func):
     """Decorator to measure function execution time"""
 

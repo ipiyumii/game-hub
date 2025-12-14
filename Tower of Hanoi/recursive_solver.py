@@ -1,25 +1,7 @@
-"""
-Recursive Tower of Hanoi Solver
-This module provides a recursive solution to the Tower of Hanoi problem.
-This is the classic mathematical solution that follows the principle of mathematical induction.
-"""
-
 class RecursiveSolver:
-    """
-    Recursive solver for Tower of Hanoi with 3 pegs.
-    Uses the classic recursive algorithm based on mathematical induction.
-    """
+    # Recursive solver for Tower of Hanoi with 3 pegs.
     
     def __init__(self, num_disks=3, source='A', target='C', auxiliary='B'):
-        """
-        Initialize the recursive solver.
-        
-        Args:
-            num_disks (int): Number of disks to solve
-            source (str): Source peg label
-            target (str): Target peg label
-            auxiliary (str): Auxiliary peg label
-        """
         self.num_disks = num_disks
         self.source = source
         self.target = target
@@ -29,18 +11,6 @@ class RecursiveSolver:
         self.step_counter = 0
         
     def solve(self, num_disks=None, source=None, target=None, auxiliary=None):
-        """
-        Solve the Tower of Hanoi problem recursively.
-        
-        Args:
-            num_disks (int): Number of disks (optional, uses initialized value if None)
-            source (str): Source peg (optional)
-            target (str): Target peg (optional)
-            auxiliary (str): Auxiliary peg (optional)
-            
-        Returns:
-            list: List of moves as tuples (from_peg, to_peg)
-        """
         # Use provided parameters or default to initialized values
         if num_disks is None:
             num_disks = self.num_disks
@@ -78,19 +48,6 @@ class RecursiveSolver:
         return self.moves
     
     def solve_with_trace(self, num_disks=None, source=None, target=None, auxiliary=None, depth=0):
-        """
-        Solve with detailed tracing of recursive calls.
-        
-        Args:
-            num_disks (int): Number of disks
-            source (str): Source peg
-            target (str): Target peg
-            auxiliary (str): Auxiliary peg
-            depth (int): Recursion depth for indentation
-            
-        Returns:
-            list: List of moves
-        """
         if num_disks is None:
             num_disks = self.num_disks
         if source is None:
@@ -122,21 +79,9 @@ class RecursiveSolver:
         return self.moves
     
     def get_move_sequence(self):
-        """
-        Get the move sequence as a list of strings.
-        
-        Returns:
-            list: List of moves as strings (e.g., ["AB", "AC", "BC"])
-        """
         return [f"{move[0]}{move[1]}" for move in self.moves]
     
     def get_total_moves(self):
-        """
-        Get the total number of moves required.
-        
-        Returns:
-            int: Total number of moves (should be 2^n - 1)
-        """
         return self.total_moves
     
     def print_solution(self):
@@ -150,12 +95,6 @@ class RecursiveSolver:
             print(f"{i:3d}. {move[0]} -> {move[1]}")
     
     def get_formula_explanation(self):
-        """
-        Get the mathematical formula explanation for the solution.
-        
-        Returns:
-            str: Explanation of the formula
-        """
         return f"""
         Mathematical Formula:
         For n disks, the minimum number of moves required is: 2^n - 1
@@ -174,33 +113,12 @@ class RecursiveSolver:
 
 
 def solve_recursively(num_disks=3, source='A', target='C', auxiliary='B'):
-    """
-    Convenience function to solve Tower of Hanoi recursively.
-    
-    Args:
-        num_disks (int): Number of disks
-        source (str): Source peg
-        target (str): Target peg
-        auxiliary (str): Auxiliary peg
-        
-    Returns:
-        list: List of moves as strings
-    """
     solver = RecursiveSolver(num_disks, source, target, auxiliary)
     solver.solve()
     return solver.get_move_sequence()
 
 
 def visualize_towers(disks_on_A, disks_on_B, disks_on_C, move_description=""):
-    """
-    Visualize the current state of the towers.
-    
-    Args:
-        disks_on_A (list): Disks on peg A
-        disks_on_B (list): Disks on peg B
-        disks_on_C (list): Disks on peg C
-        move_description (str): Description of the last move
-    """
     max_disks = max(len(disks_on_A), len(disks_on_B), len(disks_on_C))
     
     print("\n" + "="*50)
@@ -225,12 +143,6 @@ def visualize_towers(disks_on_A, disks_on_B, disks_on_C, move_description=""):
 
 
 def solve_with_visualization(num_disks=3):
-    """
-    Solve Tower of Hanoi with visualization of each step.
-    
-    Args:
-        num_disks (int): Number of disks
-    """
     print(f"\nSolving Tower of Hanoi with {num_disks} disks (with visualization)")
     
     # Initialize towers
