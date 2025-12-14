@@ -29,7 +29,6 @@ def main():
     games = fetch_games_from_database()
 
     launch_game_dashboard(games=games)
-    
 
 if __name__ == "__main__":
     main()

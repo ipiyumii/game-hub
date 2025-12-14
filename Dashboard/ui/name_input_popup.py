@@ -4,53 +4,52 @@ from typing import Optional
 
 
 class Colors:
-    """Color palette for the game UI"""
-    # Gradient colors for backgrounds
-    GRADIENT_START = (135, 206, 250)  # Light sky blue
-    GRADIENT_END = (25, 25, 112)      # Midnight blue
+    GRADIENT_START = (135, 206, 250)  
+    GRADIENT_END = (25, 25, 112)     
     
     # UI Colors
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
     
     # Button colors
-    BUTTON_COLOR = (70, 130, 180)     # Steel blue
-    BUTTON_HOVER = (100, 149, 237)    # Cornflower blue
-    BUTTON_PRESSED = (65, 105, 225)   # Royal blue
+    BUTTON_COLOR = (70, 130, 180)     
+    BUTTON_HOVER = (100, 149, 237) 
+    BUTTON_PRESSED = (65, 105, 225)   
     
     # Input field colors
-    INPUT_BG = (240, 248, 255)        # Alice blue
-    INPUT_BORDER = (30, 144, 255)     # Dodger blue
-    INPUT_ACTIVE = (0, 191, 255)      # Deep sky blue
+    INPUT_BG = (240, 248, 255)      
+    INPUT_BORDER = (30, 144, 255)    
+    INPUT_ACTIVE = (0, 191, 255)      
     
     # Text colors
-    TITLE_COLOR = (255, 215, 0)       # Gold
-    TEXT_COLOR = (25, 25, 112)        # Midnight blue
-    PLACEHOLDER_COLOR = (128, 128, 128)  # Gray
+    TITLE_COLOR = (255, 215, 0)     
+    TEXT_COLOR = (25, 25, 112)      
+    PLACEHOLDER_COLOR = (128, 128, 128)  
 
 
-class NameInputPopup:
-    """A colorful popup dialog for entering player name"""
-    
+class NameInputPopup:    
     def __init__(self, screen_width: int, screen_height: int):
         self.screen_width = screen_width
         self.screen_height = screen_height
         
         # Popup dimensions
-        self.width = 400
+        self.width = 600
         self.height = 300
         self.x = (screen_width - self.width) // 2
         self.y = (screen_height - self.height) // 2
         
         # Input field
-        self.input_rect = pygame.Rect(self.x + 50, self.y + 150, 300, 40)
+        self.input_rect = pygame.Rect(self.x + (self.width - 300) // 2, self.y + 150, 300, 40)
         self.input_active = False
         self.player_name = ""
         self.placeholder_text = "Enter your name..."
         
         # Buttons
-        self.ok_button = pygame.Rect(self.x + 100, self.y + 220, 80, 40)
-        self.cancel_button = pygame.Rect(self.x + 220, self.y + 220, 80, 40)
+        button_y = self.y + 220
+        total_button_width = 80 + 20 + 80  # OK button + gap + Cancel button
+        button_start_x = self.x + (self.width - total_button_width) // 2
+        self.ok_button = pygame.Rect(button_start_x, button_y, 80, 40)
+        self.cancel_button = pygame.Rect(button_start_x + 80 + 20, button_y, 80, 40)
         
         # Button states
         self.ok_button_hovered = False
@@ -69,14 +68,12 @@ class NameInputPopup:
         self.is_animating = True
         
     def initialize_fonts(self):
-        """Initialize fonts after pygame is initialized"""
         self.title_font = pygame.font.Font(None, 48)
         self.text_font = pygame.font.Font(None, 24)
         self.button_font = pygame.font.Font(None, 28)
     
     def draw_gradient_background(self, surface: pygame.Surface, rect: pygame.Rect, 
                                start_color: tuple, end_color: tuple):
-        """Draw a vertical gradient background"""
         for y in range(rect.height):
             ratio = y / rect.height
             r = int(start_color[0] * (1 - ratio) + end_color[0] * ratio)
@@ -88,7 +85,6 @@ class NameInputPopup:
     
     def draw_button(self, surface: pygame.Surface, rect: pygame.Rect, text: str, 
                    is_hovered: bool, is_pressed: bool):
-        """Draw a colorful button with hover and press effects"""
         # Determine button color
         if is_pressed:
             color = Colors.BUTTON_PRESSED
@@ -97,7 +93,7 @@ class NameInputPopup:
         else:
             color = Colors.BUTTON_COLOR
         
-        # Draw button with rounded corners effect
+        # Draw button 
         pygame.draw.rect(surface, color, rect, border_radius=10)
         pygame.draw.rect(surface, Colors.WHITE, rect, width=2, border_radius=10)
         
@@ -113,7 +109,6 @@ class NameInputPopup:
         surface.blit(text_surface, text_rect)
     
     def handle_event(self, event: pygame.event.Event) -> Optional[str]:
-        """Handle events and return player name if confirmed, None if cancelled"""
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
             
@@ -152,20 +147,18 @@ class NameInputPopup:
                 elif event.key == pygame.K_BACKSPACE:
                     self.player_name = self.player_name[:-1]
                 else:
-                    if len(self.player_name) < 20:  # Limit name length
+                    if len(self.player_name) < 20: 
                         self.player_name += event.unicode
         
         return None
     
     def update_animation(self):
-        """Update popup animation"""
         if self.is_animating:
             self.popup_scale = min(1.0, self.popup_scale + self.animation_speed)
             if self.popup_scale >= 1.0:
                 self.is_animating = False
     
     def draw(self, surface: pygame.Surface):
-        """Draw the name input popup"""
         if self.title_font is None:
             self.initialize_fonts()
         
@@ -183,7 +176,7 @@ class NameInputPopup:
         pygame.draw.rect(popup_surface, Colors.WHITE, popup_rect, width=3, border_radius=15)
         
         # Draw title
-        title_text = "Welcome to Game Hub!"
+        title_text = "Welcome to Mind Arena!"
         title_surface = self.title_font.render(title_text, True, Colors.TITLE_COLOR)
         title_rect = title_surface.get_rect(centerx=self.width//2, y=30)
         popup_surface.blit(title_surface, title_rect)
@@ -195,7 +188,7 @@ class NameInputPopup:
         popup_surface.blit(subtitle_surface, subtitle_rect)
         
         # Draw input field
-        input_local_rect = pygame.Rect(50, 150, 300, 40)
+        input_local_rect = pygame.Rect((self.width - 300) // 2, 150, 300, 40)
         input_color = Colors.INPUT_ACTIVE if self.input_active else Colors.INPUT_BORDER
         
         # Input field background
@@ -219,8 +212,11 @@ class NameInputPopup:
                            (cursor_x, cursor_y), (cursor_x, cursor_y + 30), 2)
         
         # Draw buttons
-        ok_local_rect = pygame.Rect(100, 220, 80, 40)
-        cancel_local_rect = pygame.Rect(220, 220, 80, 40)
+        button_y_local = 220
+        total_button_width = 80 + 20 + 80  # OK button + gap + Cancel button
+        button_start_x_local = (self.width - total_button_width) // 2
+        ok_local_rect = pygame.Rect(button_start_x_local, button_y_local, 80, 40)
+        cancel_local_rect = pygame.Rect(button_start_x_local + 80 + 20, button_y_local, 80, 40)
         
         self.draw_button(popup_surface, ok_local_rect, "OK", 
                         self.ok_button_hovered, self.ok_button_pressed)

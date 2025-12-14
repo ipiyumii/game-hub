@@ -1,10 +1,15 @@
+from logging import exception
+
 import firebase_admin
 from firebase_admin import credentials, firestore
 
 def initialize_firebase(json_path: str):
-    creds = credentials.Certificate(json_path)
-    firebase_admin.initialize_app(creds)
-    return firestore.client()
+    try:
+        creds = credentials.Certificate(json_path)
+        firebase_admin.initialize_app(creds)
+        return firestore.client()
+    except exception as e:
+        print(f"Firebase initialization error: {e}")
 
 def get_all_games(db):
     games_ref = db.collection("games")
@@ -17,12 +22,11 @@ def get_all_games(db):
     return all_games
 
 def fetch_games_from_database():
-    """Fetch games from database and return them"""
     try:
-        from dbUtil import initialize_firebase, get_all_games
         print("Connecting to database...")
         
         db = initialize_firebase("shared/mind-arena.json")
+
         games = get_all_games(db)
         
         print("Games found in database:")
@@ -38,3 +42,11 @@ def fetch_games_from_database():
         print(f"Database error: {e}")
         print("Using fallback games.")
         return None
+
+def delete_collection(coll_ref):
+    try:
+        docs = coll_ref.stream()
+        for doc in docs:
+            doc.reference.delete()
+    except Exception as e:
+        print(f"Error deleting collection: {e}")

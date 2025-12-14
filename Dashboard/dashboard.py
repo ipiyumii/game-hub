@@ -5,6 +5,7 @@ import pygame
 import math
 from typing import Optional
 
+from EightQueensPuzzle.launch_game import launch_eight_queens
 
 try:
     from Dashboard.ui.name_input_popup import NameInputPopup, Colors
@@ -284,18 +285,18 @@ class GameHub:
         # print(f"Game '{game_name}' is not implemented or recognized.")
 
              # TOWER OF HANOI - SAME PATTERN
-        if (game_id == "tower_of_hanoi" or
-              "tower" in game_name.lower() or
-              "hanoi" in game_name.lower()):
-            try:
-                print(f"Launching Tower of Hanoi: {game_name}...")
-                base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-                tower_hanoi_path = os.path.join(base_path, "Tower of Hanoi", "tower_of_hanoi_ui.py")
-                print("Running Tower of Hanoi from:", tower_hanoi_path)
-                subprocess.Popen([sys.executable, tower_hanoi_path])
-            except Exception as e:
-                print(f"Failed to launch Tower of Hanoi: {e}")
-            return
+        # if (game_id == "tower_of_hanoi" or
+        #       "tower" in game_name.lower() or 
+        #       "hanoi" in game_name.lower()):
+        #     try:
+        #         print(f"Launching Tower of Hanoi: {game_name}...")
+        #         base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        #         tower_hanoi_path = os.path.join(base_path, "Tower of Hanoi", "tower_of_hanoi_ui.py")
+        #         print("Running Tower of Hanoi from:", tower_hanoi_path)
+        #         subprocess.Popen([sys.executable, tower_hanoi_path])
+        #     except Exception as e:
+        #         print(f"Failed to launch Tower of Hanoi: {e}")
+        #     return
 
         # if (game_id == "travelling_salesman" or
         #         "travelling" in game_name.lower() or
