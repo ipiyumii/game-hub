@@ -1,0 +1,4 @@
+.venv/
+__pycache__/
+*.pyc
+serviceAccountKeypdsa-project-firebase-adminsdk-fbsvc-270075d5a3.json
