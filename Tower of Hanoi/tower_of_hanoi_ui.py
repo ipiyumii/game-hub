@@ -13,8 +13,6 @@ from recursive_solver import RecursiveSolver, solve_recursively
 os.environ['GRPC_DNS_RESOLVER'] = 'native' 
 # ---------------- Thread-Safe Firebase wrapper ----------------
 
-# ---------------- Thread-Safe Firebase wrapper ----------------
-
 class FirebaseManager:
     """Thread-safe Firebase manager to prevent freezing"""
     def __init__(self):
@@ -181,8 +179,6 @@ class FirebaseManager:
   
 # Initialize Firebase manager
 firebase_manager = FirebaseManager()
-
-# [REST OF THE CODE REMAINS EXACTLY THE SAME UNTIL THE save_score_to_firebase METHOD...]
 
 # ---------------- Pygame setup ----------------
 
@@ -997,7 +993,7 @@ class GameUI:
 
         self.left_panel = Panel(20, 20, 280, 450, "Game Stats")
         self.center_area = pygame.Rect(320, 150, 800, 500)
-        self.right_panel = Panel(WIDTH - 320, 20, 300, 560, "Controls")
+        self.right_panel = Panel(WIDTH - 320, 20, 300, 700, "Controls")
 
         self.interactive_btn = Button(
             self.right_panel.rect.x + 30, 100, 240, 50, "Interactive Mode", GREEN, WHITE
@@ -1043,14 +1039,14 @@ class GameUI:
         )
 
         self.num_moves_box = InputBox(
-            self.right_panel.rect.x + 30, 565, 240, 45, "Number of moves:"
+            self.right_panel.rect.x + 30, 565, 240, 40, "Number of moves:"
         )
         self.moves_box = InputBox(
             self.right_panel.rect.x + 30,
-            630,
+            620,
             240,
-            45,
-            "Move sequence (e.g., AB AC):",
+            40,
+            "Move sequence:",
         )
 
         self.scores_panel = ScoresPanel(WIDTH - 320, HEIGHT - 250, 300, 200)
@@ -1072,6 +1068,10 @@ class GameUI:
         self.solution_display = []
         self.current_hint = None
 
+        self.sequence_validated = False
+        self.sequence_moves = []
+        self.current_sequence_step = 0
+
         try:
             self.background_image = pygame.image.load(
                 "Tower of Hanoi/bimage.jpg"
@@ -1081,6 +1081,7 @@ class GameUI:
             self.background_image = None
 
     def update_towers_ui(self):
+        """Update the tower UI positions based on number of pegs"""
         num_pegs = self.game.num_pegs
         spacing = 800 // (num_pegs + 1)
         base_y = HEIGHT - 180
@@ -1091,8 +1092,10 @@ class GameUI:
             self.towers_ui[label] = TowerUI(x, base_y, label)
 
         self.algorithm_helper.set_num_pegs(num_pegs)
+        print(f"Updated towers UI for {num_pegs} pegs")
 
     def save_state(self):
+        """Save current game state to undo stack"""
         state = {
             'towers': {k: v.copy() for k, v in self.game.towers.items()},
             'move_count': self.game.move_count,
@@ -1103,6 +1106,7 @@ class GameUI:
             self.undo_stack.pop(0)
 
     def undo(self):
+        """Undo last move"""
         if len(self.undo_stack) > 1:
             self.undo_stack.pop()
             prev_state = self.undo_stack[-1]
@@ -1115,6 +1119,7 @@ class GameUI:
         return False
 
     def save_score_to_firebase(self):
+        """Save score to Firebase"""
         if not self.player_name:
             self.player_name = "Anonymous"
 
@@ -1127,7 +1132,7 @@ class GameUI:
         if game_mode == "sequence" and hasattr(self.game, 'user_moves_input'):
             move_sequence = self.game.user_moves_input
 
-        # FIXED: Add detailed debug output
+        # Debug output
         print("\n" + "="*50)
         print(" DEBUG: Attempting to save score to Firebase")
         print(f"  Player: {self.player_name}")
@@ -1136,7 +1141,6 @@ class GameUI:
         print(f"  Optimal: {optimal_moves}")
         print(f"  Game State: {self.game.game_state}")
         print(f"  Firebase connected: {firebase_manager.is_connected()}")
-        print(f"  Score already saved? {self.score_saved}")
         print("="*50)
 
         # Use thread-safe Firebase manager
@@ -1161,6 +1165,7 @@ class GameUI:
         return True
 
     def draw_stats(self):
+        """Draw game statistics panel"""
         self.left_panel.draw(WIN)
 
         num_pegs = self.game.num_pegs
@@ -1213,6 +1218,7 @@ class GameUI:
             y += 35
 
     def draw_towers(self):
+        """Draw towers and disks"""
         for label, tower in self.towers_ui.items():
             tower.draw(WIN)
 
@@ -1230,8 +1236,10 @@ class GameUI:
                 disk.draw(WIN, x, base_y - i * 32, is_selected)
 
     def draw_controls(self):
+        """Draw controls panel"""
         self.right_panel.draw(WIN)
 
+        # Show current algorithm
         algo_info = self.algorithm_helper.get_algorithm_explanation()
         algo_text = SMALL_FONT.render(
             f"Algorithm: {algo_info['current_algorithm'].title()}",
@@ -1242,6 +1250,7 @@ class GameUI:
         )
         WIN.blit(algo_text, (self.right_panel.rect.x + 30, 70))
 
+        # Show instructions based on mode
         if self.game.game_mode == "interactive":
             instructions = [
                 "INTERACTIVE MODE",
@@ -1261,23 +1270,21 @@ class GameUI:
         else:
             instructions = [
                 "SEQUENCE MODE",
-                "Enter move sequence",
-                "and test if it solves",
-                "the puzzle.",
+                "1. Enter number of moves",
+                "2. Enter move sequence",
+                "3. Click VALIDATE",
+                "4. Click EXECUTE",
                 "",
-                "Format:",
-                "Number: 7",
-                "Moves: AB AC BC",
+                "Format examples:",
+                "3-Peg: AB AC BC",
+                "4-Peg: AB AC AD BC",
                 "",
-                "Peg Labels:",
-                " ".join(self.game.tower_labels),
+                f"Valid pegs: {' '.join(self.game.tower_labels)}",
             ]
             color = BLUE
 
-        x, y = (
-            self.right_panel.rect.x + 30,
-            460 if self.game.game_mode == "interactive" else 580,
-        )
+        # Draw instructions at bottom of panel
+        x, y = self.right_panel.rect.x + 30, self.right_panel.rect.y + 670
         for i, line in enumerate(instructions):
             if i == 0:
                 font = BUTTON_FONT
@@ -1291,6 +1298,7 @@ class GameUI:
             y += 22 if i == 0 else 18
 
     def draw_message(self):
+        """Draw status messages"""
         messages = []
 
         if self.game.message:
@@ -1347,6 +1355,7 @@ class GameUI:
             WIN.blit(score_surface, score_rect)
 
     def draw_solution_display(self):
+        """Draw solution view"""
         if not self.showing_solution:
             return
 
@@ -1418,6 +1427,7 @@ class GameUI:
             )
 
     def draw_win_message(self):
+        """Draw win message"""
         if self.game.game_state == "win" and not self.showing_solution:
             overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
             overlay.fill((0, 0, 0, 150))
@@ -1458,6 +1468,7 @@ class GameUI:
                 WIN.blit(save_text, save_rect)
 
     def draw(self):
+        """Draw everything"""
         if self.background_image:
             WIN.blit(self.background_image, (0, 0))
         else:
@@ -1468,6 +1479,7 @@ class GameUI:
             pygame.display.flip()
             return
 
+        # Title and subtitle
         title = TITLE_FONT.render("TOWER OF HANOI", True, YELLOW)
         WIN.blit(title, (WIDTH // 2 - title.get_width() // 2, 30))
 
@@ -1483,22 +1495,24 @@ class GameUI:
         )
         WIN.blit(subtitle, (WIDTH // 2 - subtitle.get_width() // 2, 90))
 
+        # Draw panels and elements
         self.draw_stats()
         self.draw_towers()
         self.draw_controls()
         self.scores_panel.draw(WIN)
 
+        # Always show these buttons
         self.interactive_btn.draw(WIN)
         self.sequence_btn.draw(WIN)
         self.reset_btn.draw(WIN)
         self.undo_btn.draw(WIN)
-
         self.hint_btn.draw(WIN)
         self.auto_solve_btn.draw(WIN)
         self.show_solution_btn.draw(WIN)
         self.iterative_algo_btn.draw(WIN)
         self.recursive_algo_btn.draw(WIN)
 
+        # Show sequence mode controls only in sequence mode
         if self.game.game_mode == "sequence":
             self.validate_btn.draw(WIN)
             self.execute_btn.draw(WIN)
@@ -1509,6 +1523,7 @@ class GameUI:
         self.peg_selector.draw(WIN)
         self.disk_selector.draw(WIN)
 
+        # Status message
         self.draw_message()
 
         if self.showing_solution:
@@ -1521,9 +1536,11 @@ class GameUI:
         pygame.display.flip()
 
     def update(self):
+        """Update game state"""
         if self.show_name_dialog:
             self.name_dialog.update()
 
+        # Update buttons
         self.interactive_btn.update()
         self.sequence_btn.update()
         self.reset_btn.update()
@@ -1534,6 +1551,7 @@ class GameUI:
         self.iterative_algo_btn.update()
         self.recursive_algo_btn.update()
 
+        # Update sequence controls
         if self.game.game_mode == "sequence":
             self.validate_btn.update()
             self.execute_btn.update()
@@ -1544,6 +1562,7 @@ class GameUI:
         self.particle_system.update()
 
     def handle_events(self):
+        """Handle all pygame events"""
         mouse_pos = pygame.mouse.get_pos()
 
         if self.show_name_dialog:
@@ -1611,6 +1630,7 @@ class GameUI:
 
             return
 
+        # Update button hovers
         self.interactive_btn.check_hover(mouse_pos)
         self.sequence_btn.check_hover(mouse_pos)
         self.reset_btn.check_hover(mouse_pos)
@@ -1620,14 +1640,15 @@ class GameUI:
         self.show_solution_btn.check_hover(mouse_pos)
         self.iterative_algo_btn.check_hover(mouse_pos)
         self.recursive_algo_btn.check_hover(mouse_pos)
-
-        self.peg_selector.check_hover(mouse_pos)
-        self.disk_selector.check_hover(mouse_pos)
-
+        
+        # Only show sequence buttons in sequence mode
         if self.game.game_mode == "sequence":
             self.validate_btn.check_hover(mouse_pos)
             self.execute_btn.check_hover(mouse_pos)
             self.example_btn.check_hover(mouse_pos)
+
+        self.peg_selector.check_hover(mouse_pos)
+        self.disk_selector.check_hover(mouse_pos)
 
         self.hovered_peg = None
         for label, tower in self.towers_ui.items():
@@ -1642,12 +1663,14 @@ class GameUI:
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
+                    # MODE BUTTONS
                     if self.interactive_btn.is_clicked(mouse_pos):
                         self.game.switch_mode("interactive")
                         self.interactive_btn.active = True
                         self.sequence_btn.active = False
                         self.update_towers_ui()
                         self.game.message = "Switched to Interactive Mode"
+                        print("Switched to Interactive Mode")
 
                     elif self.sequence_btn.is_clicked(mouse_pos):
                         self.game.switch_mode("sequence")
@@ -1655,7 +1678,9 @@ class GameUI:
                         self.sequence_btn.active = True
                         self.update_towers_ui()
                         self.game.message = "Switched to Sequence Mode"
+                        print("Switched to Sequence Mode")
 
+                    # GAME CONTROLS
                     elif self.reset_btn.is_clicked(mouse_pos):
                         self.save_state()
                         self.game.reset(
@@ -1667,6 +1692,8 @@ class GameUI:
                         self.update_towers_ui()
                         self.score_saved = False
                         self.current_hint = None
+                        self.sequence_validated = False
+                        self.sequence_moves = []
                         self.game.message = "New game started!"
 
                     elif (
@@ -1677,6 +1704,7 @@ class GameUI:
                             self.score_saved = False
                             self.current_hint = None
 
+                    # ALGORITHM FEATURES (only in interactive mode)
                     elif (
                         self.hint_btn.is_clicked(mouse_pos)
                         and self.game.game_mode == "interactive"
@@ -1760,60 +1788,121 @@ class GameUI:
                         self.current_hint = None
                         self.game.message = "Using Recursive algorithm"
 
+                    # SEQUENCE MODE CONTROLS
                     elif self.game.game_mode == "sequence":
                         if self.validate_btn.is_clicked(mouse_pos):
-                            self.game.validate_sequence(
-                                self.num_moves_box.text, self.moves_box.text
-                            )
+                            # Proper validation
+                            try:
+                                expected_moves = int(self.num_moves_box.text.strip())
+                                moves_text = self.moves_box.text.strip().upper()
+                                
+                                # Parse moves
+                                move_parts = moves_text.split()
+                                if len(move_parts) != expected_moves:
+                                    self.game.message = f"Error: Expected {expected_moves} moves, got {len(move_parts)}"
+                                    self.sequence_validated = False
+                                else:
+                                    # Validate each move
+                                    valid_moves = []
+                                    for move in move_parts:
+                                        if len(move) == 2:
+                                            from_peg = move[0]
+                                            to_peg = move[1]
+                                            if from_peg in self.game.tower_labels and to_peg in self.game.tower_labels:
+                                                valid_moves.append((from_peg, to_peg))
+                                            else:
+                                                self.game.message = f"Invalid peg labels in move: {move}"
+                                                self.sequence_validated = False
+                                                break
+                                    else:
+                                        self.sequence_moves = valid_moves
+                                        self.sequence_validated = True
+                                        self.game.message = f"Sequence validated! {expected_moves} moves ready."
+                                        print(f"Sequence validated: {valid_moves}")
+                            except ValueError:
+                                self.game.message = "Please enter a valid number of moves"
+                                self.sequence_validated = False
 
                         elif self.execute_btn.is_clicked(mouse_pos):
-                            if (
-                                hasattr(self.game, 'sequence_validated')
-                                and self.game.sequence_validated
-                            ):
-                                success = self.game.execute_sequence()
-                                if success:
-                                    self.save_state()
-                                    if (
-                                        self.game.game_state == "win"
-                                        and not self.score_saved
-                                    ):
-                                        self.save_score_to_firebase()
-                                        for _ in range(50):
+                            if self.sequence_validated and self.sequence_moves:
+                                print(f"Executing sequence: {self.sequence_moves}")
+                                
+                                # Reset game first
+                                self.game.reset(
+                                    num_pegs=self.peg_selector.value,
+                                    num_disks=self.disk_selector.value,
+                                )
+                                
+                                # Execute each move
+                                all_valid = True
+                                for i, (from_peg, to_peg) in enumerate(self.sequence_moves):
+                                    # Get top disk from source peg
+                                    if from_peg in self.game.towers and self.game.towers[from_peg]:
+                                        disk = self.game.towers[from_peg][-1]
+                                        self.game.selected_disk = disk
+                                        self.game.selected_peg = from_peg
+                                        
+                                        # Try to move
+                                        success = self.game.move_disk(to_peg)
+                                        if not success:
+                                            self.game.message = f"Move {i+1} failed: {from_peg}->{to_peg}"
+                                            all_valid = False
+                                            break
+                                        
+                                        # Add visual feedback
+                                        for _ in range(5):
                                             self.particle_system.add_particle(
-                                                WIDTH // 2,
-                                                HEIGHT // 2,
-                                                color=YELLOW,
-                                                speed=5,
+                                                self.towers_ui[to_peg].x,
+                                                self.towers_ui[to_peg].y - 100,
+                                                color=BLUE,
+                                                speed=2,
                                             )
+                                    
+                                if all_valid:
+                                    self.save_state()
+                                    if self.game.game_state == "win":
+                                        self.game.message = "Sequence executed successfully! Puzzle solved!"
+                                        if not self.score_saved:
+                                            self.save_score_to_firebase()
+                                            for _ in range(50):
+                                                self.particle_system.add_particle(
+                                                    WIDTH // 2,
+                                                    HEIGHT // 2,
+                                                    color=YELLOW,
+                                                    speed=5,
+                                                )
+                                    else:
+                                        self.game.message = "Sequence executed but puzzle not solved"
+                            else:
+                                self.game.message = "Please validate sequence first"
 
                         elif self.example_btn.is_clicked(mouse_pos):
+                            # Provide better examples based on peg count
                             if self.game.num_pegs == 4:
                                 if self.game.num_disks == 3:
                                     self.num_moves_box.text = "5"
                                     self.moves_box.text = "AC AB AD BD CD"
                                 elif self.game.num_disks == 4:
                                     self.num_moves_box.text = "9"
-                                    self.moves_box.text = (
-                                        "AB AC BC AB AD BD CA CD AD"
-                                    )
+                                    self.moves_box.text = "AB AC BC AB AD BD CA CD AD"
+                                else:
+                                    self.num_moves_box.text = "13"
+                                    self.moves_box.text = "AB AC AD BC BD CA CB CD AB AC AD BC"
                             else:
-                                min_moves = self.game.get_min_moves()
-                                self.num_moves_box.text = str(min_moves)
+                                # 3-peg examples
                                 if self.game.num_disks == 3:
-                                    self.moves_box.text = (
-                                        "AB AC BC AB CA CB AB"
-                                    )
+                                    self.num_moves_box.text = "7"
+                                    self.moves_box.text = "AB AC BC AB CA CB AB"
                                 elif self.game.num_disks == 4:
-                                    self.moves_box.text = (
-                                        "AB AC BC AB CA CB AB AC BC BA CA BC AB AC BC"
-                                    )
+                                    self.num_moves_box.text = "15"
+                                    self.moves_box.text = "AB AC BC AB CA CB AB AC BC BA CA BC AB AC BC"
                                 elif self.game.num_disks == 5:
-                                    self.moves_box.text = (
-                                        "AB AC BC AB CA CB AB AC BC BA CA BC AB AC BC "
-                                        "AB CA CB AB AC BC BA CA BC AB AC BC AB"
-                                    )
+                                    self.num_moves_box.text = "31"
+                                    self.moves_box.text = "AB AC BC AB CA CB AB AC BC BA CA BC AB AC BC AB CA CB AB AC BC BA CA BC AB AC BC AB CA CB AB AC"
+                            
+                            self.game.message = "Example sequence loaded. Click Validate first."
 
+                    # PEG AND DISK SELECTORS
                     elif self.peg_selector.handle_click(mouse_pos):
                         self.save_state()
                         self.game.reset(
@@ -1825,6 +1914,8 @@ class GameUI:
                         self.update_towers_ui()
                         self.score_saved = False
                         self.current_hint = None
+                        self.sequence_validated = False
+                        self.sequence_moves = []
                         self.game.message = (
                             f"Changed to {self.peg_selector.value} pegs"
                         )
@@ -1840,10 +1931,13 @@ class GameUI:
                         self.update_towers_ui()
                         self.score_saved = False
                         self.current_hint = None
+                        self.sequence_validated = False
+                        self.sequence_moves = []
                         self.game.message = (
                             f"Changed to {self.disk_selector.value} disks"
                         )
 
+                    # INTERACTIVE MODE DISK SELECTION
                     elif (
                         self.game.game_mode == "interactive"
                         and self.game.game_state == "playing"
@@ -1863,16 +1957,14 @@ class GameUI:
                                     disk.height,
                                 )
 
-                                if disk_rect.collidepoint(mouse_pos) and hasattr(
-                                    self.game, 'can_select_disk'
-                                ) and self.game.can_select_disk(
-                                    label, actual_index
-                                ):
-                                    self.save_state()
-                                    if hasattr(self.game, 'select_disk'):
-                                        self.game.select_disk(label)
-                                        self.current_hint = None
-                                    break
+                                if disk_rect.collidepoint(mouse_pos):
+                                    # Select the disk if it's on top
+                                    if actual_index == len(disks) - 1:
+                                        self.save_state()
+                                        if hasattr(self.game, 'select_disk'):
+                                            self.game.select_disk(label)
+                                            self.current_hint = None
+                                        break
                             else:
                                 continue
                             break
@@ -1930,6 +2022,8 @@ class GameUI:
                     self.update_towers_ui()
                     self.score_saved = False
                     self.current_hint = None
+                    self.sequence_validated = False
+                    self.sequence_moves = []
                     self.game.message = "Game reset!"
 
                 elif (
@@ -1954,6 +2048,8 @@ class GameUI:
                     self.update_towers_ui()
                     self.game.message = f"Switched to {new_mode} mode"
                     self.current_hint = None
+                    self.sequence_validated = False
+                    self.sequence_moves = []
 
                 elif (
                     event.key == pygame.K_s
@@ -2040,6 +2136,8 @@ class GameUI:
                     self.update_towers_ui()
                     self.score_saved = False
                     self.current_hint = None
+                    self.sequence_validated = False
+                    self.sequence_moves = []
                     self.game.message = f"Changed to {new_pegs} pegs"
 
                 elif event.key == pygame.K_F1:
@@ -2048,11 +2146,13 @@ class GameUI:
                         "A=Auto-step, I/C=Algorithm, V=Solution, P=Toggle Pegs, F1=Help"
                     )
 
+            # Handle input box events for sequence mode
             if self.game.game_mode == "sequence":
                 self.num_moves_box.handle_event(event)
                 self.moves_box.handle_event(event)
 
     def run(self):
+        """Main game loop"""
         print("Starting Tower of Hanoi Game with 3 & 4 Peg Algorithm Features")
         print("Firebase Status:", "Connected" if firebase_manager.is_connected() else "Offline")
         print("Algorithm Features:")
@@ -2063,6 +2163,7 @@ class GameUI:
         print("  * Toggle Algorithm: Iterative (I) / Recursive (C)")
         print("  * Toggle Pegs: 3-Peg <-> 4-Peg (P key)")
         print("  * Solution View with step-by-step execution")
+        print("  * Sequence Mode: Enter and test move sequences")
 
         while self.running:
             self.clock.tick(60)

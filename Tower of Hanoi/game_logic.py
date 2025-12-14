@@ -2,35 +2,32 @@ import random
 
 class HanoiLogic:
     def __init__(self, num_pegs=3, num_disks=None, game_mode="interactive"):
-        """Initialize the Tower of Hanoi game logic."""
+
         self.num_pegs = num_pegs
 
-        # If num_disks is not provided, choose a reasonable default range
+       
         if num_disks is not None:
             self.num_disks = num_disks
         else:
-            self.num_disks = random.randint(3, 6)
+            self.num_disks = random.randint(5, 10)
 
-        self.game_mode = game_mode  # "interactive" or "sequence"
+        self.game_mode = game_mode 
 
-        # Tower labels based on number of pegs
+      
         self.tower_labels = self._labels(num_pegs)
         self.towers = {label: [] for label in self.tower_labels}
         self._initialize_disks()
 
-        # Interactive mode state
         self.selected_disk = None
         self.selected_peg = None
         self.move_count = 0
 
-        # Sequence mode state
         self.user_num_moves_input = ""
         self.user_moves_input = ""
         self.user_sequence = []
         self.sequence_validated = False
         self.sequence_result = ""
 
-        # Game state and messages
         self.game_state = "playing" if game_mode == "interactive" else "input"
         self.message = (
             "Game started! Drag disks to move them."
@@ -38,7 +35,6 @@ class HanoiLogic:
             else "Enter number of moves and sequence."
         )
 
-    # ---------- Internal helpers ----------
 
     def _labels(self, n):
         """Return peg labels for n pegs."""

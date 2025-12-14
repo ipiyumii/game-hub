@@ -49,7 +49,7 @@ game-hub/
 
 From the root directory, run:
 ```bash
-python main.py
+python snake_and_ladder_main.py
 ```
 
 This will:
