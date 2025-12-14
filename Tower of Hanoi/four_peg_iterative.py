@@ -63,16 +63,16 @@ class FourPegSolver:
             elif n == 4:
                 k = 2  # Move 2 smallest disks first
             else:
-                # For n > 4, use n//2 as approximation
+                # For n > 4
                 k = n // 2
             
-            # Step 1: Move k smallest disks to aux1 using all 4 pegs
+            #  Move k smallest disks to aux1 using 4 pegs
             hanoi_4(k, source, aux1, target, aux2)
             
-            # Step 2: Move remaining n-k disks to target using 3 pegs
+            #Move remaining n-k disks to target using 3 pegs
             hanoi_3(n - k, source, target, aux2)
             
-            # Step 3: Move k disks from aux1 to target using all 4 pegs
+            #  Move k disks from aux1 to target using 4 pegs
             hanoi_4(k, aux1, target, source, aux2)
         
         def hanoi_3(n, source, target, auxiliary):

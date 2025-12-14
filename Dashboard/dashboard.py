@@ -265,7 +265,6 @@ class GameHub:
             launch_eight_queens(self)
         elif "Coming Soon" in game_name:
             print(f"{game_name} is not yet implemented.")
-            # You could show a message on screen here
         else:
             print(f"Game {game_name} is not implemented yet.")
 
@@ -283,7 +282,6 @@ class GameHub:
             return
         print(f"Game '{game_name}' is not implemented or recognized.")
 
-             #TOWER OF HANOI - SAME PATTERN
         if (game_id == "tower_of_hanoi" or
               "tower" in game_name.lower() or
               "hanoi" in game_name.lower()):

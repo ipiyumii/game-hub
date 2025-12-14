@@ -15,8 +15,6 @@ from four_peg_recursive import FourPegRecursiveSolver
 from four_peg_iterative import FourPegSolver
 
 class TowerOfHanoiBenchmark:
-    # Benchmark class to compare execution times of 4 Tower of Hanoi algorithms.
-
     def __init__(self):
         self.results = []
         
@@ -58,7 +56,6 @@ class TowerOfHanoiBenchmark:
         return round_results
     
     def run_15_rounds(self):
-        """Run 15 benchmark rounds."""
         print("Running Tower of Hanoi Algorithm Benchmark (15 rounds)...")
         print("="*80)
         

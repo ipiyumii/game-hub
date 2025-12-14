@@ -21,7 +21,6 @@ def test_init_without_credentials(monkeypatch):
     assert db.enabled is False
     assert db.db is None
 
-
 # Test 2: Firebase initializes correctly
 def test_init_success(monkeypatch):
     monkeypatch.setattr(os.path, "exists", lambda _: True)

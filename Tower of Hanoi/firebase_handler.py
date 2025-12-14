@@ -45,7 +45,7 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
 8zrniKJkDP7Rq/+vRFEopfGmPw==
 -----END PRIVATE KEY-----"""
             
-            # Your credentials
+            # credentials
             cred_dict = {
                 "type": "service_account",
                 "project_id": "mind-arena-7c1e5",
@@ -195,15 +195,15 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
             player_name = score.get('player_name', 'Unknown')
             
             # Calculate simulated times based on number of moves
-            recursive_time = num_moves * 0.002  # Simulated recursive time
-            iterative_time = num_moves * 0.0015  # Simulated iterative time
-            four_peg_recursive_time = num_moves * 0.001  # Simulated 4-peg recursive
-            four_peg_iterative_time = num_moves * 0.0008  # Simulated 4-peg iterative
+            recursive_time = num_moves * 0.002  
+            iterative_time = num_moves * 0.0015  
+            four_peg_recursive_time = num_moves * 0.001  
+            four_peg_iterative_time = num_moves * 0.0008 
             
             csv_row = {
                 'Round': round_number,
                 'Disks': num_disks,
-                'Pegs': 3,  # Default to 3 pegs
+                'Pegs': 3,  # Default
                 '3-Peg Recursive (ms)': round(recursive_time * 1000, 4),
                 '3-Peg Iterative (ms)': round(iterative_time * 1000, 4),
                 '4-Peg Recursive (ms)': round(four_peg_recursive_time * 1000, 4),
@@ -218,9 +218,6 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
         return csv_data
     
     def create_sessions_for_existing_scores(self):
-        """
-        Create sessions as sub-collections for ALL existing scores
-        """
         try:
             if not self.is_connected():
                 print("Firebase not connected.")
@@ -270,9 +267,6 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
             return False
     
     def create_varied_sessions_for_score(self, score_id, player_name, num_disks, num_moves, csv_data):
-        """
-        Create multiple session variations for a single score
-        """
         try:
             sessions_created = 0
             

@@ -215,10 +215,8 @@ def run_demo():
     print("="*70)
 
 if __name__ == "__main__":
-    # Run the demonstration
     run_demo()
     
-    # Example of using the solver programmatically
     print(f"\n{'='*70}")
     print("PROGRAMMATIC USAGE EXAMPLE")
     print("="*70)

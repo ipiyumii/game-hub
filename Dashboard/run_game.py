@@ -1,8 +1,3 @@
-
-"""
-Simple test script to run the Game Hub
-"""
-
 import sys
 import os
 
@@ -13,7 +8,6 @@ sys.path.insert(0, current_dir)
 print(f"Current directory: {current_dir}")
 print(f"Python path: {sys.path[:3]}")  
 try:
-    print("Attempting to import main module...")
     from main import main
     print("Main module imported successfully!")
     

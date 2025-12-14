@@ -1,14 +1,13 @@
-# test_dashboard.py - FIXED VERSION
 import pygame
 import sys
 import os
 
-# Fix 1: Add parent directory to path
+# Add parent directory to path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
-# Fix 2: Use simple symbols
+# Use simple symbols
 CHECK = "[OK]"
 CROSS = "[ERROR]"
 

@@ -1,4 +1,3 @@
-# test_algorithm.py
 import math
 import time
 import pytest
@@ -6,7 +5,6 @@ import pytest
 from bfs_algorithm import BFSAlgorithm
 from dijkstra_algorithm import DijkstraAlgorithm
 
-# ----- Minimal Board Stub -----
 class BoardStub:
     
     def __init__(self, total_cells, snakes=None, ladders=None):
@@ -14,14 +12,13 @@ class BoardStub:
         self.snakes = snakes or {}
         self.ladders = ladders or {}
 
-# ----- Helpers -----
 def baseline_min_moves(total_cells):
     
     if total_cells <= 1:
         return 0
     return math.ceil((total_cells - 1) / 6)
 
-# TEST 1: EMPTY BOARD → both algorithms must match baseline
+# TEST 1: both algorithms must match baseline
 
 @pytest.mark.parametrize("total_cells", [2, 7, 10, 25, 100])
 def test_algorithms_empty_board_min_moves(total_cells):
@@ -41,7 +38,7 @@ def test_algorithms_empty_board_min_moves(total_cells):
     assert dij_time >= 0.0
 
 
-# TEST 2: LADDER → should reduce required moves
+# TEST 2: LADDERS should reduce required moves
 
 @pytest.fixture
 def board_with_ladder():
@@ -64,7 +61,7 @@ def test_ladder_reduces_moves(board_with_ladder):
     assert bfs_moves == dij_moves
 
 
-# TEST 3: SNAKE → should increase or match baseline moves
+# TEST 3: SNAKES should increase or match baseline moves
 
 @pytest.fixture
 def board_with_snake():

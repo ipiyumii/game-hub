@@ -43,10 +43,10 @@ class HanoiLogic:
 
     def get_min_moves(self):
         if self.num_pegs == 3:
-            # Classic 3-peg formula: 2^n - 1
+            # Classic 3-peg formula
             return (2 ** self.num_disks) - 1
         else:
-            # Approximation / known optimal for small n for 4 pegs (Frame–Stewart)
+            # known optimal for small n for 4 pegs (Frame–Stewart)
             optimal_4peg = {
                 1: 1,
                 2: 3,
@@ -293,7 +293,7 @@ class HanoiLogic:
         if game_mode is not None:
             self.game_mode = game_mode
 
-        # Rebuild labels and towers based on current num_pegs/num_disks
+        # Rebuild labels and towers based on current /num_disks
         self.tower_labels = self._labels(self.num_pegs)
         self.towers = {label: [] for label in self.tower_labels}
         self._initialize_disks()
@@ -327,7 +327,7 @@ class HanoiLogic:
         return True
 
     def get_top_disk(self, peg_label):
-        """Get the top disk on a peg."""
+        # Get the top disk on a peg.
         if peg_label not in self.tower_labels:
             return None
         tower = self.towers[peg_label]
