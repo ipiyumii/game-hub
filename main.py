@@ -27,7 +27,7 @@ def launch_game_dashboard(games=None):
 def main():
     # Fetch games 
     games = fetch_games_from_database()
-    
+
     launch_game_dashboard(games=games)
     
 

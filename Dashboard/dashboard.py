@@ -285,7 +285,7 @@ class GameHub:
 
              # TOWER OF HANOI - SAME PATTERN
         if (game_id == "tower_of_hanoi" or
-              "tower" in game_name.lower() or 
+              "tower" in game_name.lower() or
               "hanoi" in game_name.lower()):
             try:
                 print(f"Launching Tower of Hanoi: {game_name}...")
@@ -297,16 +297,32 @@ class GameHub:
                 print(f"Failed to launch Tower of Hanoi: {e}")
             return
 
-        if (game_id == "travelling_salesman" or
-                "travelling" in game_name.lower() or
-                "salesman" in game_name.lower()):
+        # if (game_id == "travelling_salesman" or
+        #         "travelling" in game_name.lower() or
+        #         "salesman" in game_name.lower()):
+        #     try:
+        #         print(f"Launching travelling_salesman: {game_name}...")
+        #         base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        #         traffic_game_path = os.path.join(base_path, "Travelling Salesman/src", "tsp_main.py")
+        #         print("Running travelling_salesman from:", traffic_game_path)
+        #         subprocess.Popen([sys.executable, traffic_game_path])
+        #     except Exception as e:
+        #         print(f"Failed to launch Traffic Simulation: {e}")
+        #     return
+        # print(f"Game '{game_name}' is not implemented or recognized.")
+
+        if (game_id == "snake_and_ladder" or
+                "snake" in game_name.lower() or
+                "ladder" in game_name.lower()):
             try:
-                print(f"Launching travelling_salesman: {game_name}...")
+                print(f"Launching Snake and Ladder: {game_name}...")
                 base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-                traffic_game_path = os.path.join(base_path, "Travelling Salesman/src", "tsp_main.py")
-                print("Running travelling_salesman from:", traffic_game_path)
-                subprocess.Popen([sys.executable, traffic_game_path])
+                snake_game_dir = os.path.join(base_path, "Snake and Ladder")
+                snake_game_path = os.path.join(snake_game_dir, "snake_and_ladder_main.py")
+                print("Running Snake and Ladder from:", snake_game_path)
+                subprocess.Popen([sys.executable, snake_game_path], cwd=snake_game_dir)
             except Exception as e:
-                print(f"Failed to launch Traffic Simulation: {e}")
+                print(f"Failed to launch Snake and Ladder: {e}")
             return
         print(f"Game '{game_name}' is not implemented or recognized.")
+
