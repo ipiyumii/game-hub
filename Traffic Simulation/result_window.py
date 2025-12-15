@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QColor
 
-
 class ResultWindow(QWidget):
     def __init__(self, player_name, stats):
         super().__init__()

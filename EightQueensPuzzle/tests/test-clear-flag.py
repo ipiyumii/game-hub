@@ -32,6 +32,5 @@ class TestClearFlag(unittest.TestCase):
         # test delete collection
         mock_delete.assert_called_once_with(mock_collection)
 
-
 # if __name__ == "__main__":
 #     unittest.main()

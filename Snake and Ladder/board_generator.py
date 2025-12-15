@@ -32,7 +32,7 @@ class BoardGenerator:
         # Available cells (exclude cell 1 and last cell)
         available_cells = set(range(2, self.total_cells))
         
-        # Generate ladders first
+        # Generate ladders 
         self._generate_ladders(available_cells)
         
         # Generate snakes
@@ -51,7 +51,7 @@ class BoardGenerator:
         while ladder_count < self.num_ladders and attempts < max_attempts:
             attempts += 1
             
-            # Ladder base should be in lower/middle portion of board
+            # Ladder base is in lower/middle of board
             max_base = self.total_cells - (self.board_size * 2)
             possible_bases = [c for c in available_cells if c <= max_base]
             
@@ -93,7 +93,7 @@ class BoardGenerator:
         while snake_count < self.num_snakes and attempts < max_attempts:
             attempts += 1
             
-            # Snake head should be in upper/middle portion
+            # Snake head is in upper/middle 
             min_head = self.total_cells // 3
             possible_heads = [c for c in available_cells if c >= min_head]
             

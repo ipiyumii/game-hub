@@ -34,7 +34,6 @@ class HanoiLogic:
             else "Enter number of moves and sequence."
         )
 
-
     def _labels(self, n):
         return ['A', 'B', 'C', 'D'][:n]
 
@@ -46,7 +45,7 @@ class HanoiLogic:
             # Classic 3-peg formula
             return (2 ** self.num_disks) - 1
         else:
-            # known optimal for small n for 4 pegs (Frame–Stewart)
+            # known optimal for small n for 4 pegs
             optimal_4peg = {
                 1: 1,
                 2: 3,
@@ -203,7 +202,7 @@ class HanoiLogic:
             self.sequence_result = "Please validate sequence first!"
             return False
 
-        # Create a temp interactive game with the same setup
+        # Create game
         temp_game = HanoiLogic(
             num_pegs=self.num_pegs,
             num_disks=self.num_disks,
@@ -222,7 +221,6 @@ class HanoiLogic:
 
         # Check if solved on temp game
         if temp_game.is_solved():
-            # Apply final state to actual game
             self.towers = {
                 label: temp_game.towers[label].copy()
                 for label in self.tower_labels
@@ -287,13 +285,13 @@ class HanoiLogic:
         if num_pegs is not None:
             self.num_pegs = num_pegs
         if num_disks is not None:
-            # Respect the caller's disk count (no random override)
+            # Respect the caller's disk count 
             self.num_disks = num_disks
 
         if game_mode is not None:
             self.game_mode = game_mode
 
-        # Rebuild labels and towers based on current /num_disks
+        # Rebuild labels and towers based on current num_disks
         self.tower_labels = self._labels(self.num_pegs)
         self.towers = {label: [] for label in self.tower_labels}
         self._initialize_disks()
@@ -322,7 +320,6 @@ class HanoiLogic:
             return False
 
         self.game_mode = new_mode
-        # Keep current num_pegs and num_disks; only change mode
         self.reset(num_pegs=self.num_pegs, num_disks=self.num_disks, game_mode=new_mode)
         return True
 

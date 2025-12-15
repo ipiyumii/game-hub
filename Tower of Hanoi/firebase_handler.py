@@ -15,7 +15,6 @@ class FirebaseHandler:
         self.initialized = False
         
         try:
-            # CORRECTED private key with proper line breaks
             private_key = """-----BEGIN PRIVATE KEY-----
 MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQC1R7dADYhtCQZ0
 GwxfAJFJ1eVWHS0k2VEuhwCYVt7KEvo9vDHU6H6oMDvwlB6cjljOdSQtlCAuSjgl
@@ -93,7 +92,7 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
         return self.initialized and self.db is not None
     
     def get_high_scores(self, limit=5):
-        # Get high scores from hanoi_scores collection
+        # Get high scores from db
         try:
             if not self.is_connected():
                 print("Firebase not connected.")
@@ -119,7 +118,7 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
             return []
     
     def save_player_score(self, **kwargs):
-        # Save player score to hanoi_scores collection
+        # Save player score 
         try:
             if not self.is_connected():
                 print("Firebase not connected. Score not saved.")
@@ -147,7 +146,7 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
                 'timestamp': firestore.SERVER_TIMESTAMP
             }
             
-            # Save to Firestore
+            # Save to db
             scores_ref = self.db.collection('hanoi_scores')
             doc_ref = scores_ref.add(score_data)
             
@@ -160,7 +159,7 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
             return False
     
     def get_all_scores(self):
-        # Get all existing scores from hanoi_scores collection
+        # Get all existing scores
         try:
             if not self.is_connected():
                 print("Firebase not connected.")
@@ -184,7 +183,7 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
             return []
     
     def generate_csv_from_scores(self, scores):
-        # Generate CSV data from existing scores
+        # Generate CSV data
         csv_data = []
         
         for i, score in enumerate(scores):
@@ -316,7 +315,7 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
                     }
                 }
                 
-                # Save session as sub-collection
+                # Save session
                 if self.save_session(score_id, session):
                     sessions_created += 1
                     print(f"  ✓ Created session: {session_name}")
@@ -333,7 +332,7 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
                 print("Firebase not connected. Session data not saved.")
                 return False
             
-            # Generate session ID if not provided
+            # Generate session ID
             if 'session_id' not in session_data:
                 session_data['session_id'] = str(uuid.uuid4())
             
@@ -341,7 +340,6 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
             session_data['timestamp'] = firestore.SERVER_TIMESTAMP
             session_data['date'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
-            # Save as sub-collection under the hanoi_scores document
             session_ref = self.db.collection('hanoi_scores').document(score_doc_id).collection('sessions').document(session_data['session_id'])
             session_ref.set(session_data)
             
@@ -426,7 +424,6 @@ UlO9lH1SVsaVgyOyzmqBO5rHBVf4LqS5Eb1v5otL0QKBgQDVV5rhbP0CxtbkaTz2
             print(f"  Average moves per game: {avg_moves:.1f}")
             print(f"  Total moves across all games: {total_moves}")
 
-# MAIN SCRIPT - PROCESS EXISTING SCORES
 if __name__ == "__main__":
     print("="*60)
     print("HANOI SCORES PROCESSOR")
@@ -436,7 +433,6 @@ if __name__ == "__main__":
     handler = FirebaseHandler()
     
     if handler.is_connected():
-        # Print summary of existing scores
         handler.print_score_summary()
         
         # Ask user what they want to do

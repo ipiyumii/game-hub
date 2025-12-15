@@ -39,7 +39,6 @@ class TravelingSalesmanGame:
         pygame.display.set_caption(f"Traveling Salesman - {self.player_name}")
         clock = pygame.time.Clock()
 
-        # --- Game state ---
         dist_matrix = None
         home_label = None
         selected = []

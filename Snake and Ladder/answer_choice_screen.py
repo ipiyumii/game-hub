@@ -70,7 +70,7 @@ class AnswerChoiceScreen:
         
         # Left column (info box)
         left_col = tk.Frame(content, bg=self.styles.get_color('bg_main'))
-        left_col.pack(side=tk.LEFT, fill=tk.Y, padx=(120, 80),pady=60)  # <<< MOVED CLOSER
+        left_col.pack(side=tk.LEFT, fill=tk.Y, padx=(120, 80),pady=60)  
         
         info_frame = tk.Frame(
             left_col,

@@ -6,8 +6,8 @@ import time
 # City labels A..J
 CITIES = [chr(ord("A") + i) for i in range(10)]
 
+   # Return dictionary mapping city label
 def city_positions(center=(210, 210), radius=160):
-    # Return dictionary mapping city label - (x,y) for UI drawing (same as main)
     positions = {}
     cx, cy = center
     n = len(CITIES)
@@ -19,7 +19,6 @@ def city_positions(center=(210, 210), radius=160):
     return positions
 
 def generate_distance_matrix(min_d=50, max_d=100):
-    # Generate symmetric distance matrix with integers in [min_d, max_d]
     n = len(CITIES)
     m = [[0] * n for _ in range(n)]
     for i in range(n):
@@ -29,12 +28,11 @@ def generate_distance_matrix(min_d=50, max_d=100):
             m[j][i] = d
     return m
 
+# Return index of chosen HOME city
 def pick_random_home():
-    # Return index of chosen HOME city
     return random.randint(0, len(CITIES) - 1)
 
 def brute_force_tsp(dist_matrix, start_idx, city_indices):
-    """Brute force by permutations. Returns (route_indices_list, total_distance, elapsed_time)."""
     t0 = time.time()
     best_cost = float("inf")
     best_route = None
@@ -48,8 +46,8 @@ def brute_force_tsp(dist_matrix, start_idx, city_indices):
             best_route = route
     return best_route, best_cost, time.time() - t0
 
-def nearest_neighbour_tsp(dist_matrix, start_idx, city_indices):
     # Greedy nearest neighbour
+def nearest_neighbour_tsp(dist_matrix, start_idx, city_indices):
     t0 = time.time()
     unvisited = set(city_indices)
     route = [start_idx]
@@ -71,9 +69,9 @@ def held_karp_tsp(dist_matrix, start_idx, city_indices):
         return [start_idx, start_idx], 0, 0.0
 
     idx_to_city = {i: city_indices[i] for i in range(n)}
-    dp = {}  # (mask, last) -> (cost, path_list_of_global_indices)
+    dp = {}  # (mask, last) - (cost, path_list_of_global_indices)
 
-    # base: from start to each k
+    # from start to each k
     for k in range(n):
         city = idx_to_city[k]
         dp[(1 << k, k)] = (dist_matrix[start_idx][city], [start_idx, city])
@@ -153,7 +151,7 @@ def run_all(dist_matrix, home_label, selected_labels):
     route_lbl = [CITIES[i] for i in route_idx]
     results["Brute Force"] = {"route": route_lbl, "distance": float(cost), "time": float(t), "complexity": "O(n!)"}
 
-    # Recursive (new)
+    # Recursive
     route_idx, cost, t = tsp_recursive(dist_matrix, start_idx, selected_indices)
     route_lbl = [CITIES[i] for i in route_idx]
     results["Recursive TSP"] = {"route": route_lbl, "distance": float(cost), "time": float(t), "complexity": "O(n!) (recursive)"}

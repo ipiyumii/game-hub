@@ -5,7 +5,6 @@ import pytest
 import firebase_database as fb
 from firebase_database import FirebaseDatabase
 
-# Reset singleton before each test
 @pytest.fixture(autouse=True)
 def reset_singleton():
     FirebaseDatabase._instance = None

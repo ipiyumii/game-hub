@@ -18,8 +18,8 @@ class FirebaseHandler:
 
             # multiple possible locations for the service account file
             possible_paths = [
-                "../shared/mind-arena.json",  # Expected location (because handler is inside Traffic Simulation/)
-                "./shared/mind-arena.json",  # In case program is launched from project root
+                "../shared/mind-arena.json",  
+                "./shared/mind-arena.json",  
                 "shared/mind-arena.json",  # Extra fallback
             ]
 
@@ -34,12 +34,10 @@ class FirebaseHandler:
 
             if not cred_path:
                 print("  Credentials file not found in any expected location")
-                # print("Please make sure 'mind-arena.json' is in the same folder as main.py")
                 return False
 
-            #  Use the cred_path variable instead of hardcoded string
             print(f" Using credentials from: {cred_path}")
-            cred = credentials.Certificate(cred_path)  # ← CHANGED THIS LINE
+            cred = credentials.Certificate(cred_path)  
             firebase_admin.initialize_app(cred)
             self.db = firestore.client()
             self.initialized = True
@@ -51,10 +49,6 @@ class FirebaseHandler:
             return False
 
     def save_game_session(self, player_name, user_answer, correct_answer, was_correct, algorithm_data):
-        """
-        Save game session to traffic_simulation collection structure
-        Only saves correct answers, skips incorrect ones
-        """
         if not self.initialized:
             print("Firebase not initialized. Skipping save.")
             return None
@@ -96,13 +90,7 @@ class FirebaseHandler:
             return None
 
     def _update_player_stats(self, player_name, was_correct):
-        """
-        Update player statistics in new traffic_simulation/players collection
-        Only called for correct answers
-        """
-        # This will only be called for correct answers
         try:
-            # Access players sub collection under traffic_simulation
             traffic_ref = self.db.collection(self.traffic_sim_collection)
             players_ref = traffic_ref.document('players').collection('player_data')
 
@@ -142,15 +130,10 @@ class FirebaseHandler:
             print(f" Error updating player stats: {e}")
 
     def get_player_stats(self, player_name):
-        """
-        Get player statistics from NEW traffic_simulation collection
-        Returns None if player not found in new structure
-        """
         if not self.initialized:
             return None
 
         try:
-            # Get player stats from the new structure
             traffic_ref = self.db.collection(self.traffic_sim_collection)
             players_ref = traffic_ref.document('players').collection('player_data')
 
@@ -166,7 +149,7 @@ class FirebaseHandler:
                     'player_name': player_data.get('player_name')
                 }
 
-            # Player not found in new structure (fresh start)
+            # Player not found in new structure 
             print(f"  Player '{player_name}' not found in new collection (fresh start)")
             return None
 
@@ -175,11 +158,6 @@ class FirebaseHandler:
             return None
 
     def get_all_game_sessions(self, player_name=None, limit=50):
-        """
-        Get game sessions from traffic_simulation collection
-        Filter by player_name
-        This will only return correct answer sessions
-        """
         if not self.initialized:
             return []
 

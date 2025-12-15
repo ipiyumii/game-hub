@@ -75,13 +75,10 @@ class TowerOfHanoiBenchmark:
         return self.results
     
     def create_comparison_chart(self):        
-        # Convert results to DataFrame
         df = pd.DataFrame(self.results)
         
-        # Set up the plot
         plt.figure(figsize=(14, 8))
         
-        # Create subplots
         fig, axes = plt.subplots(2, 2, figsize=(14, 10))
         
         # 1. Line chart: Time vs Rounds for all algorithms
@@ -117,7 +114,6 @@ class TowerOfHanoiBenchmark:
             ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,
                     f'{value:.1f}', ha='center', va='bottom', fontsize=9)
         
-        # 3. Scatter plot: Time vs Number of Disks
         ax3 = axes[1, 0]
         disks = df['Disks']
         scatter1 = ax3.scatter(disks, df['3-Peg Recursive (ms)'], alpha=0.7, label='3-Peg Recursive', s=100)
@@ -131,7 +127,6 @@ class TowerOfHanoiBenchmark:
         ax3.legend()
         ax3.set_xticks(range(5, 11))
         
-        # 4. Box plot: Distribution of execution times
         ax4 = axes[1, 1]
         time_data = [
             df['3-Peg Recursive (ms)'],
@@ -229,7 +224,7 @@ if __name__ == "__main__":
     # Generate summary
     summary_df = benchmark.generate_summary_table(df)
     
-    # Save results to CSV for your report
+    # Save results to CSV 
     results_df = pd.DataFrame(results)
     results_df.to_csv('tower_of_hanoi_benchmark_results.csv', index=False)
     print(f"\nDetailed results saved to: tower_of_hanoi_benchmark_results.csv")

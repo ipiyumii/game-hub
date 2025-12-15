@@ -5,9 +5,8 @@ from datetime import datetime
 import csv
 import json
 
+#execution timer
 def timer(func):
-    """Decorator to measure function execution time"""
-
     @wraps(func)
     def wrapper(*args, **kwargs):
         start_time = time.time()
@@ -22,7 +21,6 @@ class PerformanceTracker:
         self.performance_data = []
 
     def record_performance(self, round_num, ff_time, ek_time, max_flow):
-        """Record algorithm performance for charts and analysis"""
         self.performance_data.append({
             'round': round_num,
             'ford_fulkerson_time': ff_time,
@@ -36,7 +34,6 @@ class PerformanceTracker:
             self.generate_performance_chart()
 
     def generate_performance_chart(self):
-        """Generate professional performance charts for coursework report"""
         if len(self.performance_data) < 2:
             print("  Not enough data to generate chart. Need at least 2 rounds.")
             return
@@ -74,7 +71,6 @@ class PerformanceTracker:
         self.generate_average_comparison_chart()
 
     def generate_average_comparison_chart(self):
-        """Generate average performance comparison chart"""
         if len(self.performance_data) < 2:
             return
 
@@ -115,7 +111,6 @@ class PerformanceTracker:
         print(" Average comparison chart generated: 'performance_comparison.png'")
 
     def save_to_csv(self, filename="performance_data.csv"):
-        """Save performance data to CSV for Excel analysis"""
         if not self.performance_data:
             print("  No performance data to save.")
             return None
@@ -136,7 +131,6 @@ class PerformanceTracker:
             return None
 
     def save_to_json(self, filename="performance_data.json"):
-        """Save performance data to JSON for further processing"""
         if not self.performance_data:
             print("  No performance data to save.")
             return None
@@ -152,7 +146,6 @@ class PerformanceTracker:
             return None
 
     def generate_text_report(self):
-        """Generate a text-based performance report for quick viewing"""
         if not self.performance_data:
             return "No performance data collected yet."
 
@@ -198,16 +191,13 @@ class PerformanceTracker:
         return "\n".join(report)
 
     def print_report(self):
-        """Print the performance report to console"""
         print(self.generate_text_report())
 
     def clear_data(self):
-        """Clear all performance data"""
         self.performance_data.clear()
         print(" Performance data cleared")
 
     def get_statistics(self):
-        """Get performance statistics as a dictionary"""
         if not self.performance_data:
             return None
 

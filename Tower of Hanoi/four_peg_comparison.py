@@ -59,7 +59,7 @@ class AlgorithmComparator:
         print("-" * 70)
         
         for num_disks in range(1, self.max_disks + 1):
-            # Get optimal move count (or None if not known)
+            # Get optimal move count
             optimal = self.optimal_moves.get(num_disks, "?")
             
             try:
@@ -90,7 +90,7 @@ class AlgorithmComparator:
                 iterative_status = "ERR"
                 status = f"[ERROR: {str(e)[:20]}]"
             
-            # Print results row (without Unicode symbols)
+            # Print results row
             print(f"{num_disks:<8} {str(optimal):<10} "
                   f"{str(recursive_count):<8} ({recursive_status:<6}) "
                   f"{str(iterative_count):<8} ({iterative_status:<6}) "
@@ -216,7 +216,6 @@ def main():
         if len(recursive.moves) > 10:
             moves_str += f" ... (+{len(recursive.moves)-10} more)"
         print(f"  {moves_str}")
-
 
 if __name__ == "__main__":
     main()

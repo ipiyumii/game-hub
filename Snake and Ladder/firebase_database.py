@@ -17,10 +17,9 @@ class FirebaseDatabase:
        
         if not FirebaseDatabase._initialized:
             try:
-                # Path to credentials file in gamehub folder
+                # Path to credentials file
                 cred_path = "../shared/mind-arena.json"
                 
-                # Check if file exists in current directory (gamehub folder)
                 if not os.path.exists(cred_path):
                     print(f"⚠️  {cred_path} NOT FOUND!")
                     print("❌ Firebase will NOT work without credentials file.")
@@ -33,7 +32,6 @@ class FirebaseDatabase:
                 # Initialize Firebase
                 cred = credentials.Certificate(cred_path)
                 
-                # Check if Firebase app is already initialized
                 if not firebase_admin._apps:
                     firebase_admin.initialize_app(cred)
                 
@@ -65,8 +63,7 @@ class FirebaseDatabase:
                 self.enabled = False
                 FirebaseDatabase._initialized = True
     
-    def _create_collection_structure(self):
-        
+    def _create_collection_structure(self): 
         try:
             collection_ref = self.db.collection('snake_and_ladder')
             

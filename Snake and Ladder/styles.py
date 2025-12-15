@@ -1,7 +1,5 @@
 
 class GameStyles:
-    #All color schemes and styling constants
-    
     # Main color palette
     COLORS = {
         # Background colors

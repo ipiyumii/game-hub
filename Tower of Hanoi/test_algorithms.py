@@ -210,9 +210,9 @@ class TestAlgorithmEdgeCases(unittest.TestCase):
         iterative_solver = IterativeSolver(0, 'A', 'C', 'B')
         iterative_moves = iterative_solver.solve()
         self.assertEqual(len(iterative_moves), 0)
-    
+   
+   #Test when source and target are the same 
     def test_identical_source_target(self):
-        """Test when source and target are the same."""
         # Should produce no moves since already "solved"
         recursive_solver = RecursiveSolver(3, 'A', 'A', 'B')
         recursive_moves = recursive_solver.solve()
@@ -224,7 +224,6 @@ class TestAlgorithmEdgeCases(unittest.TestCase):
 
 
 def run_performance_test():
-    """Run performance comparison"""
     print("\n" + "="*80)
     print("PERFORMANCE COMPARISON")
     print("="*80)

@@ -1,14 +1,7 @@
 import itertools
 import time
 
-# Complexity notes:
-# - brute_force_tsp : O(n!) time, O(n) extra memory for route
-# - nearest_neighbour_tsp : O(n^2) time (for naive implementation), O(n) memory
-# - held_karp_tsp (dynamic programming) : O(n^2 * 2^n) time, O(n * 2^n) memory
-
 def brute_force_tsp(dist_matrix, start_idx, city_indices):
-    """Brute force by permutation. city_indices list of target indices (ints).
-    Returns (route_indices_list, total_distance, elapsed_time)."""
     t0 = time.time()
     best_cost = float("inf")
     best_route = None
@@ -40,16 +33,13 @@ def nearest_neighbour_tsp(dist_matrix, start_idx, city_indices):
 def held_karp_tsp(dist_matrix, start_idx, city_indices):
    
     t0 = time.time()
-    # Map city_indices to 0..n-1 for DP bitmasking
     n = len(city_indices)
     if n == 0:
         return [start_idx, start_idx], 0, 0.0
-    # index -> original global index
     idx_to_city = {i: city_indices[i] for i in range(n)}
     # distances between the selected cities and start
-    # dp[(mask, last_index)] = (cost, path(list of global indices))
     dp = {}
-    # base cases: paths starting at start_idx going to each k
+    # paths starting at start_idx going to each k
     for k in range(n):
         city = idx_to_city[k]
         dp[(1 << k, k)] = (dist_matrix[start_idx][city], [start_idx, city])

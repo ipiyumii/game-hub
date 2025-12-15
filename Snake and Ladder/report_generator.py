@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 
 import matplotlib
-matplotlib.use('Agg')  # Use non-GUI backend
+matplotlib.use('Agg') 
 import matplotlib.pyplot as plt
 
 class ReportGenerator:
@@ -281,7 +281,6 @@ Location:    {os.path.abspath(filename)}
             fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
             fig.patch.set_facecolor('#1a1a2e')
             
-            # ===== LEFT: Prediction Accuracy Bar Chart =====
             ax1.set_facecolor('#16213e')
             
             accuracy_data = [summary['correct_predictions'], summary['incorrect_predictions']]
@@ -311,7 +310,6 @@ Location:    {os.path.abspath(filename)}
             ax1.grid(True, axis='y', alpha=0.2, color='#34495e', linestyle='--')
             ax1.set_axisbelow(True)
             
-            # ===== RIGHT: Algorithm Speed Comparison =====
             ax2.set_facecolor('#16213e')
             
             algo_names = ['BFS', 'Dijkstra']

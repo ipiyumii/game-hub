@@ -231,7 +231,7 @@ def main():
             if show_sim == 'y':
                 solver.simulate_and_print()
     
-    # Special demonstration for 4 disks
+    # demonstration for 4 disks
     print(f"\n{'='*70}")
     print("SPECIAL DEMONSTRATION: 4 DISKS (9 MOVES - OPTIMAL)")
     print(f"{'='*70}")
@@ -256,7 +256,6 @@ def main():
             print(f"{n} disks: 3-peg = {moves_3peg:2d} moves, "
                   f"4-peg = {moves_4peg:2d} moves, "
                   f"Speedup: {ratio:.1f}x")
-
 
 if __name__ == "__main__":
     main()

@@ -44,7 +44,7 @@ class NameInputPopup:
         
         # Buttons
         button_y = self.y + 220
-        total_button_width = 80 + 20 + 80  # OK button + gap + Cancel button
+        total_button_width = 80 + 20 + 80 
         button_start_x = self.x + (self.width - total_button_width) // 2
         self.ok_button = pygame.Rect(button_start_x, button_y, 80, 40)
         self.cancel_button = pygame.Rect(button_start_x + 80 + 20, button_y, 80, 40)
@@ -211,7 +211,7 @@ class NameInputPopup:
         
         # Draw buttons
         button_y_local = 220
-        total_button_width = 80 + 20 + 80  # OK button + gap + Cancel button
+        total_button_width = 80 + 20 + 80 
         button_start_x_local = (self.width - total_button_width) // 2
         ok_local_rect = pygame.Rect(button_start_x_local, button_y_local, 80, 40)
         cancel_local_rect = pygame.Rect(button_start_x_local + 80 + 20, button_y_local, 80, 40)

@@ -1,14 +1,12 @@
 from collections import defaultdict
 from timer import timer
 
-
 class FordFulkersonDFS:
     def __init__(self):
         self.visited = set()
 
     @timer
     def max_flow(self, graph, source, sink):
-        """Ford-Fulkerson algorithm using DFS"""
         # Create residual graph
         residual_graph = defaultdict(dict)
         for u in graph:
@@ -30,7 +28,6 @@ class FordFulkersonDFS:
         return max_flow
 
     def dfs(self, graph, u, sink, flow):
-        """Depth-First Search to find augmenting path"""
         if u == sink:
             return flow
 
@@ -48,7 +45,6 @@ class FordFulkersonDFS:
 
         return 0
 
-
-# Factory function to create Ford-Fulkerson instance
+# create Ford-Fulkerson instance
 def create_ford_fulkerson():
     return FordFulkersonDFS()

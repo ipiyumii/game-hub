@@ -10,7 +10,6 @@ sys.modules['firebase_admin.credentials'] = MagicMock()
 
 from EightQueensPuzzle.player_solutions import validate_player_solution
 
-
 class TestValidatePlayerSolution(unittest.TestCase):
 
     @patch('EightQueensPuzzle.player_solutions.fetch_all_solutions')

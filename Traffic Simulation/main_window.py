@@ -7,7 +7,6 @@ from game_window import GameWindow
 from validation import Validation
 from result_window import ResultWindow
 
-
 class MainWindow(QMainWindow):
     def __init__(self, app):
         super().__init__()
