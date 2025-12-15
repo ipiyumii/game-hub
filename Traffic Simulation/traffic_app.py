@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import QApplication
 from main_window import MainWindow
 from firebase_handler import FirebaseHandler
 
-
 #  GLOBAL EXCEPTION HANDLER
 def handle_exception(exc_type, exc_value, exc_traceback):
     """Global exception handler to prevent crashes and show errors"""
@@ -29,7 +28,6 @@ def handle_exception(exc_type, exc_value, exc_traceback):
 sys.excepthook = handle_exception
 
 # END EXCEPTION HANDLER
-
 class TrafficSimulationApp:
     def __init__(self):
         self.firebase_handler = FirebaseHandler()
@@ -44,7 +42,6 @@ class TrafficSimulationApp:
         self.main_window = MainWindow(self)
         self.main_window.show()
         return self.main_window
-
 
 def main():
     try:

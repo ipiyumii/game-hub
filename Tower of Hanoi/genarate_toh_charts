@@ -6,7 +6,7 @@ import sys
 import os
 
 # Add the directory containing your modules to Python path
-sys.path.append('.')  # Or specify the path to your modules
+sys.path.append('.')  
 
 # Import your algorithms
 from recursive_solver import RecursiveSolver
@@ -15,23 +15,10 @@ from four_peg_recursive import FourPegRecursiveSolver
 from four_peg_iterative import FourPegSolver
 
 class TowerOfHanoiBenchmark:
-    """
-    Benchmark class to compare execution times of 4 Tower of Hanoi algorithms.
-    """
-    
     def __init__(self):
         self.results = []
         
     def run_benchmark_round(self, round_num):
-        """
-        Run one benchmark round with random disk count.
-        
-        Args:
-            round_num (int): Round number (1-15)
-            
-        Returns:
-            dict: Timing results for this round
-        """
         # Random disk count between 5 and 10
         np.random.seed(round_num * 42)  # For reproducibility
         num_disks = np.random.randint(5, 11)
@@ -66,18 +53,9 @@ class TowerOfHanoiBenchmark:
         solver_4_iterative.solve()
         round_results['4-Peg Iterative (ms)'] = (time.perf_counter() - start_time) * 1000
         
-        # Verify solutions (commented out to save time in benchmark)
-        # verification_results = {
-        #     '3_recursive_valid': solver_3_recursive.verify_solution(),
-        #     '3_iterative_valid': solver_3_iterative.verify_solution(),
-        #     '4_recursive_valid': solver_4_recursive.verify_solution(),
-        #     '4_iterative_valid': solver_4_iterative.verify_solution(),
-        # }
-        
         return round_results
     
     def run_15_rounds(self):
-        """Run 15 benchmark rounds."""
         print("Running Tower of Hanoi Algorithm Benchmark (15 rounds)...")
         print("="*80)
         
@@ -96,16 +74,11 @@ class TowerOfHanoiBenchmark:
         
         return self.results
     
-    def create_comparison_chart(self):
-        """Create comparison chart for the report."""
-        
-        # Convert results to DataFrame
+    def create_comparison_chart(self):        
         df = pd.DataFrame(self.results)
         
-        # Set up the plot
         plt.figure(figsize=(14, 8))
         
-        # Create subplots
         fig, axes = plt.subplots(2, 2, figsize=(14, 10))
         
         # 1. Line chart: Time vs Rounds for all algorithms
@@ -141,7 +114,6 @@ class TowerOfHanoiBenchmark:
             ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,
                     f'{value:.1f}', ha='center', va='bottom', fontsize=9)
         
-        # 3. Scatter plot: Time vs Number of Disks
         ax3 = axes[1, 0]
         disks = df['Disks']
         scatter1 = ax3.scatter(disks, df['3-Peg Recursive (ms)'], alpha=0.7, label='3-Peg Recursive', s=100)
@@ -155,7 +127,6 @@ class TowerOfHanoiBenchmark:
         ax3.legend()
         ax3.set_xticks(range(5, 11))
         
-        # 4. Box plot: Distribution of execution times
         ax4 = axes[1, 1]
         time_data = [
             df['3-Peg Recursive (ms)'],
@@ -187,9 +158,7 @@ class TowerOfHanoiBenchmark:
         
         return df, fig
     
-    def generate_summary_table(self, df):
-        """Generate a summary table of the benchmark results."""
-        
+    def generate_summary_table(self, df):        
         print("\n" + "="*80)
         print("SUMMARY STATISTICS")
         print("="*80)
@@ -240,11 +209,6 @@ class TowerOfHanoiBenchmark:
         print(f"   - Most consistent: {most_consistent} (std dev: {summary_df['Std Dev (ms)'].min():.2f} ms)")
         print(f"   - Least consistent: {least_consistent} (std dev: {summary_df['Std Dev (ms)'].max():.2f} ms)")
         
-        print("\n4. PRACTICAL RECOMMENDATIONS:")
-        print("   - Use 4-Peg algorithms for larger disk counts (n > 7)")
-        print("   - Use iterative algorithms when stack overflow is a concern")
-        print("   - 3-Peg recursive is best for educational purposes (simplest)")
-        
         return summary_df
 
 
@@ -260,7 +224,7 @@ if __name__ == "__main__":
     # Generate summary
     summary_df = benchmark.generate_summary_table(df)
     
-    # Save results to CSV for your report
+    # Save results to CSV 
     results_df = pd.DataFrame(results)
     results_df.to_csv('tower_of_hanoi_benchmark_results.csv', index=False)
     print(f"\nDetailed results saved to: tower_of_hanoi_benchmark_results.csv")

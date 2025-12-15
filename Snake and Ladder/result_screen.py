@@ -63,7 +63,7 @@ class ResultScreen:
             pady=16
         )
         details_panel.pack(side=tk.LEFT, fill=tk.Y, expand=False)
-        details_panel.pack_propagate(False)   # keep exact size
+        details_panel.pack_propagate(False)
         
         # Heading inside details
         heading = tk.Label(
@@ -185,9 +185,6 @@ class ResultScreen:
         # Small spacer to push content up slightly
         tk.Frame(details_panel, bg=self.styles.get_color('bg_dark'), height=6).pack()
         
-       
-        # RIGHT PANEL - SUMMARY & ACTIONS
-        # Top summary (icon/title)
         right_panel = tk.Frame(main_container, bg=self.styles.get_color('bg_main'))
         right_panel.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(18,0))
         
@@ -253,7 +250,7 @@ class ResultScreen:
         s3v = tk.Label(stat_row3, text=f"{self.game_state.dice_rolls}", font=('Arial', 13, 'bold'), bg=self.styles.get_color('bg_dark'), fg=self.styles.get_color('info'))
         s3v.pack(side=tk.RIGHT)
         
-        # DB / message (prominent)
+        # DB / message
         if self.is_correct:
             db_msg = tk.Label(
                 right_panel,
@@ -276,11 +273,11 @@ class ResultScreen:
             )
         db_msg.pack(pady=(6,12))
         
-        # Buttons area (right aligned)
+        # Buttons area 
         btn_frame = tk.Frame(right_panel, bg=self.styles.get_color('bg_main'))
         btn_frame.pack(fill=tk.X, pady=(8,18))
         
-        # Play Again (primary)
+        # Play Again
         play_btn = tk.Button(
             btn_frame,
             text="🎮 Play Again",

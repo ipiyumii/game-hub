@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-
 class ReportGenerator:
     def __init__(self):
         plt.style.use('seaborn-v0_8')
@@ -14,13 +13,13 @@ class ReportGenerator:
             self._show_no_data_message("No performance data available yet!")
             return
 
-        # Check if we have valid time data (allow very small times)
+        # Check if we have valid time data 
         try:
             rounds = list(range(1, len(performance_data) + 1))
             ff_times = [data['ford_fulkerson_time'] for data in performance_data]
             ek_times = [data['edmonds_karp_time'] for data in performance_data]
 
-            # Check if we have meaningful data (not all exactly zero)
+            # Check if we have meaningful data 
             has_meaningful_data = any(
                 ff_time > 0.001 or ek_time > 0.001  # Allow very small times > 0.001ms
                 for ff_time, ek_time in zip(ff_times, ek_times)
@@ -95,7 +94,6 @@ class ReportGenerator:
         plt.savefig('complexity_analysis.png', dpi=300, bbox_inches='tight')
 
     def _show_no_data_message(self, message="No performance data available yet!"):
-        """Show a message when no data is available"""
         try:
             # Import PyQt5 inside the method to avoid circular imports
             from PyQt5.QtWidgets import QApplication, QMessageBox

@@ -2,7 +2,6 @@ import pygame
 import pygame.font
 from typing import Optional
 
-
 class Colors:
     GRADIENT_START = (135, 206, 250)  
     GRADIENT_END = (25, 25, 112)     
@@ -26,7 +25,6 @@ class Colors:
     TEXT_COLOR = (25, 25, 112)      
     PLACEHOLDER_COLOR = (128, 128, 128)  
 
-
 class NameInputPopup:    
     def __init__(self, screen_width: int, screen_height: int):
         self.screen_width = screen_width
@@ -46,7 +44,7 @@ class NameInputPopup:
         
         # Buttons
         button_y = self.y + 220
-        total_button_width = 80 + 20 + 80  # OK button + gap + Cancel button
+        total_button_width = 80 + 20 + 80 
         button_start_x = self.x + (self.width - total_button_width) // 2
         self.ok_button = pygame.Rect(button_start_x, button_y, 80, 40)
         self.cancel_button = pygame.Rect(button_start_x + 80 + 20, button_y, 80, 40)
@@ -213,7 +211,7 @@ class NameInputPopup:
         
         # Draw buttons
         button_y_local = 220
-        total_button_width = 80 + 20 + 80  # OK button + gap + Cancel button
+        total_button_width = 80 + 20 + 80 
         button_start_x_local = (self.width - total_button_width) // 2
         ok_local_rect = pygame.Rect(button_start_x_local, button_y_local, 80, 40)
         cancel_local_rect = pygame.Rect(button_start_x_local + 80 + 20, button_y_local, 80, 40)

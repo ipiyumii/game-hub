@@ -1,21 +1,5 @@
-"""
-4-Peg Tower of Hanoi Solver (CORRECTED Version)
-With verified correct solutions for 1-4 disks.
-"""
-
 class FourPegSolver:
-    """
-    Working 4-peg Tower of Hanoi solver with verified solutions.
-    """
-    
     def __init__(self, num_disks=3, pegs=['A', 'B', 'C', 'D']):
-        """
-        Initialize the solver.
-        
-        Args:
-            num_disks (int): Number of disks to solve (1-4)
-            pegs (list): List of 4 peg labels
-        """
         if len(pegs) != 4:
             raise ValueError("Must provide exactly 4 pegs")
         if num_disks < 1:
@@ -26,12 +10,6 @@ class FourPegSolver:
         self.moves = []
         
     def solve(self):
-        """
-        Get verified working solution for 1-4 disks.
-        
-        Returns:
-            list: List of moves as tuples (from_peg, to_peg)
-        """
         self.moves = []
         
         if self.num_disks == 1:
@@ -39,7 +17,7 @@ class FourPegSolver:
         elif self.num_disks == 2:
             self.moves = [("A", "B"), ("A", "D"), ("B", "D")]
         elif self.num_disks == 3:
-            # CORRECTED 5-move optimal solution for 3 disks
+            #  5-move optimal solution for 3 disks
             self.moves = [
                 ("A", "C"),  # Move disk 1 to C
                 ("A", "B"),  # Move disk 2 to B
@@ -48,7 +26,7 @@ class FourPegSolver:
                 ("C", "D"),  # Move disk 1 to D (on top of disk 2)
             ]
         elif self.num_disks == 4:
-            # CORRECT 9-move optimal solution for 4 disks
+            #  9-move optimal solution for 4 disks
             self.moves = [
                 ("A", "B"),  # Move disk 1 to B
                 ("A", "C"),  # Move disk 2 to C
@@ -68,14 +46,9 @@ class FourPegSolver:
     
     
     def solve_frame_stewart(self):
-        """
-        Solve using Frame-Stewart algorithm (recursive version).
-        This is the general algorithm for 4 pegs.
-        """
         self.moves = []
         
         def hanoi_4(n, source, target, aux1, aux2):
-            """Recursive helper for 4 pegs."""
             if n == 0:
                 return
             if n == 1:
@@ -90,16 +63,16 @@ class FourPegSolver:
             elif n == 4:
                 k = 2  # Move 2 smallest disks first
             else:
-                # For n > 4, use n//2 as approximation
+                # For n > 4
                 k = n // 2
             
-            # Step 1: Move k smallest disks to aux1 using all 4 pegs
+            #  Move k smallest disks to aux1 using 4 pegs
             hanoi_4(k, source, aux1, target, aux2)
             
-            # Step 2: Move remaining n-k disks to target using 3 pegs
+            #Move remaining n-k disks to target using 3 pegs
             hanoi_3(n - k, source, target, aux2)
             
-            # Step 3: Move k disks from aux1 to target using all 4 pegs
+            #  Move k disks from aux1 to target using 4 pegs
             hanoi_4(k, aux1, target, source, aux2)
         
         def hanoi_3(n, source, target, auxiliary):
@@ -115,12 +88,6 @@ class FourPegSolver:
         return self.moves
     
     def verify_solution(self):
-        """
-        Verify that the solution is correct by simulating it.
-        
-        Returns:
-            tuple: (bool, str) - (True if correct, error message if not)
-        """
         # Initialize towers
         towers = {
             self.pegs[0]: list(range(self.num_disks, 0, -1)),  # A has all disks
@@ -158,9 +125,6 @@ class FourPegSolver:
         return True, "Solution is correct"
     
     def simulate_and_print(self):
-        """
-        Simulate the solution and print each step.
-        """
         print(f"\nSimulating {self.num_disks} disks with 4 pegs:")
         print("Initial state: All disks on A")
         
@@ -192,13 +156,6 @@ class FourPegSolver:
         print("="*50)
     
     def _print_towers(self, towers, title=None):
-        """
-        Print the current state of towers.
-        
-        Args:
-            towers (dict): Tower state
-            title (str): Optional title
-        """
         if title:
             print(title)
         
@@ -220,7 +177,6 @@ class FourPegSolver:
         print(" ".join(f" {peg}  " for peg in self.pegs))
     
     def print_solution_summary(self):
-        """Print a summary of the solution."""
         print(f"\n{'='*60}")
         print(f"4-PEG TOWER OF HANOI SOLUTION FOR {self.num_disks} DISKS")
         print(f"{'='*60}")
@@ -253,9 +209,8 @@ class FourPegSolver:
             else:
                 print(f"\nNote: This solution uses {len(self.moves)} moves (optimal is {expected})")
 
-
+ #Main function to demonstrate the solver
 def main():
-    """Main function to demonstrate the solver."""
     print("="*70)
     print("4-PEG TOWER OF HANOI SOLVER (VERIFIED WORKING SOLUTIONS)")
     print("="*70)
@@ -276,7 +231,7 @@ def main():
             if show_sim == 'y':
                 solver.simulate_and_print()
     
-    # Special demonstration for 4 disks
+    # demonstration for 4 disks
     print(f"\n{'='*70}")
     print("SPECIAL DEMONSTRATION: 4 DISKS (9 MOVES - OPTIMAL)")
     print(f"{'='*70}")
@@ -284,23 +239,6 @@ def main():
     solver4 = FourPegSolver(4, ['A', 'B', 'C', 'D'])
     solver4.solve()
     solver4.simulate_and_print()
-    
-    # Show algorithm explanation
-    print(f"\n{'='*70}")
-    print("ALGORITHM EXPLANATION")
-    print(f"{'='*70}")
-    print("""
-    Frame-Stewart Algorithm for 4 Pegs:
-    
-    1. For 4 disks (n=4), optimal split is k=2
-    2. Move 2 smallest disks to an auxiliary peg (C) first
-    3. Move remaining 2 disks to target using 3 pegs
-    4. Move the 2 disks from auxiliary to target
-    
-    The solution shown above follows this pattern:
-    - Moves 1-3: Move disks 1-2 to peg C
-    - Moves 4-9: Move disks 3-4 to D and rearrange
-    """)
     
     # Compare with 3-peg solution
     print(f"\n{'='*70}")
@@ -318,7 +256,6 @@ def main():
             print(f"{n} disks: 3-peg = {moves_3peg:2d} moves, "
                   f"4-peg = {moves_4peg:2d} moves, "
                   f"Speedup: {ratio:.1f}x")
-
 
 if __name__ == "__main__":
     main()

@@ -1,15 +1,9 @@
-# src/firebase_config.py
 import firebase_admin
 from firebase_admin import credentials, firestore
 import os
 
-# JSON file is inside: src/
 KEY_FILENAME = "mind-arena.json"
-
-# Absolute path to this file's folder (src/)
 THIS_DIR = os.path.dirname(__file__)
-
-# Full path to JSON file
 KEY_PATH = os.path.join(THIS_DIR, KEY_FILENAME)
 
 def init_firebase():
@@ -24,7 +18,6 @@ def init_firebase():
         return None
 
 db = init_firebase()
-
 
 def save_game_result(player_name, home_city, selected_cities, player_route,
                      player_dist, best_algo_dist, best_results):
@@ -44,7 +37,7 @@ def save_game_result(player_name, home_city, selected_cities, player_route,
             "results": best_results
         }
 
-        # Saves inside COLLECTION: Traveling_Salesman_Problem
+        # Saves to db
         db.collection("Traveling_Salesman_Problem").add(doc)
 
         print("Saved to Firebase in 'Traveling_Salesman_Problem' collection!")

@@ -8,7 +8,7 @@ class AnswerScreen:
         
         self.root = root
         self.game_state = game_state
-        self.choices = sorted(choices)  # Sort for better display
+        self.choices = sorted(choices) 
         self.correct_answer = correct_answer
         self.algorithm_results = algorithm_results
         self.on_answer_callback = on_answer_callback

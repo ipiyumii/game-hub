@@ -10,7 +10,6 @@ sys.modules['firebase_admin.credentials'] = MagicMock()
 
 from EightQueensPuzzle.player_solutions import validate_player_solution
 
-
 class TestValidatePlayerSolution(unittest.TestCase):
 
     @patch('EightQueensPuzzle.player_solutions.fetch_all_solutions')
@@ -56,7 +55,5 @@ class TestValidatePlayerSolution(unittest.TestCase):
         self.assertIn("already found", result)
         mock_messagebox.showinfo.assert_called_with("Info", "This solution was already found by someone else!")
 
-
-    
 # if __name__ == '__main__':
 #     unittest.main()

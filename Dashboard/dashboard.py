@@ -3,17 +3,14 @@ import subprocess
 import sys
 import pygame
 import math
-from typing import Optional
 
 from EightQueensPuzzle.launch_game import launch_eight_queens
 
 try:
-    from Dashboard.ui.name_input_popup import NameInputPopup, Colors
-
+    from Dashboard.name_enter_ui.name_input_popup import NameInputPopup, Colors
 
 except ImportError as e:
     print(f"Import error: {e}")
-
 
 class GameHub:
     def __init__(self, games=None):
@@ -186,7 +183,6 @@ class GameHub:
                 more_rect = more_surface.get_rect(center=(self.SCREEN_WIDTH // 2, start_y + max_games_to_show * 45))
                 self.screen.blit(more_surface, more_rect)
 
-            # Instructions
             instruction_text = f"Have Fun Playing......!!!!!!"
         else:
             # No games available
@@ -216,7 +212,7 @@ class GameHub:
                     self.running = False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1 and not self.show_name_popup:  # Left click
+                if event.button == 1 and not self.show_name_popup:
                     mouse_pos = pygame.mouse.get_pos()
                     # Check if any game button was clicked
                     for button_info in self.game_buttons:
@@ -259,59 +255,61 @@ class GameHub:
         pygame.quit()
 
     def launch_game(self, game_id, game_name):
-        # """Handle Eight Queens game with various possible IDs
-        # if (game_id == "eight_queens" or
-        #         "eight queens" in game_name.lower() or
-        #         "queens" in game_name.lower()):
-        #     launch_eight_queens(self)
-        # elif "Coming Soon" in game_name:
-        #     print(f"{game_name} is not yet implemented.")
-        #     # You could show a message on screen here
-        # else:
-        #     print(f"Game {game_name} is not implemented yet.")"""
+        #eight queens
+        if (game_id == "eight_queens" or
+                "eight queens" in game_name.lower() or
+                "queens" in game_name.lower()):
+            launch_eight_queens(self)
+        elif "Coming Soon" in game_name:
+            print(f"{game_name} is not yet implemented.")
+        else:
+            print(f"Game {game_name} is not implemented yet.")
 
-        # if (game_id == "traffic_simulation" or
-        #         "traffic" in game_name.lower() or
-        #         "simulation" in game_name.lower()):
-        #     try:
-        #         print(f"Launching Traffic Simulation: {game_name}...")
-        #         base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        #         traffic_game_path = os.path.join(base_path, "Traffic Simulation", "traffic_app.py")
-        #         print("Running Traffic Simulation from:", traffic_game_path)
-        #         subprocess.Popen([sys.executable, traffic_game_path])
-        #     except Exception as e:
-        #         print(f"Failed to launch Traffic Simulation: {e}")
-        #     return
-        # print(f"Game '{game_name}' is not implemented or recognized.")
+        #traffic simulation
+        if (game_id == "traffic_simulation" or
+                "traffic" in game_name.lower() or
+                "simulation" in game_name.lower()):
+            try:
+                print(f"Launching Traffic Simulation: {game_name}...")
+                base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                traffic_game_path = os.path.join(base_path, "Traffic Simulation", "traffic_app.py")
+                print("Running Traffic Simulation from:", traffic_game_path)
+                subprocess.Popen([sys.executable, traffic_game_path])
+            except Exception as e:
+                print(f"Failed to launch Traffic Simulation: {e}")
+            return
+        print(f"Game '{game_name}' is not implemented or recognized.")
 
-             # TOWER OF HANOI - SAME PATTERN
-        # if (game_id == "tower_of_hanoi" or
-        #       "tower" in game_name.lower() or 
-        #       "hanoi" in game_name.lower()):
-        #     try:
-        #         print(f"Launching Tower of Hanoi: {game_name}...")
-        #         base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        #         tower_hanoi_path = os.path.join(base_path, "Tower of Hanoi", "tower_of_hanoi_ui.py")
-        #         print("Running Tower of Hanoi from:", tower_hanoi_path)
-        #         subprocess.Popen([sys.executable, tower_hanoi_path])
-        #     except Exception as e:
-        #         print(f"Failed to launch Tower of Hanoi: {e}")
-        #     return
+        #tower of hanoi
+        if (game_id == "tower_of_hanoi" or
+              "tower" in game_name.lower() or
+              "hanoi" in game_name.lower()):
+            try:
+                print(f"Launching Tower of Hanoi: {game_name}...")
+                base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                tower_hanoi_path = os.path.join(base_path, "Tower of Hanoi", "tower_of_hanoi_ui.py")
+                print("Running Tower of Hanoi from:", tower_hanoi_path)
+                subprocess.Popen([sys.executable, tower_hanoi_path])
+            except Exception as e:
+                print(f"Failed to launch Tower of Hanoi: {e}")
+            return
 
-        # if (game_id == "travelling_salesman" or
-        #         "travelling" in game_name.lower() or
-        #         "salesman" in game_name.lower()):
-        #     try:
-        #         print(f"Launching travelling_salesman: {game_name}...")
-        #         base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        #         traffic_game_path = os.path.join(base_path, "Travelling Salesman/src", "tsp_main.py")
-        #         print("Running travelling_salesman from:", traffic_game_path)
-        #         subprocess.Popen([sys.executable, traffic_game_path])
-        #     except Exception as e:
-        #         print(f"Failed to launch Traffic Simulation: {e}")
-        #     return
-        # print(f"Game '{game_name}' is not implemented or recognized.")
+        #travelling salesman
+        if (game_id == "travelling_salesman" or
+                "travelling" in game_name.lower() or
+                "salesman" in game_name.lower()):
+            try:
+                print(f"Launching travelling_salesman: {game_name}...")
+                base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                traffic_game_path = os.path.join(base_path, "Travelling Salesman/src", "tsp_main.py")
+                print("Running travelling salesman from:", traffic_game_path)
+                subprocess.Popen([sys.executable, traffic_game_path])
+            except Exception as e:
+                print(f"Failed to launch travelling salesman: {e}")
+            return
+        print(f"Game '{game_name}' is not implemented or recognized.")
 
+        #snake and ladder
         if (game_id == "snake_and_ladder" or
                 "snake" in game_name.lower() or
                 "ladder" in game_name.lower()):
@@ -326,4 +324,3 @@ class GameHub:
                 print(f"Failed to launch Snake and Ladder: {e}")
             return
         print(f"Game '{game_name}' is not implemented or recognized.")
-

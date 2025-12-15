@@ -10,7 +10,6 @@ from edmonds_karp import create_edmonds_karp
 from validation import Validation
 from timer import PerformanceTracker  # Added  this import
 
-
 class GameWindow(QWidget):
     def __init__(self, app, player_name):
         super().__init__()
@@ -168,7 +167,6 @@ class GameWindow(QWidget):
         return graph
 
     def calculate_max_flow(self, graph):
-        # Calculate max flow using both algorithms
         # Ford-Fulkerson (DFS)
         ff = create_ford_fulkerson()
         max_flow_ff, time_ff = ff.max_flow(graph, 'A', 'T')
@@ -204,15 +202,15 @@ class GameWindow(QWidget):
 
         # Node positions for optimal layout
         node_positions = {
-            'A': (100, 300),  # Source
-            'B': (250, 150),  # Top left
-            'C': (250, 300),  # Middle left
-            'D': (250, 450),  # Bottom left
-            'E': (450, 200),  # Top middle
-            'F': (450, 400),  # Bottom middle
-            'G': (650, 150),  # Top right
-            'H': (650, 450),  # Bottom right
-            'T': (800, 300)  # Sink
+            'A': (100, 300),  
+            'B': (250, 150),
+            'C': (250, 300), 
+            'D': (250, 450),
+            'E': (450, 200), 
+            'F': (450, 400), 
+            'G': (650, 150),  
+            'H': (650, 450), 
+            'T': (800, 300)
         }
 
         # Draw edges first
@@ -235,11 +233,11 @@ class GameWindow(QWidget):
 
         # Color coding
         if label == 'A':
-            node.setBrush(QBrush(QColor("#4CAF50")))  # Green for source
+            node.setBrush(QBrush(QColor("#4CAF50"))) 
         elif label == 'T':
-            node.setBrush(QBrush(QColor("#F44336")))  # Red for sink
+            node.setBrush(QBrush(QColor("#F44336")))  
         else:
-            node.setBrush(QBrush(QColor("#2196F3")))  # Blue for intermediate
+            node.setBrush(QBrush(QColor("#2196F3")))  
 
         node.setPen(QPen(Qt.black, 2))
         self.network_scene.addItem(node)
@@ -262,11 +260,11 @@ class GameWindow(QWidget):
 
         # Color based on capacity
         if capacity >= 12:
-            pen_color = QColor("#4CAF50")  # Green for high capacity
+            pen_color = QColor("#4CAF50") 
         elif capacity >= 8:
-            pen_color = QColor("#FF9800")  # Orange for medium capacity
+            pen_color = QColor("#FF9800")  
         else:
-            pen_color = QColor("#F44336")  # Red for low capacity
+            pen_color = QColor("#F44336")  
 
         pen = QPen(pen_color, 4)
         line.setPen(pen)

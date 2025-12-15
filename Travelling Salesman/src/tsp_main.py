@@ -1,4 +1,3 @@
-# src/main.py
 import pygame
 import sys
 import math
@@ -116,7 +115,6 @@ def main():
         delta_time = clock.tick(FPS)
         screen.fill((20,20,20))
 
-        # --- Map panel ---
         pygame.draw.rect(screen, (40,40,40), (20, MAP_TOP_OFFSET, LEFT_PANEL_W, HEIGHT - bottom_h - 40 - MAP_TOP_OFFSET))
         draw_text(screen, "Map: cities A-J (click to build route). SHIFT+click to select target.",
                   (30, MAP_TOP_OFFSET+4), font=BIG, color=(255,255,255))
@@ -147,7 +145,6 @@ def main():
                 x, y0_ = POSITIONS[home_label]
                 draw_text(screen, "CLOSED", (x-20, y0_+CITY_RADIUS+5), color=(0,200,255), font=BIG)
 
-        # --- Bottom controls ---
         pygame.draw.rect(screen, (50,50,50), (20, bottom_y, LEFT_PANEL_W, bottom_h))
         draw_button(screen, btn_new, "New Round (@)")
         draw_button(screen, btn_run, "Run Algorithms (#)")
@@ -165,7 +162,7 @@ def main():
             cursor_x = input_rect.x + 6 + txt_surf.get_width()
             pygame.draw.line(screen, (255,255,255), (cursor_x, input_rect.y + 8), (cursor_x, input_rect.y + 24), 2)
 
-        # --- Right panel: results ---
+        # Right panel - result
         pygame.draw.rect(screen, (35,35,35), results_area)
         info_y = results_area.y + 10
         draw_text(screen, "Click cities to build your route.", (results_area.x+6, info_y), font=BIG, color=(200,200,255))
@@ -193,7 +190,7 @@ def main():
                 draw_text(screen, f"Distance: {data['distance']:.2f} | Time: {data['time']:.6f}s | Complexity: {data['complexity']}", (results_area.x+6, y0+36))
                 y0 += 70
 
-            # Display Win/Lose if route closed
+            # Display Win/Lose
             if player_route and player_route[0]==home_label and player_route[-1]==home_label and set(player_route[1:-1])==set(selected):
                 best_dist = results["Held-Karp (DP)"]["distance"]
                 if abs(player_dist - best_dist) < 1e-6:
@@ -203,7 +200,7 @@ def main():
             if win_status:
                 draw_text(screen, win_status[0], (results_area.x+6, y0+10), font=BIG, color=win_status[1])
 
-        # --- Event Handling ---
+        # event handeling
         for event in pygame.event.get():
             try:
                 if event.type == pygame.QUIT:

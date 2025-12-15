@@ -5,7 +5,6 @@ class HanoiLogic:
 
         self.num_pegs = num_pegs
 
-       
         if num_disks is not None:
             self.num_disks = num_disks
         else:
@@ -35,24 +34,18 @@ class HanoiLogic:
             else "Enter number of moves and sequence."
         )
 
-
     def _labels(self, n):
-        """Return peg labels for n pegs."""
         return ['A', 'B', 'C', 'D'][:n]
 
     def _initialize_disks(self):
-        """Place all disks on the first tower (largest at bottom)."""
         self.towers[self.tower_labels[0]] = list(range(self.num_disks, 0, -1))
 
-    # ---------- Minimum moves ----------
-
     def get_min_moves(self):
-        """Return theoretical minimum moves based on pegs and disks."""
         if self.num_pegs == 3:
-            # Classic 3-peg formula: 2^n - 1
+            # Classic 3-peg formula
             return (2 ** self.num_disks) - 1
         else:
-            # Approximation / known optimal for small n for 4 pegs (Frame–Stewart)
+            # known optimal for small n for 4 pegs
             optimal_4peg = {
                 1: 1,
                 2: 3,
@@ -65,17 +58,13 @@ class HanoiLogic:
             }
             return optimal_4peg.get(self.num_disks, (2 ** self.num_disks) - 1)
 
-    # ========== INTERACTIVE MODE METHODS ==========
-
     def can_select_disk(self, peg_label, disk_index):
-        """Check if a disk can be selected (must be top disk on a valid peg)."""
         if peg_label not in self.tower_labels:
             return False
         tower = self.towers[peg_label]
         return len(tower) > 0 and disk_index == len(tower) - 1
 
     def select_disk(self, peg_label):
-        """Select top disk from a peg."""
         if peg_label not in self.tower_labels:
             return False
 
@@ -90,7 +79,6 @@ class HanoiLogic:
         return True
 
     def move_disk(self, target_peg):
-        """Move selected disk to target peg."""
         if self.selected_disk is None or self.selected_peg is None:
             self.message = "No disk selected!"
             return False
@@ -149,16 +137,12 @@ class HanoiLogic:
         return True
 
     def cancel_selection(self):
-        """Cancel current disk selection."""
         if self.selected_disk is not None:
             self.message = f"Canceled selection of disk {self.selected_disk}"
         self.selected_disk = None
         self.selected_peg = None
 
-    # ========== SEQUENCE MODE METHODS ==========
-
     def parse_moves(self, text):
-        """Parse text input into list of move tuples (e.g., 'AB AC BC')."""
         moves = []
         parts = text.upper().replace(",", " ").split()
 
@@ -172,7 +156,6 @@ class HanoiLogic:
         return moves
 
     def validate_sequence(self, num_moves_str, moves_text):
-        """Validate user's move sequence input."""
         try:
             # Parse number of moves
             try:
@@ -215,12 +198,11 @@ class HanoiLogic:
             return False
 
     def execute_sequence(self):
-        """Execute the validated move sequence on a temporary game first."""
         if not self.sequence_validated:
             self.sequence_result = "Please validate sequence first!"
             return False
 
-        # Create a temp interactive game with the same setup
+        # Create game
         temp_game = HanoiLogic(
             num_pegs=self.num_pegs,
             num_disks=self.num_disks,
@@ -239,7 +221,6 @@ class HanoiLogic:
 
         # Check if solved on temp game
         if temp_game.is_solved():
-            # Apply final state to actual game
             self.towers = {
                 label: temp_game.towers[label].copy()
                 for label in self.tower_labels
@@ -271,7 +252,6 @@ class HanoiLogic:
             return False
 
     def _execute_single_move(self, from_tower, to_tower):
-        """Execute a single move (used by execute_sequence)."""
         if from_tower not in self.tower_labels or to_tower not in self.tower_labels:
             return False, "Invalid tower label!"
 
@@ -291,32 +271,27 @@ class HanoiLogic:
         return True, None
 
     def _get_tower_state(self, towers):
-        """Get string representation of tower state (for debugging / messages)."""
         result = []
         for label in self.tower_labels:
             disks = towers[label]
             result.append(f"{label}:{disks}")
         return " | ".join(result)
 
-    # ========== COMMON METHODS ==========
-
     def is_solved(self):
-        """Check if all disks are on the last peg."""
         last_label = self.tower_labels[-1]
         return len(self.towers[last_label]) == self.num_disks
 
     def reset(self, num_pegs=None, num_disks=None, game_mode=None):
-        """Reset the game state while keeping explicit parameters stable."""
         if num_pegs is not None:
             self.num_pegs = num_pegs
         if num_disks is not None:
-            # Respect the caller's disk count (no random override)
+            # Respect the caller's disk count 
             self.num_disks = num_disks
 
         if game_mode is not None:
             self.game_mode = game_mode
 
-        # Rebuild labels and towers based on current num_pegs/num_disks
+        # Rebuild labels and towers based on current num_disks
         self.tower_labels = self._labels(self.num_pegs)
         self.towers = {label: [] for label in self.tower_labels}
         self._initialize_disks()
@@ -341,17 +316,15 @@ class HanoiLogic:
         )
 
     def switch_mode(self, new_mode):
-        """Switch between interactive and sequence modes (keeping pegs & disks)."""
         if new_mode not in ["interactive", "sequence"]:
             return False
 
         self.game_mode = new_mode
-        # Keep current num_pegs and num_disks; only change mode
         self.reset(num_pegs=self.num_pegs, num_disks=self.num_disks, game_mode=new_mode)
         return True
 
     def get_top_disk(self, peg_label):
-        """Get the top disk on a peg."""
+        # Get the top disk on a peg.
         if peg_label not in self.tower_labels:
             return None
         tower = self.towers[peg_label]

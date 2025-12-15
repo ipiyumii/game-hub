@@ -3,7 +3,6 @@ from collections import defaultdict
 from ford_fulkerson import create_ford_fulkerson
 from edmonds_karp import create_edmonds_karp
 
-
 class TestMaxFlowAlgorithms(unittest.TestCase):
 
     def setUp(self):
@@ -11,7 +10,6 @@ class TestMaxFlowAlgorithms(unittest.TestCase):
         self.ek = create_edmonds_karp()
 
     def test_simple_network(self):
-        """Test a simple network with known max flow"""
         graph = {
             'A': {'B': 10, 'C': 5},
             'B': {'C': 15, 'D': 8},
@@ -28,7 +26,6 @@ class TestMaxFlowAlgorithms(unittest.TestCase):
         self.assertEqual(max_flow_ff, 10)
 
     def test_no_path(self):
-        """Test network with no path from source to sink"""
         graph = {
             'A': {'B': 10},
             'B': {},
@@ -42,7 +39,6 @@ class TestMaxFlowAlgorithms(unittest.TestCase):
         self.assertEqual(max_flow_ek, 0)
 
     def test_single_path(self):
-        """Test network with only one path"""
         graph = {
             'A': {'B': 5},
             'B': {'T': 3},
@@ -71,7 +67,6 @@ class TestMaxFlowAlgorithms(unittest.TestCase):
 
         self.assertEqual(max_flow_ff, max_flow_ek)
         self.assertEqual(max_flow_ff, 23)
-
 
 if __name__ == '__main__':
     unittest.main()

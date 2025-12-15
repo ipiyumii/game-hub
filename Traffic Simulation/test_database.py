@@ -46,6 +46,5 @@ class TestDatabaseOperations(unittest.TestCase):
         self.assertTrue(success)
         self.assertTrue(self.firebase.initialized)
 
-
 if __name__ == '__main__':
     unittest.main()

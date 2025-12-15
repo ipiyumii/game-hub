@@ -5,7 +5,6 @@ import pytest
 import firebase_database as fb
 from firebase_database import FirebaseDatabase
 
-# Reset singleton before each test
 @pytest.fixture(autouse=True)
 def reset_singleton():
     FirebaseDatabase._instance = None
@@ -20,7 +19,6 @@ def test_init_without_credentials(monkeypatch):
     db = FirebaseDatabase()
     assert db.enabled is False
     assert db.db is None
-
 
 # Test 2: Firebase initializes correctly
 def test_init_success(monkeypatch):

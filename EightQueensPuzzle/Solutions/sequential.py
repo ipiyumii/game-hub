@@ -29,7 +29,7 @@ def solve_eight_queens_sequential(N=8):
             if is_safe(current_solution, row, col):
                 new_solution = current_solution + [col]
                 result = checkQueenPosition(new_solution, row + 1)
-                # add results to allsolution
+                # add results to all solution
                 temp_index = 0
                 while temp_index < len(result):
                     all_solutions = all_solutions + [result[temp_index]]

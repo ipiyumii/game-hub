@@ -1,14 +1,12 @@
 from collections import defaultdict, deque
 from timer import timer
 
-
 class EdmondsKarpBFS:
     def __init__(self):
         pass
 
     @timer
     def max_flow(self, graph, source, sink):
-        """Edmonds-Karp algorithm using BFS"""
         # Create residual graph
         residual_graph = defaultdict(dict)
         for u in graph:
@@ -61,7 +59,6 @@ class EdmondsKarpBFS:
                     queue.append(v)
 
         return False
-
 
 # Factory function to create Edmonds-Karp instance
 def create_edmonds_karp():

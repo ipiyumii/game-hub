@@ -27,13 +27,13 @@ class DijkstraAlgorithm:
         while heap:
             current_moves, current_position = heapq.heappop(heap)
             
-            # Check if we reached the target
+            # Check if reached the target
             if current_position == target:
                 execution_time = time.time() - start_time
                 print(f"✅ Dijkstra Found: {current_moves} moves in {execution_time*1000:.4f}ms")
                 return current_moves, execution_time
             
-            # Skip if we already found a better path to this position
+            # Skip if already found a path 
             if current_position in distances and distances[current_position] < current_moves:
                 continue
             
@@ -45,18 +45,18 @@ class DijkstraAlgorithm:
                 if next_position > target:
                     continue
                 
-                # Apply snake or ladder if present
+                # Apply snake or ladder
                 final_position = self._apply_snake_or_ladder(next_position)
                 
                 # Calculate new distance
                 new_moves = current_moves + 1
                 
-                # If we found a shorter path to final_position
+                # If found a shorter path to final_position
                 if final_position not in distances or new_moves < distances[final_position]:
                     distances[final_position] = new_moves
                     heapq.heappush(heap, (new_moves, final_position))
         
-        # No path found (shouldn't happen in valid game)
+        # No path found
         execution_time = time.time() - start_time
         print(f"❌ Dijkstra: No path found")
         return -1, execution_time
